@@ -1,0 +1,3 @@
+[submodule "submodules/physfs"]
+	path = submodules/physfs
+	url = https://github.com/Soth1985/physfs.git
