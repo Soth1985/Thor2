@@ -1,0 +1,110 @@
+Thor::ThVector<*>{
+	preview (
+		#(
+			"[",
+			$e.m_Size,
+			"](",
+			#array(
+				expr: $e.m_Data[$i],
+				size: $e.m_Size
+			),
+			")"
+		)
+	)
+
+	children (
+		#(
+			#([size] : $e.m_Size),
+			#([capacity] : $e.m_Capacity),
+			#array(
+				expr: $e.m_Data[$i],
+				size: $e.m_Size
+			)
+		)
+	)
+}
+
+Thor::ThHashMapItem<*,*>{
+	preview (
+		#(
+			"[", $e.m_Key, ", ", $e.m_Value, "]"
+		)
+	)
+	
+	children (
+		#(
+			#([key] : $c.m_Key),
+			#([value] : $c.m_Value)
+		)
+	)
+}
+
+Thor::ThHashMap<*,*>{
+	preview (
+		#(
+			"[",
+			$e.m_Items.m_Size,
+			"](",
+			#array(
+				expr: $e.m_Items.m_Data[$i],
+				size: $e.m_Items.m_Size
+			),
+			")"
+		)
+	)
+
+	children (
+		#(
+			#([size] : $c.m_Items.m_Size),
+			#([capacity] : $c.m_Items.m_Capacity),
+			#([max load factor] : $c.m_MaxLoadFactor),
+			#([grow size] : $c.m_GrowSize),
+			#array(
+				expr: $c.m_Items.m_Data[$i],
+				size: $c.m_Items.m_Size
+			)
+		)
+	)
+}
+
+Thor::ThHashSetItem<*>{
+	preview (
+		#(
+			"[", $e.m_Key, "]"
+		)
+	)
+	
+	children (
+		#(
+			#([key] : $c.m_Key)
+		)
+	)
+}
+
+Thor::ThHashSet<*>{
+	preview (
+		#(
+			"[",
+			$e.m_Items.m_Size,
+			"](",
+			#array(
+				expr: $e.m_Items.m_Data[$i],
+				size: $e.m_Items.m_Size
+			),
+			")"
+		)
+	)
+
+	children (
+		#(
+			#([size] : $c.m_Items.m_Size),
+			#([capacity] : $c.m_Items.m_Capacity),
+			#([max load factor] : $c.m_MaxLoadFactor),
+			#([grow size] : $c.m_GrowSize),
+			#array(
+				expr: $c.m_Items.m_Data[$i],
+				size: $c.m_Items.m_Size
+			)
+		)
+	)
+}
