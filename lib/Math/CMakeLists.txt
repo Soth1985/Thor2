@@ -1,31 +1,16 @@
-##########################################################################
-# ThorMath		                                                      	 #
-##########################################################################
-file(GLOB ThorMath_CPP "*.cpp")
-file(GLOB ThorMath_C "*.c")
-file(GLOB ThorMath_INL "*.inl")
-file(GLOB ThorMath_H "*.h")
+add_library(Math
+		src/Math/decompose.c
+		src/Math/MatrixDecompose.cpp
+		src/Math/ThMathReflection.cpp)
 
-file(GLOB ThorNurbs_CPP "Nurbs/*.cpp")
-file(GLOB ThorNurbs_INL "Nurbs/*.inl")
-file(GLOB ThorNurbs_H "Nurbs/*.h")
+target_include_directories (Math PUBLIC  
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    		$<INSTALL_INTERFACE:include>
+    		PRIVATE src)
 
-set(ThorMathCore_Src ${ThorMath_CPP} ${ThorMath_C} ${ThorMath_H} ${ThorMath_INL})
-set(ThorNurbs_Src ${ThorNurbs_CPP} ${ThorNurbs_H} ${ThorNurbs_INL})
-set(ThorMath_Src ${ThorMathCore_Src} ${ThorNurbs_Src})
+install(TARGETS Math
+    		ARCHIVE  DESTINATION Thor/lib
+    		LIBRARY  DESTINATION Thor/lib
+    		RUNTIME  DESTINATION Thor/bin)
 
-source_group( ThorMath FILES ${ThorMathCore_Src} )
-source_group( ThorNurbs FILES ${ThorNurbs_Src} )
-
-if(THOR_BUILD_SHARED)
-	add_definitions(-DTHOR_MATH_EXPORT)
-	add_library(ThorMath SHARED ${ThorMath_Src})
-	set_target_properties(ThorMath PROPERTIES LINKER_LANGUAGE CXX)
-	set(ThorMathInstallTargets ${ThorMathInstallTargets} ThorMath)
-elseif(THOR_BUILD_STATIC)
-	add_library(LibThorMath STATIC ${ThorMath_Src})
-	set_target_properties(ThorMath PROPERTIES LINKER_LANGUAGE CXX)
-	set(ThorMathInstallTargets ${ThorMathInstallTargets} LibThorMath)
-endif()
-
-thor_install( ThorMathInstallTargets )
+install(DIRECTORY include/ DESTINATION Thor/include)
