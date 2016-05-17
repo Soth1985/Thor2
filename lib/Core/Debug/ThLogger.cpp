@@ -1,6 +1,6 @@
 #include <Thor/Core/Debug/ThLogger.h>
 #include <Thor/Core/String/String.h>
-#include <Thor/String/ThStringUtilities.h>
+#include <Thor/Core/String/ThStringUtilities.h>
 
 #ifdef THOR_MS_WIN
 #include <windows.h>
@@ -109,8 +109,9 @@ ThLogger::ThLogger()
 	m_WideBufferSize = 256;
 	m_WideBuffer = new ThWchar[m_WideBufferSize];
 	m_Enabled = true;
-	m_PrefixFlags.Combine( ePrefix::Func );	
-	AddOutputTarget( ThiLoggerOutputTargetPtr( new ThLoggerDebuggerOutput() ) );
+	m_PrefixFlags.Combine( ePrefix::Func );
+    ThiLoggerOutputTargetPtr tgt = ThiLoggerOutputTargetPtr( new ThLoggerDebuggerOutput() );
+	AddOutputTarget( tgt );
 }
 //----------------------------------------------------------------------------------------
 ThLogger::~ThLogger()
@@ -124,7 +125,7 @@ ThLogger::~ThLogger()
 //----------------------------------------------------------------------------------------
 ThFormatHelper& ThLogger::MakeFormatHelper(eMessageSeverity::Val severity, const ThI8* func, const ThI8* file, ThI32 line, const ThI8* format)
 {
-	ThFormatHelper& result = m_Helpers.local();
+	ThFormatHelper& result = m_Helpers;
 
 	if(!m_Enabled)
 		return result;
@@ -206,7 +207,7 @@ ThFormatHelper& ThLogger::MakeFormatHelper(eMessageSeverity::Val severity, const
 //----------------------------------------------------------------------------------------
 ThFormatHelper& ThLogger::MakeFormatHelper(eMessageSeverity::Val severity, const ThI8* func, const ThI8* file, ThI32 line, const ThWchar* format)
 {
-	ThFormatHelper& result = m_Helpers.local();
+	ThFormatHelper& result = m_Helpers;
 
 	if(!m_Enabled)
 		return result;
@@ -291,14 +292,14 @@ ThFormatHelper& ThLogger::MakeFormatHelper(eMessageSeverity::Val severity, const
 //----------------------------------------------------------------------------------------
 void ThLogger::AddIgnore(MessageId id)
 {
-	Mutex::scoped_lock lock(m_Mutex);
+	std::lock_guard<std::mutex> lock(m_Mutex);
 
 	m_IgnoreList.Insert(id);
 }
 //----------------------------------------------------------------------------------------
 void ThLogger::AddIgnores(const IgnoreList& lst)
 {			
-	Mutex::scoped_lock lock(m_Mutex);
+	std::lock_guard<std::mutex> lock(m_Mutex);
 
 	for(IgnoreList::ConstIterator i = lst.Begin(); i != lst.End(); ++i)
 		m_IgnoreList.Insert(i->Key());
@@ -306,7 +307,7 @@ void ThLogger::AddIgnores(const IgnoreList& lst)
 //----------------------------------------------------------------------------------------
 void ThLogger::RemoveIgnores(const IgnoreList& lst)
 {
-	Mutex::scoped_lock lock(m_Mutex);
+	std::lock_guard<std::mutex> lock(m_Mutex);
 
 	for(IgnoreList::ConstIterator i = lst.Begin(); i != lst.End(); ++i)
 	{
@@ -319,7 +320,7 @@ void ThLogger::RemoveIgnores(const IgnoreList& lst)
 //----------------------------------------------------------------------------------------
 void ThLogger::ClearIgnores()
 {
-	Mutex::scoped_lock lock(m_Mutex);
+	std::lock_guard<std::mutex> lock(m_Mutex);
 	m_IgnoreList.Clear();
 }
 //----------------------------------------------------------------------------------------
@@ -330,7 +331,7 @@ const ThLogger::IgnoreList& ThLogger::GetIgnoreList()const
 //----------------------------------------------------------------------------------------
 void ThLogger::SetEnabled(ThBool val)
 {
-	Mutex::scoped_lock lock(m_Mutex);
+	std::lock_guard<std::mutex> lock(m_Mutex);
 	m_Enabled = val;
 }
 //----------------------------------------------------------------------------------------
@@ -361,7 +362,7 @@ void ThLogger::Log(MessageId id, const ThWchar* formatString, ...)
 //----------------------------------------------------------------------------------------
 void ThLogger::Log(MessageId id, const ThI8* formatString, va_list args)
 {
-	Mutex::scoped_lock lock(m_Mutex);
+	std::lock_guard<std::mutex> lock(m_Mutex);
 
 	//check if the logger is enabled
 	if(!m_Enabled)
@@ -414,7 +415,7 @@ void ThLogger::Log(MessageId id, const ThI8* formatString, va_list args)
 //----------------------------------------------------------------------------------------
 void ThLogger::Log(MessageId id, const ThWchar* formatString, va_list args)
 {
-	Mutex::scoped_lock lock(m_Mutex);
+	std::lock_guard<std::mutex> lock(m_Mutex);
 
 	//check if the logger is enabled
 	if(!m_Enabled)
@@ -424,7 +425,7 @@ void ThLogger::Log(MessageId id, const ThWchar* formatString, va_list args)
 	if(m_IgnoreList.Find(id) != m_IgnoreList.End())
 		return;
 
-	ThI32 written = _vsnwprintf(m_WideBuffer, m_WideBufferSize, formatString, args);
+    ThI32 written = std::swprintf(m_WideBuffer, m_WideBufferSize, formatString, args);
 
 	//if the message is too short for the message, increase its size
 	while(written == -1)
@@ -440,7 +441,7 @@ void ThLogger::Log(MessageId id, const ThWchar* formatString, va_list args)
 
 		delete[] m_WideBuffer;
 		m_WideBuffer = new ThWchar[m_WideBufferSize];
-		written = _vsnwprintf(m_WideBuffer, m_WideBufferSize, formatString, args);
+		written = std::swprintf(m_WideBuffer, m_WideBufferSize, formatString, args);
 	}	
 
 	//write message tag

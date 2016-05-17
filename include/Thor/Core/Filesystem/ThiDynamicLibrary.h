@@ -1,7 +1,7 @@
 #ifndef THOR_FS_THIDYNAMICLIBRARY_H
 #define THOR_FS_THIDYNAMICLIBRARY_H
 
-#include <Thor/Framework/Filesystem/FSLibConfig.h>
+#include <Thor/Core/Filesystem/FSLibConfig.h>
 
 namespace Thor
 {

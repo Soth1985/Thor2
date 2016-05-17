@@ -27,6 +27,9 @@ struct ThClassName;
     
 template<class T>
 ThiType* TypeOf();
+    
+template <class T>
+class ThType;
 //----------------------------------------------------------------------------------------
 //
 //					ThiType
@@ -104,7 +107,59 @@ struct CreateClassInstance<T, false>
 		return new T();
 	}
 };
+    
+template<class T, class Parent>
+struct ProcessParents
+{
+    static void Process()
+    {
+        THOR_STATIC_ASSERT( (std::is_base_of<Parent, T>::value), "These classes are not related" );
+        ThiType* parent = ThType<Parent>::Instance();
+        ThiType* thisType = ThType<T>::Instance();
+        
+        parent->AddChild(thisType);
+        thisType->AddBase(parent);
+    }
+};
 
+template<class T>
+struct ProcessParents<T, NullType>
+{
+    static void Process()
+    {
+        
+    }
+};
+    
+template<class T>
+struct ProcessParents<NullType, T>
+{
+    static void Process()
+    {
+        
+    }
+};
+
+template<>
+struct ProcessParents<NullType, NullType>
+{
+    static void Process()
+    {
+        
+    }
+};
+
+template<class T, class Head, class Tail>
+struct ProcessParents< T, Typelist<Head, Tail> >
+{
+    static void Process()
+    {
+        typedef typename TypeAt<Typelist<Head, Tail>, 1>::Result CurParent;
+        ProcessParents<T, CurParent>::Process();
+        ProcessParents<CurParent, Tail>::Process();
+    }
+};
+    
 }//Private
 //----------------------------------------------------------------------------------------
 //
@@ -135,7 +190,7 @@ public:
 
 	virtual ThBool IsAbstract()const
 	{
-		return std::is_abstract<T>();
+        return std::is_abstract<T>::value;
 	}
 
 	virtual ThSize GetNumBases()const
@@ -231,9 +286,9 @@ public:
 	}	
 
 	template<class Parents>
-	static void SetParents()
+    static void SetParents()
 	{
-		ProcessParents<Parents>::Process();
+        Private::ProcessParents<T, Parents>::Process();
 	}
 
 	virtual void* CreateObject(ThU32 param)
@@ -277,40 +332,7 @@ private:
 			ThiType* curType = const_cast<ThiType*>(i->Key());
 			curType->AddBase(t);
 		}
-	}	
-
-	template<class Parent>
-	struct ProcessParents
-	{
-		static void Process()
-		{
-			THOR_STATIC_ASSERT( (std::is_base_of<Parent, T>::value), "These classes are not related" );			
-			ThiType* parent = ThType<Parent>::Instance();
-			ThiType* thisType = ThType<T>::Instance();
-
-			parent->AddChild(thisType);
-			thisType->AddBase(parent);
-		}
-	};
-
-	template<>
-	struct ProcessParents<NullType>
-	{
-		static void Process()
-		{
-			
-		}
-	};
-
-	template<class Head, class Tail>
-	struct ProcessParents< Typelist<Head, Tail> >
-	{
-		static void Process()
-		{
-			ProcessParents<Head>::Process();
-			ProcessParents<Tail>::Process();
-		}
-	};	
+	}
 
 	template<class Ty, class Parents>
 	friend struct RegisterType;
@@ -336,8 +358,8 @@ struct RegisterType
 {
 	RegisterType()
 	{
-		ThType<Ty>::Instance();
-		ThType<Ty>::SetParents<Parents>();
+        ThType<Ty>::Instance();
+        ThType<Ty>::template SetParents<Parents>();
 	}	
 };
 //----------------------------------------------------------------------------------------
@@ -362,7 +384,7 @@ ThiType* TypeOf()
 	return ThType<T>::Instance();
 }
 //----------------------------------------------------------------------------------------
-static ThBool IsConvertible(ThiType* from, ThiType* to)
+static inline ThBool IsConvertible(ThiType* from, ThiType* to)
 {
 	if( from == to || to->IsBaseOf(from) || to->IsChildOf(from) )
 	{

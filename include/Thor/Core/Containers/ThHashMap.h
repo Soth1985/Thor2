@@ -114,8 +114,8 @@ public:
 
 	ThBool Insert(const KeyT& key, const ValueT& value)
 	{
-		SizeType hash = GetHash(key);
-		SizeType bucket = Bucket(hash);
+        SizeType hash = BaseType::GetHash(key);
+        SizeType bucket = BaseType::Bucket(hash);
 
         if (BaseType::FindImpl(key, bucket) != BaseType::End())
 			return false;
@@ -129,13 +129,13 @@ public:
 
 		if (BaseType::LoadFactor() > BaseType::MaxLoadFactor())
 		{
-			Rehash( BaseType::BucketCount() * 2 );
+            BaseType::Rehash( BaseType::BucketCount() * 2 );
 			return true;
 		}
 
 		if (itemsFull)
 		{
-			Rehash(BaseType::BucketCount());
+            BaseType::Rehash(BaseType::BucketCount());
 			return true;
 		}
 

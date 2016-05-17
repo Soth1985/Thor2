@@ -1,13 +1,12 @@
 #ifndef THOR_FS_BOOST_FILESYSTEM_H
 #define THOR_FS_BOOST_FILESYSTEM_H
 
-#include <Thor/Framework/Filesystem/FSLibConfig.h>
-#include <Thor/Framework/Filesystem/StlFileStream.h>
-#include <Thor/Framework/Filesystem/ThiFileSystem.h>
-#include <Thor/Framework/Filesystem/FSExceptions.h>
-#include <Thor/Framework/RefPtr.h>
+#include <Thor/Core/Filesystem/FSLibConfig.h>
+#include <Thor/Core/Filesystem/StlFileStream.h>
+#include <Thor/Core/Filesystem/ThiFileSystem.h>
+#include <Thor/Core/Filesystem/FSExceptions.h>
+#include <Thor/Core/SmartPointers/RefPtr.h>
 #include <filesystem>
-#include <tbb/tbb_thread.h>
 
 namespace Thor{
 

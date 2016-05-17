@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Thor/Core/ThiObject.h>
-#include <Thor/Core/FrameworkFwd.h>
+#include <Thor/Core/CoreFwd.h>
 
 namespace Thor
 {	

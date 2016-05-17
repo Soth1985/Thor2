@@ -33,11 +33,12 @@ namespace Private
     {
         void operator()(SizeType position, SizeType numElems, Pointer target)
         {
+            typedef typename std::remove_pointer<Pointer>::type Type;
             for (SizeType i = position; i < position + numElems; ++i)
             {
                 Pointer temp = &target[i];
                 
-                temp->~T();
+                temp->~Type();
             }
         }
     };
@@ -568,7 +569,8 @@ private:
 
 	void DestroyRange(SizeType position, SizeType numElems, Pointer target)
 	{
-        Private::DestroyRangeImpl< std::is_class<T>::value, SizeType, Pointer >(position, numElems, target);
+        Private::DestroyRangeImpl< std::is_class<T>::value, SizeType, Pointer > impl;
+        impl(position, numElems, target);
 	}
 
 	void ConstructRange(SizeType position, SizeType numElems)

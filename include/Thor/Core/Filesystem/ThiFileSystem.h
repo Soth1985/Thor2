@@ -199,7 +199,7 @@ public:
 
 private:
 
-	typedef std::tr1::unordered_map<ThString, ThiDynamicLibraryPtr>  DllList;
+	typedef std::unordered_map<ThString, ThiDynamicLibraryPtr>  DllList;
 
 	DllList m_DllList;
 };

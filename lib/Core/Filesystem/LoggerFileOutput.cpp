@@ -1,5 +1,5 @@
 #include <Thor/Core/Filesystem/LoggerFileOutput.h>
-#include <Thor/String/String.h>
+#include <Thor/Core/String/String.h>
 
 namespace Thor
 {

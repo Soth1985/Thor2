@@ -189,7 +189,7 @@ public:
 
 	void Rehash(SizeType numBuckets)
 	{
-		numBuckets = NextPowerOf2(numBuckets);
+		numBuckets = NextPowerOf2(ThU64(numBuckets));
 
 		m_Buckets.Assign(numBuckets, Pointer(0));
 

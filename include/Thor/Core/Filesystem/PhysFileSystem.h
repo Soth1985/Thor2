@@ -1,10 +1,10 @@
 #ifndef THOR_FS_PHYSFILESYSTEM_H
 #define THOR_FS_PHYSFILESYSTEM_H
 
-#include <Thor/Framework/Filesystem/FSLibConfig.h>
-#include <Thor/Framework/Filesystem/PhysFileStream.h>
-#include <Thor/Framework/Filesystem/ThiFileSystem.h>
-#include <Thor/Framework/Filesystem/FSExceptions.h>
+#include <Thor/Core/Filesystem/FSLibConfig.h>
+#include <Thor/Core/Filesystem/PhysFileStream.h>
+#include <Thor/Core/Filesystem/ThiFileSystem.h>
+#include <Thor/Core/Filesystem/FSExceptions.h>
 
 namespace Thor
 {

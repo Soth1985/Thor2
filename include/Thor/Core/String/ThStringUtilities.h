@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Thor/Framework/FrameworkFwd.h>
+#include <Thor/Core/CoreFwd.h>
 
 namespace Thor
 {

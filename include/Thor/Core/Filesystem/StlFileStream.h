@@ -1,8 +1,8 @@
 #ifndef THOR_FS_STLFILESTREAM_H
 #define THOR_FS_STLFILESTREAM_H
 
-#include <Thor/Framework/Filesystem/FSLibConfig.h>
-#include <Thor/Framework/Filesystem/ThiFileStream.h>
+#include <Thor/Core/Filesystem/FSLibConfig.h>
+#include <Thor/Core/Filesystem/ThiFileStream.h>
 
 namespace Thor{
 

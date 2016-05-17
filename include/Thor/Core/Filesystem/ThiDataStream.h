@@ -1,8 +1,8 @@
 #ifndef THOR_FS_THIDATASTREAM_H
 #define THOR_FS_THIDATASTREAM_H
 
-#include <Thor/Framework/Filesystem/FSLibConfig.h>
-#include <Thor/Framework/RefPtr.h>
+#include <Thor/Core/Filesystem/FSLibConfig.h>
+#include <Thor/Core/SmartPointers/RefPtr.h>
 
 namespace Thor{
 //----------------------------------------------------------------------------------------

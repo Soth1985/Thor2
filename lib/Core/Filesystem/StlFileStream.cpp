@@ -1,4 +1,4 @@
-#include <Thor/Framework/Filesystem/StlFileStream.h>
+#include <Thor/Core/Filesystem/StlFileStream.h>
 
 namespace Thor
 {

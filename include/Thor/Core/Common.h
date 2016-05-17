@@ -12,7 +12,11 @@
 #include <assert.h>
 #include <string>
 
-#define THOR_INLINE __forceinline
+#ifdef THOR_MS_WIN
+    #define THOR_INLINE __forceinline
+#else
+    #define THOR_INLINE inline
+#endif
 
 #ifdef _DEBUG
 	#define THOR_DEBUG
@@ -243,10 +247,14 @@ namespace Thor
 		char STATIC_ASSERT_FAILURE[B] = {0};
 	}
 
+#ifdef THOR_MS_WIN
 	#if _MSC_VER >= 1600
 		#define THOR_STATIC_ASSERT(expr, desc) static_assert(expr, desc);
 	#else
 		#define THOR_STATIC_ASSERT(expr, desc) STATIC_ASSERT_IMPL <(expr)!=0>();
 	#endif
+#else
+    #define THOR_STATIC_ASSERT(expr, desc) static_assert(expr, desc);
+#endif
 
 };//Thor

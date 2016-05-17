@@ -1,8 +1,8 @@
 #ifndef THOR_FS_THIMEMORYSTREAM_H
 #define THOR_FS_THIMEMORYSTREAM_H
 
-#include <Thor/Framework/Filesystem/FSLibConfig.h>
-#include <Thor/Framework/Filesystem/ThiDataStream.h>
+#include <Thor/Core/Filesystem/FSLibConfig.h>
+#include <Thor/Core/Filesystem/ThiDataStream.h>
 #include <string.h>
 
 namespace Thor

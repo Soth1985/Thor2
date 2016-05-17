@@ -26,7 +26,13 @@ struct TypeAt< Typelist<Head, Tail>, 0 >
 {
    typedef Head Result;
 };
-
+    
+template <unsigned int index>
+struct TypeAt< NullType, index >
+{
+    typedef NullType Result;
+};
+    
 
 #define THOR_TYPELIST_0() Thor::Typelist<Thor::NullType, Thor::NullType>
 

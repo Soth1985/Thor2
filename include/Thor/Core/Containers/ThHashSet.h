@@ -109,17 +109,17 @@ public:
 
 		if (BaseType::LoadFactor() > BaseType::MaxLoadFactor())
 		{
-			Rehash( BaseType::BucketCount() * 2 );
+			BaseType::Rehash( BaseType::BucketCount() * 2 );
 			return true;
 		}
 
 		if (itemsFull)
 		{
-			Rehash(BaseType::BucketCount());
+			BaseType::Rehash(BaseType::BucketCount());
 			return true;
 		}
 
-		Iterator tail = FindTail(bucket);
+		Iterator tail = BaseType::FindTail(bucket);
 
 		if ( tail == 0)
 			BaseType::m_Buckets[bucket] = &BaseType::m_Items.Back();
