@@ -1,7 +1,7 @@
 #ifndef THOR_FS_THWINDYNAMICLIBRARY_H
 #define THOR_FS_THWINDYNAMICLIBRARY_H
 
-#include <Thor/Framework/Filesystem/ThiDynamicLibrary.h>
+#include <Thor/Core/Filesystem/ThiDynamicLibrary.h>
 #include <windows.h>
 
 namespace Thor

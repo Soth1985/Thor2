@@ -126,8 +126,8 @@ public:
 
 	ThVector(SizeType n, const T& value, const ThFlags32& flags = 0)
 		:
-	m_Size(0),
 	m_Data(0),
+    m_Size(0),
 	m_Capacity(0),
 	m_Flags(eThVectorFlags::eCallCopyConstructorOnMove)
 	{

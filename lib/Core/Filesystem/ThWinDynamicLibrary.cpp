@@ -1,4 +1,4 @@
-#include <Thor/Framework/Filesystem/ThWinDynamicLibrary.h>
+#include <Thor/Core/Filesystem/ThWinDynamicLibrary.h>
 
 namespace Thor
 {
