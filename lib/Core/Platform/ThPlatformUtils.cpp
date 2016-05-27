@@ -1,5 +1,4 @@
-#include <Thor/Framework/ThPlatformUtils.h>
-#include <Thor/Framework/FrameworkAI.inl>
+#include <Thor/Core/Platform/ThPlatformUtils.h>
 
 #ifdef THOR_MS_WIN
 	#include <windows.h>

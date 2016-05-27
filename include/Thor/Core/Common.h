@@ -22,6 +22,12 @@
 	#define THOR_DEBUG
 #endif
 
+#if defined(THOR_MS_WIN)
+    #define THOR_ALIGNED(x) __declspec(align(x))
+#else
+    #define THOR_ALIGNED(x) __attribute__ ((aligned(x)))
+#endif
+
 //////////////Configure Math Library
 //#define USE_VECTOR_EXPRESSION_TEMPLATES
 //#define USE_MATRIX_EXPRESSION_TEMPLATES
@@ -29,6 +35,8 @@
 #ifdef THOR_X32
 	#define USE_SSE_MATH
 #endif
+
+#define THOR_CONCAT(x, y) x ## y
 
 //#define THOR_USE_TBB
 //#define __TBB_NO_IMPLICIT_LINKAGE

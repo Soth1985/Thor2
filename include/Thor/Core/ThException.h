@@ -13,8 +13,6 @@ public:
 	ThException(const char* str);
 
 	ThException(const ThString& str);
-
-	const char* What()const;
 };
 
 }//Thor

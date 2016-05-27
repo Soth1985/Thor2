@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Thor/Framework/Common.h>
+#include <Thor/Core/Common.h>
 #include <assert.h>
 
 namespace Thor{

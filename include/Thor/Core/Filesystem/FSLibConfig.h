@@ -12,7 +12,7 @@ namespace Thor
 	THOR_DECLARE_CLASS_NS(ThPhysFileSystem, Thor);
 #endif
 
-#ifdef THOR_USE_BOOSTFS
+#ifdef THOR_USE_STLFS
 	THOR_DECLARE_CLASS_NS(ThBoostFileSystem, Thor);
 	THOR_DECLARE_CLASS_NS(ThStlFileStream, Thor);
 #endif	

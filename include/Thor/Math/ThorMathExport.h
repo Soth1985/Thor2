@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Thor/Framework/Common.h>
+#include <Thor/Core/Common.h>
 
 #ifdef THOR_MS_WIN
 	#ifdef THOR_MATH_EXPORT

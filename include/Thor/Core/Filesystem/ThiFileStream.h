@@ -39,10 +39,6 @@ public:
 	eFileWriteMode::Val GetWriteMode()const;
 
 	const ThString& GetFileName()const;
-
-	virtual ThiAsyncResultPtr BeginRead(void* buf, ThSize bufOffset, ThSize size, const ThiAsyncResultCallback& callback);
-
-	virtual ThiAsyncResultPtr BeginWrite(const void* buf, ThSize bufOffset, ThSize size, const ThiAsyncResultCallback& callback);
 	
 protected:
 	/*!

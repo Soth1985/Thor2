@@ -34,18 +34,18 @@ namespace Thor{
 
 			#define ALIGN16(x) __declspec(align(16)) x
 
-#ifdef THOR_X64
+//#ifdef THOR_X64
 			#include <xmmintrin.h>
 			#define ALIGN4_INIT1F( X, INIT )			static __m128 X = _mm_set_ps((INIT), (INIT), (INIT), (INIT))
 			#define ALIGN4_INIT4F( X, I0, I1, I2, I3 )	static __m128 X = _mm_set_ps((I0), (I1), (I2), (I3))
 			#define ALIGN4_INIT1I( X, INIT )			static __m128 X = _mm_castsi128_ps(_mm_set_epi32 ((INIT), (INIT), (INIT), (INIT)))
 			#define ALIGN4_INIT4I( X, I0, I1, I2, I3 )	static __m128 X =  _mm_castsi128_ps(_mm_set_epi32 ((I0), (I1), (I2), (I3)))
-#else
-			#define ALIGN4_INIT1F( X, INIT )			ALIGN16( static float X[4] ) = { (INIT), (INIT), (INIT), (INIT) }
-			#define ALIGN4_INIT4F( X, I0, I1, I2, I3 )	ALIGN16( static float X[4] ) = { (I0), (I1), (I2), (I3) }
-			#define ALIGN4_INIT1F( X, INIT )			ALIGN16( static ThI32 X[4] ) = { (INIT), (INIT), (INIT), (INIT) }
-			#define ALIGN4_INIT4F( X, I0, I1, I2, I3 )	ALIGN16( static ThI32 X[4] ) = { (I0), (I1), (I2), (I3) }
-#endif
+//#else
+//			#define ALIGN4_INIT1F( X, INIT )			ALIGN16( static float X[4] ) = { (INIT), (INIT), (INIT), (INIT) }
+//			#define ALIGN4_INIT4F( X, I0, I1, I2, I3 )	ALIGN16( static float X[4] ) = { (I0), (I1), (I2), (I3) }
+//			#define ALIGN4_INIT1I( X, INIT )			ALIGN16( static ThI32 X[4] ) = { (INIT), (INIT), (INIT), (INIT) }
+//			#define ALIGN4_INIT4I( X, I0, I1, I2, I3 )	ALIGN16( static ThI32 X[4] ) = { (I0), (I1), (I2), (I3) }
+//#endif
 
 			#define SHUFFLE(z, y, x, w)   ( (z<<6) | (y<<4) | (x<<2) | w  )
 

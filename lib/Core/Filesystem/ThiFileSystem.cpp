@@ -1,4 +1,4 @@
-#include <Thor/Framework/Filesystem/ThiFileSystem.h>
+#include <Thor/Core/Filesystem/ThiFileSystem.h>
 
 #ifdef THOR_MS_WIN
 	#include <Thor/Framework/Filesystem/ThWinDynamicLibrary.h>

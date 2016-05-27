@@ -1,5 +1,5 @@
-#include <Thor/Framework/ThException.h>
-#include <Thor/Framework/ThLogger.h>
+#include <Thor/Core/ThException.h>
+#include <Thor/Core/Debug/ThLogger.h>
 
 namespace Thor
 {
@@ -14,22 +14,13 @@ ThException::ThException()
 };
 //----------------------------------------------------------------------------------------
 ThException::ThException(const char* str)
-	:
-std::exception(str)
 {
-	THOR_CRT("%s")("ThException", What() );
+	THOR_CRT("%s")("ThException", str );
 };	
 //----------------------------------------------------------------------------------------
 ThException::ThException(const ThString& str)
-	:
-std::exception( str.c_str() )
 {
-	THOR_CRT("%s")("ThException", What() );
+	THOR_CRT("%s")("ThException", str.c_str() );
 };
-//----------------------------------------------------------------------------------------
-const char* ThException::What()const
-{
-	return what();
-}
 
 };//Thor

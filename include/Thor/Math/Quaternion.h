@@ -1,10 +1,10 @@
 #pragma once
 
-#include <Thor/Framework/Common.h>
-#include <Thor/ThorMath/FixedVectorFwd.h>
-#include <Thor/ThorMath/FixedMatrixFwd.h>
-#include <Thor/ThorMath/EulerAnglesFwd.h>
-#include <Thor/ThorMath/ThorMath.h>
+#include <Thor/Core/Common.h>
+#include <Thor/Math/FixedVectorFwd.h>
+#include <Thor/Math/FixedMatrixFwd.h>
+#include <Thor/Math/EulerAnglesFwd.h>
+#include <Thor/Math/ThorMath.h>
 
 namespace Thor{
 
@@ -156,7 +156,7 @@ public:
 
 	THOR_INLINE DataT GetRotationAngle(void) const 
 	{
-		DataT thetaOver2 = Math::Acos(w);
+		DataT thetaOver2 = Math::Acos(mw);
 		// Return the rotation angle
 		return Math::RadToDeg(thetaOver2 * DataT(2.0) );
 	}
@@ -218,7 +218,7 @@ public:
 		{
 			// Looking straight up or down
 			pitch = Math::HalfPi * sp;	
-			heading = Math::Atan2(-mx * mz + w * my, DataT(0.5) - my * my - mz * mz);
+			heading = Math::Atan2(-mx * mz + mw * my, DataT(0.5) - my * my - mz * mz);
 			bank = 0.0f;
 		} 
 		else 
@@ -301,6 +301,6 @@ protected:
 };
 
 
-#include <Thor/ThorMath/QuaternionGeneric.inl>
+#include <Thor/Math/QuaternionGeneric.inl>
 
 };//Thor

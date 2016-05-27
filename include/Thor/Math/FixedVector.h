@@ -2,14 +2,14 @@
 
 #include <string.h>
 #include <vector>
-#include <Thor/ThorMath/Allocators.h>
-#include <Thor/ThorMath/ListConstructor.h>
+#include <Thor/Math/Allocators.h>
+#include <Thor/Math/ListConstructor.h>
 #ifdef USE_VECTOR_EXPRESSION_TEMPLATES
-	#include <Thor/ThorMath/ExpressionNodes.h>
+	#include <Thor/Math/ExpressionNodes.h>
 #endif
-#include <Thor/ThorMath/ThorMath.h>
-#include <Thor/ThorMath/FixedVectorFwd.h>
-#include <Thor/Framework/Common.h>
+#include <Thor/Math/ThorMath.h>
+#include <Thor/Math/FixedVectorFwd.h>
+#include <Thor/Core/Common.h>
 
 namespace Thor{
 
@@ -17,7 +17,7 @@ namespace Thor{
 //epsilon for vector comparisons
 const double epsilon = 1e-30;
 
-#include <Thor/ThorMath/FixedVectorGeneric.inl>
+#include <Thor/Math/FixedVectorGeneric.inl>
 
 #pragma region General Vector 
 
@@ -430,7 +430,7 @@ public:
 protected:
 	union
 	{
-		__declspec(align(16))float Vec[4];
+        float THOR_ALIGNED(16) Vec[4];
 	
 		struct
 		{

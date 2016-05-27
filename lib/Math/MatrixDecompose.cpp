@@ -1,8 +1,8 @@
-#include <Thor/ThorMath/MatrixDecompose.h>
+#include <Thor/Math/MatrixDecompose.h>
 
 extern "C"
 {
-	#include <Thor/ThorMath/Decompose.h>
+	#include <Thor/Math/Decompose.h>
 }
 
 namespace Thor{

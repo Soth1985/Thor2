@@ -1,4 +1,4 @@
-#include <Thor/Framework/ThiRtti.h>
+#include <Thor/Core/Rtti/ThiRtti.h>
 
 namespace Thor
 {

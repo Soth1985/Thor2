@@ -1,9 +1,10 @@
 #pragma once
 
-#include <Thor/Framework/Common.h>
-#include <Thor/ThorMath/Constants.h>
-#include <Thor/ThorMath/FixedVector.h>
 #include <smmintrin.h>
+#include <Thor/Core/Common.h>
+#include <Thor/Math/Constants.h>
+#include <Thor/Math/FixedVector.h>
+
 
 namespace Thor{ namespace Math{
 

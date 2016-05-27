@@ -1,8 +1,5 @@
-#include <Thor/Framework/Filesystem/ThiFileStream.h>
-#include <Thor/Framework/ThAsyncOpManager.h>
+#include <Thor/Core/Filesystem/ThiFileStream.h>
 #include <functional>
-#include <tbb/tbb_thread.h>
-#include <tbb/concurrent_queue.h>
 
 namespace Thor{	
 
@@ -30,18 +27,6 @@ eFileWriteMode::Val ThiFileStream::GetWriteMode()const
 const ThString& ThiFileStream::GetFileName()const
 {
 	return m_Filename;
-}
-//---------------------------------------------------------------------------------
-ThiAsyncResultPtr ThiFileStream::BeginRead(void* buf, ThSize bufOffset, ThSize size, const ThiAsyncResultCallback& callback)
-{
-	ThiAsyncResultPtr result( new ThFileAsyncResult( true, ThiFileStreamPtr(this), buf, bufOffset, size, callback ) );
-	return result;
-}
-//---------------------------------------------------------------------------------
-ThiAsyncResultPtr ThiFileStream::BeginWrite(const void* buf, ThSize bufOffset, ThSize size, const ThiAsyncResultCallback& callback)
-{
-	ThiAsyncResultPtr result( new ThFileAsyncResult( false, ThiFileStreamPtr(this), buf, bufOffset, size, callback ) );
-	return result;
 }
 
 }//Thor 

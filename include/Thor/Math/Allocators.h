@@ -2,7 +2,7 @@
 
 #include <cstdlib>  
 #include <memory>   
-#include <malloc.h>
+#include <stdlib.h>
 
 namespace Thor{
 
@@ -12,22 +12,22 @@ class ThAlignedAllocator
 public:
 	void* operator new(size_t size)
 	{
-		return _aligned_malloc( size,alignment);
+        return 0;//_aligned_malloc( size,alignment);
 	};
 
 	void* operator new[](size_t size)
 	{
-		return _aligned_malloc( size,alignment);
+        return 0;//_aligned_malloc( size,alignment);
 	};
 
 	void operator delete(void* p)
 	{
-		return _aligned_free( p );
+        //_aligned_free( p );
 	};
 
 	void operator delete[](void* p)
 	{
-		return _aligned_free( p );
+        //_aligned_free( p );
 	};
 
 	//virtual ~AlignedAllocator(){};

@@ -1,6 +1,6 @@
-#include <Thor/Framework/ThRttiManager.h>
-#include <Thor/Framework/ThException.h>
-#include <Thor/Framework/ThTypeInfo.h>
+#include <Thor/Core/Rtti/ThRttiManager.h>
+#include <Thor/Core/Rtti/ThTypeInfo.h>
+#include <Thor/Core/ThException.h>
 
 namespace Thor
 {

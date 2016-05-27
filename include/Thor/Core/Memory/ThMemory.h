@@ -6,7 +6,6 @@
 #define THOR_OVERLOAD_GLOBAL_NEW
 #define THOR_USE_ALIGNED_ALLOCATOR
 #define THOR_GLOBAL_ALLOC_ALIGNMENT 16
-#define THOR_USE_TBB_MALLOC
 
 namespace Thor{
 //----------------------------------------------------------------------------------------

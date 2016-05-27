@@ -5,7 +5,7 @@
 	#include <Thor/Core/Filesystem/PhysFileSystem.h>
 #endif
 
-#ifdef THOR_USE_BOOSTFS
+#ifdef THOR_USE_STLFS
 	#include <Thor/Core/Filesystem/StlFileStream.h>
 	#include <Thor/Core/Filesystem/BoostFileSystem.h>
 #endif
@@ -24,7 +24,7 @@ ThFileSystemFactory& ThFileSystemFactory::Instance()
 //----------------------------------------------------------------------------------------
 ThiFileSystemPtr ThFileSystemFactory::CreateFileSystem(eFileSystemType::Val type)
 {
-#ifdef THOR_USE_BOOSTFS
+#ifdef THOR_USE_STLFS
 	if(type==eFileSystemType::BoostFS)
 		return ThiFileSystemPtr(new ThBoostFileSystem() );
 #endif

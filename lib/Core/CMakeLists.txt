@@ -1,32 +1,27 @@
 project(Core VERSION ${THOR_VERSION} LANGUAGES CXX)
 
+option(THOR_USE_PHYSFS "Whether to include support for PhysFS" ON)
+
 set(Core_SRC
-        Containers/Singleton.cpp
-        Debug/ThAssert.cpp
-        Debug/ThLogger.cpp
-        Filesystem/FSExceptions.cpp
-        Filesystem/StdFileSystem.cpp
-        Filesystem/ThiFileStream.cpp
-        Filesystem/LibFileSystem.cpp
-        Filesystem/StlFileStream.cpp
-        Filesystem/ThiFileSystem.cpp
-        Filesystem/LoggerFileOutput.cpp
-        Filesystem/ThWinDynamicLibrary.cpp
-        Filesystem/ThiMemoryStream.cpp
-        Filesystem/PhysFileStream.cpp
-        Filesystem/ThiDataStream.cpp
-        Filesystem/PhysFileSystem.cpp
-        Filesystem/ThiDynamicLibrary.cpp
-        Platform/ThPlatformUtils.cpp
-        Platform/ThWinSystemWindow.cpp
-        Rtti/ThException.cpp
-        Rtti/ThiObject.cpp
-        Rtti/ThRttiManager.cpp
-        Rtti/ThiRtti.cpp
-        Memory/ThMemory.cpp
-        String/ThStringUtilities.cpp
-        ThiObject.cpp
-        )
+    Containers/Singleton.cpp
+    Debug/ThAssert.cpp
+    Debug/ThLogger.cpp
+    Filesystem/FSExceptions.cpp
+    Filesystem/ThiFileStream.cpp
+    Filesystem/LibFileSystem.cpp
+    Filesystem/ThiFileSystem.cpp
+    Filesystem/LoggerFileOutput.cpp
+    Filesystem/ThiMemoryStream.cpp
+    Filesystem/ThiDataStream.cpp
+    Filesystem/ThiDynamicLibrary.cpp
+    Platform/ThPlatformUtils.cpp
+    Rtti/ThException.cpp
+    Rtti/ThiObject.cpp
+    Rtti/ThRttiManager.cpp
+    Rtti/ThiRtti.cpp
+    Memory/ThMemory.cpp
+    String/ThStringUtilities.cpp
+    ThiObject.cpp)
 
 set(Core_H
     ${THOR_INCLUDE_DIR}/Thor/Core/Common.h
@@ -53,11 +48,6 @@ set(Core_H
     ${THOR_INCLUDE_DIR}/Thor/Core/Filesystem/FSLibConfig.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Filesystem/LibFileSystem.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Filesystem/LoggerFileOutput.h
-    ${THOR_INCLUDE_DIR}/Thor/Core/Filesystem/PhysFileStream.h
-    ${THOR_INCLUDE_DIR}/Thor/Core/Filesystem/PhysFileSystem.h
-    ${THOR_INCLUDE_DIR}/Thor/Core/Filesystem/StdFileSystem.h
-    ${THOR_INCLUDE_DIR}/Thor/Core/Filesystem/StlFileStream.h
-    ${THOR_INCLUDE_DIR}/Thor/Core/Filesystem/ThWinDynamicLibrary.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Filesystem/ThiDataStream.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Filesystem/ThiDynamicLibrary.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Filesystem/ThiFileStream.h
@@ -65,7 +55,6 @@ set(Core_H
     ${THOR_INCLUDE_DIR}/Thor/Core/Filesystem/ThiMemoryStream.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThMemory.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Platform/ThPlatformUtils.h
-    ${THOR_INCLUDE_DIR}/Thor/Core/Platform/ThWinSystemWindow.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Rtti/ThRttiManager.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Rtti/ThTypeInfo.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Rtti/ThiRtti.h
@@ -73,7 +62,41 @@ set(Core_H
     ${THOR_INCLUDE_DIR}/Thor/Core/String/String.h
     ${THOR_INCLUDE_DIR}/Thor/Core/String/ThStringUtilities.h)
 
+if(THOR_USE_PHYSFS)
+    set(Core_SRC ${Core_SRC}
+        Filesystem/PhysFileStream.cpp
+        Filesystem/PhysFileSystem.cpp)
+
+    set(Core_H ${Core_H}
+        ${THOR_INCLUDE_DIR}/Thor/Core/Filesystem/PhysFileStream.h
+        ${THOR_INCLUDE_DIR}/Thor/Core/Filesystem/PhysFileSystem.h)
+else()
+    set(Core_SRC ${Core_SRC}
+        Filesystem/StdFileSystem.cpp
+        Filesystem/StlFileStream.cpp)
+
+    set(Core_H ${Core_H}
+        ${THOR_INCLUDE_DIR}/Thor/Core/Filesystem/StlFileStream.h
+        ${THOR_INCLUDE_DIR}/Thor/Core/Filesystem/StdFileSystem.h)
+endif()
+
+if(WIN32)
+    set(Core_SRC ${Core_SRC}
+        Filesystem/ThWinDynamicLibrary.cpp
+        Platform/ThWinSystemWindow.cpp)
+
+    set(Core_H ${Core_H}
+        ${THOR_INCLUDE_DIR}/Thor/Core/Filesystem/ThWinDynamicLibrary.h
+        ${THOR_INCLUDE_DIR}/Thor/Core/Platform/ThWinSystemWindow.h)
+endif()
+
 add_library(Core ${Core_SRC} ${Core_H})
+
+if(THOR_USE_PHYSFS)
+    target_compile_definitions(Core PUBLIC THOR_USE_PHYSFS)
+else()
+    target_compile_definitions(Core PUBLIC THOR_USE_STLFS)
+endif()
 
 target_include_directories(Core PUBLIC ${THOR_INCLUDE_DIR})
 target_link_libraries(Core PhysFS)

@@ -1,5 +1,4 @@
-#include <Thor/Framework/ThiObject.h>
-#include <Thor/Framework/ThObjectTableInternal.h>
+#include <Thor/Core/ThiObject.h>
 
 namespace Thor
 {
@@ -51,7 +50,7 @@ ThiObjectPtr ThiObject::DeepCopy()
 //----------------------------------------------------------------------------------------
 ThU32 ThiObject::GetHashCode()const
 {
-	return ThU32(this);
+	return (ThU32)(size_t)this;
 }
 //----------------------------------------------------------------------------------------
 ThiObjectPtr ThiObject::This()const

@@ -1,13 +1,14 @@
 #pragma once
 
-#include <Thor/ThorMath/Allocators.h>
-#include <Thor/ThorMath/ListConstructor.h>
+#include <Thor/Math/Allocators.h>
+#include <Thor/Math/ListConstructor.h>
 #ifdef USE_MATRIX_EXPRESSION_TEMPLATES
-	#include <Thor/ThorMath/OpTags.h>
-	#include <Thor/ThorMath/ExpressionNodes.h>
+	#include <Thor/Math/OpTags.h>
+	#include <Thor/Math/ExpressionNodes.h>
 #endif
-#include <Thor/ThorMath/FixedVectorFwd.h>
-#include <Thor/ThorMath/FixedMatrixFwd.h>
+#include <Thor/Math/ThorMath.h>
+#include <Thor/Math/FixedVectorFwd.h>
+#include <Thor/Math/FixedMatrixFwd.h>
 
 //#define ROW_MAJOR_MATRIX
 
@@ -18,7 +19,7 @@
 
 namespace Thor{
 
-#include <Thor/ThorMath/FixedMatrixGeneric.inl>
+#include <Thor/Math/FixedMatrixGeneric.inl>
 //#include <FixedMatrixGeneric.inl>
 
 #pragma region Generic matrix specialization

@@ -1,4 +1,4 @@
-#include <Thor/Framework/ThMathReflection.h>
+#include <Thor/Math/ThMathReflection.h>
 
 namespace Thor
 {

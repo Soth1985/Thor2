@@ -8,4 +8,4 @@ add_executable(TestReflection TestReflection.cpp)
 target_link_libraries(TestReflection Core)
 
 add_executable(TestRefPtr TestRefPtr.cpp)
-target_link_libraries(TestRefPtr Core)
+target_link_libraries(TestRefPtr Core Math)

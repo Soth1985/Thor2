@@ -50,6 +50,7 @@ set(Math_H
 
 add_library(Math ${Math_SRC} ${Math_H})
 
+target_compile_options(Math PUBLIC -msse4.2)
 target_include_directories(Math PUBLIC {$THOR_INCLUDE_DIR})
 target_link_libraries(Math Core)
 export(TARGETS Math FILE Math.cmake)

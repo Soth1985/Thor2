@@ -1,9 +1,5 @@
-#include <Thor/Framework/ThMemory.h>
-#include <malloc.h>
-
-#ifdef THOR_USE_TBB_MALLOC
-	#include <tbb/scalable_allocator.h>
-#endif
+#include <Thor/Core/Memory/ThMemory.h>
+#include <stdlib.h>
 
 namespace Thor{
 
@@ -110,7 +106,7 @@ void* ThMemory::AlignedMalloc(ThSize size, ThSize alignment)
 #ifdef THOR_USE_TBB_MALLOC
 	return scalable_aligned_malloc(size, alignment);
 #else
-	return ::_aligned_malloc(size, alignment);
+    return 0;//::_aligned_malloc(size, alignment);
 #endif //THOR_USE_TBB_MALLOC
 }
 //----------------------------------------------------------------------------------------
@@ -119,7 +115,7 @@ void* ThMemory::AlignedRealloc(void* ptr, ThSize size, ThSize alignment)
 #ifdef THOR_USE_TBB_MALLOC
 	return scalable_aligned_realloc(ptr, size, alignment);
 #else
-	return _aligned_realloc(ptr, size, alignment);
+    return 0;//_aligned_realloc(ptr, size, alignment);
 #endif //THOR_USE_TBB_MALLOC
 }
 //----------------------------------------------------------------------------------------
@@ -128,7 +124,7 @@ void ThMemory::AlignedFree(void* ptr)
 #ifdef THOR_USE_TBB_MALLOC
 	scalable_aligned_free(ptr);
 #else
-	_aligned_free(ptr);
+	//_aligned_free(ptr);
 #endif //THOR_USE_TBB_MALLOC
 }
 //----------------------------------------------------------------------------------------
@@ -172,7 +168,7 @@ ThSize ThMemory::Msize(void* ptr)
 #ifdef THOR_USE_TBB_MALLOC
 	return scalable_msize(ptr);
 #else
-	return _msize(ptr);
+    return 0;// _msize(ptr);
 #endif //THOR_USE_TBB_MALLOC
 }
 //----------------------------------------------------------------------------------------

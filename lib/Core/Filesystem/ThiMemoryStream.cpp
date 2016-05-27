@@ -1,4 +1,4 @@
-#include <Thor/Framework/Filesystem/ThiMemoryStream.h>
+#include <Thor/Core/Filesystem/ThiMemoryStream.h>
 
 namespace Thor
 {

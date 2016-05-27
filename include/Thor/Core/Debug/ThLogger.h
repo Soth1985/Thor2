@@ -16,10 +16,10 @@
 #define THOR_ERR(msg) Thor::ThLogger::Instance().MakeFormatHelper(eMessageSeverity::Error, __FUNCTION__, __FILE__, __LINE__, #msg)
 #define THOR_CRT(msg) Thor::ThLogger::Instance().MakeFormatHelper(eMessageSeverity::Critical, __FUNCTION__, __FILE__, __LINE__, #msg)
 
-#define THOR_INF_W(msg) Thor::ThLogger::Instance().MakeFormatHelper(eMessageSeverity::Info, __FUNCTION__, __FILE__, __LINE__, L#msg)
-#define THOR_WRN_W(msg) Thor::ThLogger::Instance().MakeFormatHelper(eMessageSeverity::Warning, __FUNCTION__, __FILE__, __LINE__, L#msg)
-#define THOR_ERR_W(msg) Thor::ThLogger::Instance().MakeFormatHelper(eMessageSeverity::Error, __FUNCTION__, __FILE__, __LINE__, L#msg)
-#define THOR_CRT_W(msg) Thor::ThLogger::Instance().MakeFormatHelper(eMessageSeverity::Critical, __FUNCTION__, __FILE__, __LINE__, L#msg)
+#define THOR_INF_W(msg) Thor::ThLogger::Instance().MakeFormatHelper(eMessageSeverity::Info, __FUNCTION__, __FILE__, __LINE__, THOR_CONCAT(L, #msg))
+#define THOR_WRN_W(msg) Thor::ThLogger::Instance().MakeFormatHelper(eMessageSeverity::Warning, __FUNCTION__, __FILE__, __LINE__, THOR_CONCAT(L, #msg))
+#define THOR_ERR_W(msg) Thor::ThLogger::Instance().MakeFormatHelper(eMessageSeverity::Error, __FUNCTION__, __FILE__, __LINE__, THOR_CONCAT(L, #msg))
+#define THOR_CRT_W(msg) Thor::ThLogger::Instance().MakeFormatHelper(eMessageSeverity::Critical, __FUNCTION__, __FILE__, __LINE__, THOR_CONCAT(L, #msg))
 
 namespace Thor{
 //----------------------------------------------------------------------------------------

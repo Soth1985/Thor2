@@ -1,5 +1,5 @@
-#include <Thor/Framework/ThStringUtilities.h>
-#include <utf8cpp/utf8.h>
+#include <Thor/Core/String/ThStringUtilities.h>
+#include <Thor/Core/String/utf8.h>
 
 namespace Thor
 {
@@ -226,28 +226,28 @@ ThBool ThStringUtilities::Parse(const ThI8* str, ThU32& val)
 
 ThBool ThStringUtilities::Parse(const ThI8* str, ThI64& val)
 {
-	char* end;
+	/*char* end;
 	ThI64 temp = _strtoi64(str, &end, 10);
 
 	if (str != end)
 	{
 		val = temp;
 		return true;
-	}
+	}*/
 
 	return false;
 }
 
 ThBool ThStringUtilities::Parse(const ThI8* str, ThU64& val)
 {
-	char* end;
+	/*char* end;
 	ThU64 temp = _strtoui64(str, &end, 10);
 
 	if (str != end)
 	{
 		val = temp;
 		return true;
-	}
+	}*/
 
 	return false;
 }

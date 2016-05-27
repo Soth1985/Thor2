@@ -1,9 +1,13 @@
-#include <Thor/Framework/RefPtr.h>
-#include <Thor/ThorMath/MathSSE.h>
+#include <Thor/Core/SmartPointers/RefPtr.h>
+
+//#include <smmintrin.h>
+
+//__m128 fuck;
+
+#include <Thor/Math/MathSSE.h>
 #include <memory>
 using namespace Thor;
 using namespace Thor::Math;
-using namespace std::tr1;
 
 struct Test:public ThRefCounted
 {
