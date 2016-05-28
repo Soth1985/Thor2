@@ -101,6 +101,10 @@ endif()
 target_compile_options(Core PUBLIC -std=gnu++11 -stdlib=libc++)
 target_include_directories(Core PUBLIC ${THOR_INCLUDE_DIR})
 target_link_libraries(Core PhysFS)
+if(APPLE)
+    target_link_libraries(Core "-framework CoreFoundation" "-framework CoreServices" "-framework Carbon" "-framework IOKit")
+    target_link_libraries(Core z)
+endif()
 export(TARGETS Core FILE Core.cmake)
 
 install(TARGETS Core

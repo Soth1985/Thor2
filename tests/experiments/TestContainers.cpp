@@ -1,6 +1,6 @@
-#include <Thor/Framework/Containers/ThVector.h>
-#include <Thor/Framework/Containers/ThHashMap.h>
-#include <Thor/Framework/Containers/ThHashSet.h>
+#include <Thor/Core/Containers/ThVector.h>
+#include <Thor/Core/Containers/ThHashMap.h>
+#include <Thor/Core/Containers/ThHashSet.h>
 
 using namespace Thor;
 

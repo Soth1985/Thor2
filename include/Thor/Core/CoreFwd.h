@@ -8,7 +8,7 @@
 
 namespace Thor
 {
-	extern const ThI8* frameworkSysLogTag;
+	extern const ThI8* coreSysLogTag;
 	//Framework core classes
 	THOR_DECLARE_CLASS_NS(ThiApplication, Thor);
 	THOR_DECLARE_CLASS_NS(ThiTask, Thor);

@@ -36,7 +36,7 @@ ThiDynamicLibraryPtr ThiFileSystem::LoadDynamicLibrary(const ThString& path)
 
 		m_DllList.insert( DllList::value_type(path, result) );
 #else
-		THOR_ERR("Dynamic libraries are not supported on this platform")(frameworkSysLogTag);
+		THOR_ERR("Dynamic libraries are not supported on this platform")(coreSysLogTag);
 #endif
 		return result;
 	}

@@ -11,6 +11,8 @@ namespace Thor{
 THOR_REG_TYPE(ThiLoggerOutputTarget, THOR_TYPELIST_1(ThiObject));
 THOR_REG_TYPE(ThLoggerDebuggerOutput, THOR_TYPELIST_1(ThiLoggerOutputTarget));
 THOR_REG_TYPE(ThLoggerConsoleOutput, THOR_TYPELIST_1(ThiLoggerOutputTarget));
+    
+const ThI8* coreSysLogTag = "Core";
 //----------------------------------------------------------------------------------------
 //
 //					ThLoggerDebuggerOutput
@@ -21,13 +23,17 @@ void ThLoggerDebuggerOutput::Print(ThI8* str)
 	//output into the debugger console	
 #ifdef THOR_PLATFORM_WIN
 	OutputDebugStringA(str);
-#endif	
+#else
+    printf("%s", str);
+#endif
 }
 
 void ThLoggerDebuggerOutput::Print(ThWchar* str)
 {
 #ifdef THOR_PLATFORM_WIN
 	OutputDebugStringW(str);
+#else
+    wprintf(L"%s", str);
 #endif
 }
 //----------------------------------------------------------------------------------------

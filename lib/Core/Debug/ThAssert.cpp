@@ -24,7 +24,7 @@ void ThAssert::Assert(ThBool result, const ThString& expr, const ThString& msg, 
 		{
 			ThString text("Expr: ");
 			text += expr + " Msg: " + msg + "\n File: " + file + " Line: " + ToString(line);
-			THOR_CRT("%s")(frameworkSysLogTag, text.c_str());
+			THOR_CRT("%s")(coreSysLogTag, text.c_str());
 #ifdef _DEBUG
 			text += "\nPress Retry to debug the application.";
 			ThI32 msgboxID = MessageBox(0, text.c_str(), "Assertion Failed", MB_ABORTRETRYIGNORE | MB_ICONERROR | MB_DEFBUTTON2);			
