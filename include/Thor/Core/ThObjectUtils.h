@@ -47,12 +47,12 @@ struct StaticVisitor
 
 		ThBool visit = ( visType == objType );
 		//if not an exact match, try downcasting
-		if( !visit && downCast )
+		if (!visit && downCast)
 		{
 			visit = visType->IsBaseOf(objType);
 		}
 
-		if( visit )
+		if (visit)
 		{
 			ThiObject* pObj = GetPointer(obj);
 			TypeT* ptr = static_cast<TypeT*>(pObj);

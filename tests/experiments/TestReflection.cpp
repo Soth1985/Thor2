@@ -1,7 +1,6 @@
-#include <Thor/Framework/ThiObject.h>
-#include <Thor/Framework/ThObjectArena.h>
-#include <Thor/Framework/ThDelegate.h>
-#include <Thor/Framework/ThiFramework.h>
+#include <Thor/Core/ThiObject.h>
+#include <Thor/Core/ThObjectUtils.h>
+
 using namespace Thor;
 
 THOR_DECLARE_STRUCT(A);
@@ -57,8 +56,6 @@ struct C:public B
 		static float count=0.0f;
 		j=count++;
 	}
-
-	THOR_MEMORY_ARENA(C, 3);
 };
 
 struct D:public C
@@ -74,17 +71,17 @@ THOR_REG_TYPE(C, THOR_TYPELIST_1(B));
 
 struct Vis
 {
-	void Visit(ThRefPtr<C>& obj)
+	void Visit(ThRefPtr<C> obj)
 	{
 		int i=0;
 	}
 
-	void Visit(ThRefPtr<A>& obj)
+	void Visit(ThRefPtr<A> obj)
 	{
 		int i=0;
 	}
 
-	void Visit(ThRefPtr<B>& obj)
+	void Visit(ThRefPtr<B> obj)
 	{
 		int i=0;
 	}
@@ -93,31 +90,18 @@ struct Vis
 void TestVisitor()
 {
 	ThiObjectPtr objC = new C();
-	StaticVisitor< THOR_TYPELIST_3(C, A, B) >::Visit(ThiObjectPtr(objC), Vis(), true);
+    Vis Visitor;
+	StaticVisitor< THOR_TYPELIST_3(C, A, B) >::Visit(objC, Visitor, true);
 	ThiObjectPtr objA = new A();
-	StaticVisitor< THOR_TYPELIST_3(C, A, B) >::Visit(ThiObjectPtr(objA), Vis());
+	StaticVisitor< THOR_TYPELIST_3(C, A, B) >::Visit(objA, Visitor);
 	ThiObjectPtr objB = new B();
-	StaticVisitor< THOR_TYPELIST_3(C, A, B) >::Visit(ThiObjectPtr(objB), Vis());
+	StaticVisitor< THOR_TYPELIST_3(C, A, B) >::Visit(objB, Visitor);
 
 	C* pC = (C*)GetPointer(objC);
 	A* pA = (A*)GetPointer(objA);
 	C* cst = static_cast<C*>(pA);
 }
 
-void TestAllocator()
-{
-	C* var = new C();
-	
-	var = new C();
-	var = new C();
-	delete var;
-	var=C::AllocArray(3);
-	C::FreeArray(var);	
-
-	ThSize sz=sizeof D;
-	D* dvar= new D[30];
-	delete[]dvar;
-};
 //
 struct Tst
 {
@@ -155,7 +139,7 @@ void TestDelegate()
 	del(y,0.0f);
 }
 
-void testAssert()
+void TestAssert()
 {
 	//while(true)
 	{
@@ -166,29 +150,13 @@ void testAssert()
 
 int main()
 {
-	B bb;
-	int offs = offsetof(B,h);
-	char* pbb=(char*)&bb;
-	pbb+=offs;
-	float* val=(float*)pbb;
 	
-	GetFramework();
-	testAssert();
-	int *ptr = 0;
-	*ptr = 99;
-	typedef std::vector<int> vec_t;
-	vec_t v(90);
-	v.reserve(10);
-	
-	v.reserve(20);
+	TestAssert();
 	TestVisitor();
-	//TestAllocator();
 	TestDelegate();
 	const char* name=ThClassName<A>::GetName();
 		
 	C c;
-	int* p = new int;
-	delete[] p;
 	ThiType* t=c.GetType();	
 	ThString str=c.ToString();
 	return 0;

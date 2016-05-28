@@ -99,8 +99,9 @@ namespace Private
 				else
 				{
 					assert(0 && "This should not happen");
-					m_Connections.pop_back();
 				}
+                
+                m_Connections.pop_back();
 			}
 		}
 
@@ -188,7 +189,7 @@ public:
     connection_t ConnectMethod(MethodPtrT method, ObjectPtrT obj)
     {
         using namespace std::placeholders;
-		return Connect( bind(method, obj) );
+		return this->Connect( std::bind(method, obj) );
     }
 
 	void operator()()
@@ -206,13 +207,13 @@ class ThDelegate<Arg0>:public Private::ThDelegateBase<void(Arg0)>
 public:
     
     typedef typename Private::ThDelegateBase<void(Arg0)>	base_t;
-    typedef typename base_t::pointer_t                      connection_t;
+    typedef typename base_t::connection_t                      connection_t;
 
     template <class MethodPtrT, class ObjectPtrT>
     connection_t ConnectMethod(MethodPtrT method, ObjectPtrT obj)
     {
         using namespace std::placeholders;
-		return Connect( bind(method, obj, _1) );
+		return this->Connect( std::bind(method, obj, _1) );
     }
 
 	void operator()(Arg0 a0)
@@ -230,13 +231,13 @@ class ThDelegate<Arg0, Arg1>:public Private::ThDelegateBase<void(Arg0, Arg1)>
 public:
     
     typedef typename Private::ThDelegateBase<void(Arg0, Arg1)>	base_t;
-    typedef typename base_t::pointer_t                      connection_t;
+    typedef typename base_t::connection_t                      connection_t;
 
     template <class MethodPtrT, class ObjectPtrT>
     connection_t ConnectMethod(MethodPtrT method, ObjectPtrT obj)
     {
         using namespace std::placeholders;
-		return Connect( bind(method, obj, _1, _2) );
+        return this->Connect( std::bind(method, obj, _1, _2) );
     }
 
 	void operator()(Arg0 a0, Arg1 a1)
@@ -254,13 +255,13 @@ class ThDelegate<Arg0, Arg1, Arg2>:public Private::ThDelegateBase<void(Arg0, Arg
 public:
     
     typedef typename Private::ThDelegateBase<void(Arg0, Arg1, Arg2)>	base_t;
-    typedef typename base_t::pointer_t                      connection_t;
+    typedef typename base_t::connection_t                      connection_t;
 
     template <class MethodPtrT, class ObjectPtrT>
     connection_t ConnectMethod(MethodPtrT method, ObjectPtrT obj)
     {
         using namespace std::placeholders;
-		return Connect( bind(method, obj, _1, _2, _3) );
+		return this->Connect( std::bind(method, obj, _1, _2, _3) );
     }
 
 	void operator()(Arg0 a0, Arg1 a1, Arg2 a2)
@@ -278,13 +279,13 @@ class ThDelegate<Arg0, Arg1, Arg2, Arg3>:public Private::ThDelegateBase<void(Arg
 public:
     
     typedef typename Private::ThDelegateBase<void(Arg0, Arg1, Arg2, Arg3)>	base_t;
-    typedef typename base_t::pointer_t                      connection_t;
+    typedef typename base_t::connection_t                      connection_t;
 
     template <class MethodPtrT, class ObjectPtrT>
     connection_t ConnectMethod(MethodPtrT method, ObjectPtrT obj)
     {
         using namespace std::placeholders;
-		return Connect( bind(method, obj, _1, _2, _3, _4) );
+		return this->Connect( std::bind(method, obj, _1, _2, _3, _4) );
     }
 
 	void operator()(Arg0 a0, Arg1 a1, Arg2 a2, Arg3 a3)
@@ -302,13 +303,13 @@ class ThDelegate<Arg0, Arg1, Arg2, Arg3, Arg4>:public Private::ThDelegateBase<vo
 public:
     
     typedef typename Private::ThDelegateBase<void(Arg0, Arg1, Arg2, Arg3, Arg4)>	base_t;
-    typedef typename base_t::pointer_t                      connection_t;
+    typedef typename base_t::connection_t                      connection_t;
 
     template <class MethodPtrT, class ObjectPtrT>
     connection_t ConnectMethod(MethodPtrT method, ObjectPtrT obj)
     {
         using namespace std::placeholders;	
-		return Connect( bind(method, obj, _1, _2, _3, _4, _5) );
+		return this->Connect( std::bind(method, obj, _1, _2, _3, _4, _5) );
     }
 
 	void operator()(Arg0 a0, Arg1 a1, Arg2 a2, Arg3 a3, Arg4 a4)
@@ -326,13 +327,13 @@ class ThDelegate<Arg0, Arg1, Arg2, Arg3, Arg4, Arg5>:public Private::ThDelegateB
 public:
     
     typedef typename Private::ThDelegateBase<void(Arg0, Arg1, Arg2, Arg3, Arg4, Arg5)>	base_t;
-    typedef typename base_t::pointer_t                      connection_t;
+    typedef typename base_t::connection_t                      connection_t;
 
     template <class MethodPtrT, class ObjectPtrT>
     connection_t ConnectMethod(MethodPtrT method, ObjectPtrT obj)
     {
         using namespace std::placeholders;
-		return Connect( bind(method, obj, _1, _2, _3, _4, _5, _6) );
+		return this->Connect( std::bind(method, obj, _1, _2, _3, _4, _5, _6) );
     }
 
 	void operator()(Arg0 a0, Arg1 a1, Arg2 a2, Arg3 a3, Arg4 a4, Arg5 a5)
@@ -350,13 +351,13 @@ class ThDelegate<Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6>:public Private::ThDel
 public:
     
     typedef typename Private::ThDelegateBase<void(Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6)>	base_t;
-    typedef typename base_t::pointer_t                      connection_t;
+    typedef typename base_t::connection_t                      connection_t;
 
     template <class MethodPtrT, class ObjectPtrT>
     connection_t ConnectMethod(MethodPtrT method, ObjectPtrT obj)
     {
         using namespace std::placeholders;
-		return Connect( bind(method, obj, _1, _2, _3, _4, _5, _6, _7) );
+		return this->Connect( std::bind(method, obj, _1, _2, _3, _4, _5, _6, _7) );
     }
 
 	void operator()(Arg0 a0, Arg1 a1, Arg2 a2, Arg3 a3, Arg4 a4, Arg5 a5, Arg6 a6)
@@ -374,13 +375,13 @@ class ThDelegate<Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7>:public Private:
 public:
     
     typedef typename Private::ThDelegateBase<void(Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7)>	base_t;
-    typedef typename base_t::pointer_t                      connection_t;
+    typedef typename base_t::connection_t                      connection_t;
 
     template <class MethodPtrT, class ObjectPtrT>
     connection_t ConnectMethod(MethodPtrT method, ObjectPtrT obj)
     {
         using namespace std::placeholders;
-		return Connect( bind(method, obj, _1, _2, _3, _4, _5, _6, _7, _8) );
+		return this->Connect( std::bind(method, obj, _1, _2, _3, _4, _5, _6, _7, _8) );
     }
 
 	void operator()(Arg0 a0, Arg1 a1, Arg2 a2, Arg3 a3, Arg4 a4, Arg5 a5, Arg6 a6, Arg7 a7)
@@ -398,13 +399,13 @@ class ThDelegate<Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8>:public Pr
 public:
     
     typedef typename Private::ThDelegateBase<void(Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8)>	base_t;
-    typedef typename base_t::pointer_t                      connection_t;
+    typedef typename base_t::connection_t                      connection_t;
 
     template <class MethodPtrT, class ObjectPtrT>
     connection_t ConnectMethod(MethodPtrT method, ObjectPtrT obj)
     {
         using namespace std::placeholders;
-		return Connect( bind(method, obj, _1, _2, _3, _4, _5, _6, _7, _8, _9) );
+		return this->Connect( std::bind(method, obj, _1, _2, _3, _4, _5, _6, _7, _8, _9) );
     }
 
 	void operator()(Arg0 a0, Arg1 a1, Arg2 a2, Arg3 a3, Arg4 a4, Arg5 a5, Arg6 a6, Arg7 a7, Arg8 a8)
@@ -422,13 +423,13 @@ class ThDelegate<Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9>:pub
 public:
     
     typedef typename Private::ThDelegateBase<void(Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9)>	base_t;
-    typedef typename base_t::pointer_t                      connection_t;
+    typedef typename base_t::connection_t                      connection_t;
 
     template <class MethodPtrT, class ObjectPtrT>
     connection_t ConnectMethod(MethodPtrT method, ObjectPtrT obj)
     {
         using namespace std::placeholders;
-		return Connect( bind(method, obj, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10) );
+		return this->Connect( std::bind(method, obj, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10) );
     }
 
 	void operator()(Arg0 a0, Arg1 a1, Arg2 a2, Arg3 a3, Arg4 a4, Arg5 a5, Arg6 a6, Arg7 a7, Arg8 a8, Arg9 a9)

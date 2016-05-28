@@ -98,6 +98,7 @@ else()
     target_compile_definitions(Core PUBLIC THOR_USE_STLFS)
 endif()
 
+target_compile_options(Core PUBLIC -std=gnu++11 -stdlib=libc++)
 target_include_directories(Core PUBLIC ${THOR_INCLUDE_DIR})
 target_link_libraries(Core PhysFS)
 export(TARGETS Core FILE Core.cmake)

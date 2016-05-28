@@ -30,6 +30,12 @@ ThiType* TypeOf();
     
 template <class T>
 class ThType;
+    
+namespace Private
+{
+    template<class T, class Parent>
+    struct ProcessParents;
+}//Private
 //----------------------------------------------------------------------------------------
 //
 //					ThiType
@@ -72,93 +78,97 @@ public:
 
 private:
 	friend class ThRttiManager;
-	template <class T>
+	
+    template <class T>
 	friend class ThType;
+    
+    template<class T, class Parent>
+    friend struct Private::ProcessParents;
 	
 	virtual void RemoveType(const ThiType* t)=0;
 	virtual void AddChild(const ThiType* t)=0;
 	virtual void AddBase(const ThiType* t)=0;
 };
-
+    
 namespace Private
 {
-//----------------------------------------------------------------------------------------
-//
-//					CreateClassInstance
-//
-//----------------------------------------------------------------------------------------
-template<class T, bool abstr>
-struct CreateClassInstance;
-
-template<class T>
-struct CreateClassInstance<T, true>
-{
-	static void* Create(ThU32 param)
-	{
-		return 0;
-	}
-};
-
-template<class T>
-struct CreateClassInstance<T, false>
-{
-	static void* Create(ThU32 param)
-	{
-		return new T();
-	}
-};
+    //----------------------------------------------------------------------------------------
+    //
+    //					CreateClassInstance
+    //
+    //----------------------------------------------------------------------------------------
+    template<class T, bool abstr>
+    struct CreateClassInstance;
     
-template<class T, class Parent>
-struct ProcessParents
-{
-    static void Process()
+    template<class T>
+    struct CreateClassInstance<T, true>
     {
-        THOR_STATIC_ASSERT( (std::is_base_of<Parent, T>::value), "These classes are not related" );
-        ThiType* parent = ThType<Parent>::Instance();
-        ThiType* thisType = ThType<T>::Instance();
-        
-        parent->AddChild(thisType);
-        thisType->AddBase(parent);
-    }
-};
-
-template<class T>
-struct ProcessParents<T, NullType>
-{
-    static void Process()
-    {
-        
-    }
-};
+        static void* Create(ThU32 param)
+        {
+            return 0;
+        }
+    };
     
-template<class T>
-struct ProcessParents<NullType, T>
-{
-    static void Process()
+    template<class T>
+    struct CreateClassInstance<T, false>
     {
-        
-    }
-};
-
-template<>
-struct ProcessParents<NullType, NullType>
-{
-    static void Process()
+        static void* Create(ThU32 param)
+        {
+            return new T();
+        }
+    };
+    
+    template<class T, class Parent>
+    struct ProcessParents
     {
-        
-    }
-};
-
-template<class T, class Head, class Tail>
-struct ProcessParents< T, Typelist<Head, Tail> >
-{
-    static void Process()
+        static void Process()
+        {
+            THOR_STATIC_ASSERT( (std::is_base_of<Parent, T>::value), "These classes are not related" );
+            ThiType* parent = ThType<Parent>::Instance();
+            ThiType* thisType = ThType<T>::Instance();
+            
+            parent->AddChild(thisType);
+            thisType->AddBase(parent);
+        }
+    };
+    
+    template<class T>
+    struct ProcessParents<T, NullType>
     {
-        typedef typename TypeAt<Typelist<Head, Tail>, 1>::Result CurParent;
-        ProcessParents<T, CurParent>::Process();
-        ProcessParents<CurParent, Tail>::Process();
-    }
-};
+        static void Process()
+        {
+            
+        }
+    };
+    
+    template<class T>
+    struct ProcessParents<NullType, T>
+    {
+        static void Process()
+        {
+            
+        }
+    };
+    
+    template<>
+    struct ProcessParents<NullType, NullType>
+    {
+        static void Process()
+        {
+            
+        }
+    };
+    
+    template<class T, class Head, class Tail>
+    struct ProcessParents< T, Typelist<Head, Tail> >
+    {
+        static void Process()
+        {
+            typedef typename TypeAt<Typelist<Head, Tail>, 0>::Result CurParent;
+            ProcessParents<T, CurParent>::Process();
+            ProcessParents<CurParent, Tail>::Process();
+        }
+    };
     
 }//Private
 //----------------------------------------------------------------------------------------

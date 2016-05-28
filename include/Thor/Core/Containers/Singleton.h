@@ -294,7 +294,7 @@ namespace Private
 
 			return *m_Object;
 #else
-			if (m_Object)
+			if (!m_Object)
 			{
 				m_Object = Create();
 				Private::LongevityManager::Instance().Register(longevity, new Private::LongevityObject<SingletonWithLongevity>(m_Object) );						
