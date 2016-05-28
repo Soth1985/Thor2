@@ -3,16 +3,27 @@
 /////////os dependent stuff
 #if defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
 	#define WIN32_LEAN_AND_MEAN
-	//#include <windows.h>
-	#define  THOR_MS_WIN
+	#define  THOR_PLATFORM_WIN
     #pragma warning(disable:4251)
     #pragma warning(disable:4275)
+#endif
+
+#ifdef __APPLE__
+    #include "TargetConditionals.h"
+    #if TARGET_IPHONE_SIMULATOR
+        #define THOR_PLATFORM_IOS
+        #define THOR_PLATFORM_IOS_SIMULATOR
+    #elif TARGET_OS_IPHONE
+        #define THOR_PLATFORM_IOS
+    #else
+        #define THOR_PLATFORM_OSX
+    #endif
 #endif
 
 #include <assert.h>
 #include <string>
 
-#ifdef THOR_MS_WIN
+#ifdef THOR_PLATFORM_WIN
     #define THOR_INLINE __forceinline
 #else
     #define THOR_INLINE inline
@@ -22,7 +33,7 @@
 	#define THOR_DEBUG
 #endif
 
-#if defined(THOR_MS_WIN)
+#if defined(THOR_PLATFORM_WIN)
     #define THOR_ALIGNED(x) __declspec(align(x))
 #else
     #define THOR_ALIGNED(x) __attribute__ ((aligned(x)))
@@ -32,14 +43,9 @@
 //#define USE_VECTOR_EXPRESSION_TEMPLATES
 //#define USE_MATRIX_EXPRESSION_TEMPLATES
 
-#ifdef THOR_X32
-	#define USE_SSE_MATH
-#endif
+#define THOR_ENABLE_SSE_MATH
 
 #define THOR_CONCAT(x, y) x ## y
-
-//#define THOR_USE_TBB
-//#define __TBB_NO_IMPLICIT_LINKAGE
 
 namespace Thor
 {
@@ -218,7 +224,7 @@ namespace Thor
 		return id++;
 	};
 
-	static ThU32 NextPowerOf2(ThU32 val)
+	static inline ThU32 NextPowerOf2(ThU32 val)
 	{
 		val--;
 
@@ -233,7 +239,7 @@ namespace Thor
 		return val;
 	}
 
-	static ThU64 NextPowerOf2(ThU64 val)
+	static inline ThU64 NextPowerOf2(ThU64 val)
 	{
 		val--;
 
@@ -255,7 +261,7 @@ namespace Thor
 		char STATIC_ASSERT_FAILURE[B] = {0};
 	}
 
-#ifdef THOR_MS_WIN
+#ifdef THOR_PLATFORM_WIN
 	#if _MSC_VER >= 1600
 		#define THOR_STATIC_ASSERT(expr, desc) static_assert(expr, desc);
 	#else

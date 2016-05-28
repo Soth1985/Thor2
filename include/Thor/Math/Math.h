@@ -1,8 +1,12 @@
 #pragma once
 
-#include <Thor/Framework/Common.h>
-#include <Thor/ThorMath/FixedVector.h>
-#include <Thor/ThorMath/FixedMatrix.h>
-#include <Thor/ThorMath/EulerAngles.h>
-#include <Thor/ThorMath/IntersectionTests.h>
-#include <Thor/ThorMath/ThorMath.h>
+#include <Thor/Core/Common.h>
+#include <Thor/Math/FixedVector.h>
+#include <Thor/Math/FixedMatrix.h>
+#include <Thor/Math/EulerAngles.h>
+#include <Thor/Math/IntersectionTests.h>
+#include <Thor/Math/ThorMath.h>
+
+#ifdef THOR_ENABLE_SSE_MATH
+    #include <Thor/Math/MathSSE.h>
+#endif

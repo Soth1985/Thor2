@@ -1,15 +1,13 @@
 #pragma once
 
-#include <string.h>
-#include <vector>
 #include <Thor/Math/Allocators.h>
 #include <Thor/Math/ListConstructor.h>
 #ifdef USE_VECTOR_EXPRESSION_TEMPLATES
 	#include <Thor/Math/ExpressionNodes.h>
 #endif
-#include <Thor/Math/ThorMath.h>
+
 #include <Thor/Math/FixedVectorFwd.h>
-#include <Thor/Core/Common.h>
+#include <Thor/Math/ThorMath.h>
 
 namespace Thor{
 
@@ -848,16 +846,6 @@ static const ThVec3 zAxis(0.0f,0.0f,1.0f);
 static const ThVec4 yAxis4(0.0f,1.0f,0.0f,0.0f);
 static const ThVec4 xAxis4(1.0f,0.0f,0.0f,0.0f);
 static const ThVec4 zAxis4(0.0f,0.0f,1.0f,0.0f);
-
-template< 
-	class DataT, unsigned int sz, 
-	class TagT,
-	class AllocatorT
-		>
-const void* GetData(const std::vector< ThFixedVector<DataT,sz,TagT,AllocatorT> >& vec)
-{
-	return &(vec[0](0));
-}
 
 }//Thor
 

@@ -9,11 +9,9 @@ struct generic_vec_tag{};
 struct quaternion_tag{};
 struct sse4f_vec_tag{};
 
-template < 
-			class DataT, unsigned int sz, //sz is the number of elements in the vector
-			class TagT = generic_vec_tag,
-			class AllocatorT = ThStandartAllocator
-		 >
+template<class DataT, unsigned int sz, //sz is the number of elements in the vector
+         class TagT = generic_vec_tag,
+         class AllocatorT = ThStandartAllocator>
 class ThFixedVector;
 
 typedef ThFixedVector< ThF32,4,sse4f_vec_tag,ThAlignedAllocator<> > ThSseVec4;

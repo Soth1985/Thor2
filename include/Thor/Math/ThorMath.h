@@ -329,11 +329,5 @@ THOR_INLINE void MantissaExp( const RealT& f, RealT &m, RealT &e, RealT &p )
 }
 #pragma endregion
 
-#ifdef USE_SSE_MATH
-
-#include <Thor/ThorMath/MathSSE.h>
-
-#endif
-
 };//Math
 };//Thor

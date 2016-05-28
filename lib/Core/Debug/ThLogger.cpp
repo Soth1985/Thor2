@@ -2,7 +2,7 @@
 #include <Thor/Core/String/String.h>
 #include <Thor/Core/String/ThStringUtilities.h>
 
-#ifdef THOR_MS_WIN
+#ifdef THOR_PLATFORM_WIN
 #include <windows.h>
 #endif
 
@@ -19,14 +19,14 @@ THOR_REG_TYPE(ThLoggerConsoleOutput, THOR_TYPELIST_1(ThiLoggerOutputTarget));
 void ThLoggerDebuggerOutput::Print(ThI8* str)
 {
 	//output into the debugger console	
-#ifdef THOR_MS_WIN
+#ifdef THOR_PLATFORM_WIN
 	OutputDebugStringA(str);
 #endif	
 }
 
 void ThLoggerDebuggerOutput::Print(ThWchar* str)
 {
-#ifdef THOR_MS_WIN
+#ifdef THOR_PLATFORM_WIN
 	OutputDebugStringW(str);
 #endif
 }

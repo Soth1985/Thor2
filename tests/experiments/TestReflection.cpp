@@ -176,7 +176,7 @@ int main()
 	testAssert();
 	int *ptr = 0;
 	*ptr = 99;
-	typedef std::vector<int, ThFrameworkAllocator<int> > vec_t;
+	typedef std::vector<int> vec_t;
 	vec_t v(90);
 	v.reserve(10);
 	

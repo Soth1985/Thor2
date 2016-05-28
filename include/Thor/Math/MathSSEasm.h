@@ -1,8 +1,8 @@
 #pragma once
 
 #include <Thor/Framework/Common.h>
-#include <Thor/ThorMath/Constants.h>
-#include <Thor/ThorMath/FixedVectorFwd.h>
+#include <Thor/Math/Constants.h>
+#include <Thor/Math/FixedVectorFwd.h>
 
 namespace Thor{ namespace Math{
 

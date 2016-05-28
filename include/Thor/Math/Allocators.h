@@ -1,8 +1,7 @@
 #pragma once
 
-#include <cstdlib>  
-#include <memory>   
-#include <stdlib.h>
+#include <new>
+#include <Thor/Core/Memory/ThMemory.h>
 
 namespace Thor{
 
@@ -12,23 +11,23 @@ class ThAlignedAllocator
 public:
 	void* operator new(size_t size)
 	{
-        return 0;//_aligned_malloc( size,alignment);
-	};
+        return ThMemory::AlignedMalloc(size, alignment);
+	}
 
 	void* operator new[](size_t size)
 	{
-        return 0;//_aligned_malloc( size,alignment);
-	};
+        return ThMemory::AlignedMalloc(size, alignment);
+	}
 
 	void operator delete(void* p)
 	{
-        //_aligned_free( p );
-	};
+        ThMemory::AlignedFree(p);
+	}
 
 	void operator delete[](void* p)
 	{
-        //_aligned_free( p );
-	};
+        ThMemory::AlignedFree(p);
+	}
 
 	//virtual ~AlignedAllocator(){};
 };
@@ -40,22 +39,22 @@ public:
 	void* operator new(size_t size)
 	{
 		return ::operator new( size );
-	};
+	}
 
 	void* operator new[](size_t size)
 	{
 		return ::operator new[]( size );;
-	};
+	}
 
 	void operator delete(void* p)
 	{
 		return ::operator delete( p );
-	};
+	}
 
 	void operator delete[](void* p)
 	{
 		return ::operator delete[]( p );
-	};
+	}
 
 	//virtual ~StandartAllocator(){};
 };

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Thor/ThorMath/Ray.h>
+#include <Thor/Math/Ray.h>
 
 namespace Thor{	
 	

@@ -1,4 +1,7 @@
 #include <Thor/Math/MatrixDecompose.h>
+#include <Thor/Math/FixedVector.h>
+#include <Thor/Math/FixedMatrix.h>
+#include <Thor/Math/Quaternion.h>
 
 extern "C"
 {

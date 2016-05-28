@@ -34,7 +34,7 @@ THOR_DECLARE_PLAIN_CLASS_NS(ThiRtti, Thor);
 //					ThiRtti
 //
 //----------------------------------------------------------------------------------------
-class THOR_FRAMEWORK_DLL ThiRtti: public ThMemoryAllocator
+class THOR_FRAMEWORK_DLL ThiRtti
 {
 public:
 	virtual ~ThiRtti();

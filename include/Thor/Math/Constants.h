@@ -1,5 +1,11 @@
 #pragma once
 
+#include <Thor/Core/Common.h>
+
+#ifdef THOR_ENABLE_SSE_MATH
+    #include <smmintrin.h>
+#endif
+
 namespace Thor{
 	namespace Math{
 
@@ -29,13 +35,14 @@ namespace Thor{
 	const float PositiveInfinity = CreatePositiveInfinity();
 	const float NegativeInfinity = CreateNegativeInfinity();
 	const float NaN = CreateNaN();
-		
+        
+#ifdef THOR_ENABLE_SSE_MATH
 		namespace SSE{
 
-			#define ALIGN16(x) __declspec(align(16)) x
+			//#define ALIGN16(x) __declspec(align(16)) x
 
 //#ifdef THOR_X64
-			#include <xmmintrin.h>
+			
 			#define ALIGN4_INIT1F( X, INIT )			static __m128 X = _mm_set_ps((INIT), (INIT), (INIT), (INIT))
 			#define ALIGN4_INIT4F( X, I0, I1, I2, I3 )	static __m128 X = _mm_set_ps((I0), (I1), (I2), (I3))
 			#define ALIGN4_INIT1I( X, INIT )			static __m128 X = _mm_castsi128_ps(_mm_set_epi32 ((INIT), (INIT), (INIT), (INIT)))
@@ -139,6 +146,6 @@ namespace Thor{
 
 			ALIGN4_INIT4I(Simd_ZeroW, (ThI32)0xFFFFFFFF, (ThI32)0xFFFFFFFF, (ThI32)0xFFFFFFFF, (ThI32)0x00000000);
 			};//SSE
-
+#endif
 	};//Math
 };//Thor

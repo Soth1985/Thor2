@@ -8,4 +8,7 @@ add_executable(TestReflection TestReflection.cpp)
 target_link_libraries(TestReflection Core)
 
 add_executable(TestRefPtr TestRefPtr.cpp)
-target_link_libraries(TestRefPtr Core Math)
+target_link_libraries(TestRefPtr Core)
+
+add_executable(TestSSE TestSSE.cpp)
+target_link_libraries(TestSSE Core Math)

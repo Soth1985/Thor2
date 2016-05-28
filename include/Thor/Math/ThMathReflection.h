@@ -1,8 +1,8 @@
 #pragma once
 
 #include <Thor/Core/CoreFwd.h>
-#include <Thor/Math/FixedMatrix.h>
-#include <Thor/Math/FixedVector.h>
+#include <Thor/Math/FixedMatrixFwd.h>
+#include <Thor/Math/FixedVectorFwd.h>
 
 namespace Thor
 {

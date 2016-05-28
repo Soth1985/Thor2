@@ -1,6 +1,6 @@
 #include <Thor/Core/Platform/ThPlatformUtils.h>
 
-#ifdef THOR_MS_WIN
+#ifdef THOR_PLATFORM_WIN
 	#include <windows.h>
 	#include <dbghelp.h>
 	#include <Thor/Framework/ThWinSystemWindow.h>
@@ -15,7 +15,7 @@ static eMinidumpLevel::Val s_MinidupmLvl = eMinidumpLevel::High;
 //					ThPlatformUtils
 //
 //----------------------------------------------------------------------------------------
-#ifdef THOR_MS_WIN
+#ifdef THOR_PLATFORM_WIN
 
 void ThPlatformUtils::DispatchOperatingSystemMessages()
 {
@@ -238,6 +238,6 @@ void ThPlatformUtils::SetupMinidump(eMinidumpLevel::Val lvl)
 	SetUnhandledExceptionFilter( &OnApplicationCrushed );
 }
 
-#endif//THOR_MS_WIN
+#endif//THOR_PLATFORM_WIN
 
 }

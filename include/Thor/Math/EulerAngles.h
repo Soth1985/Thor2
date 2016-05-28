@@ -1,10 +1,10 @@
 #pragma once
 
-#include <Thor/Framework/Common.h>
-#include <Thor/ThorMath/FixedVectorFwd.h>
-#include <Thor/ThorMath/FixedMatrixFwd.h>
-#include <Thor/ThorMath/EulerAnglesFwd.h>
-#include <Thor/ThorMath/ThorMath.h>
+#include <Thor/Core/Common.h>
+#include <Thor/Math/FixedVectorFwd.h>
+#include <Thor/Math/FixedMatrixFwd.h>
+#include <Thor/Math/EulerAnglesFwd.h>
+#include <Thor/Math/ThorMath.h>
 
 namespace Thor{
 
@@ -123,7 +123,7 @@ private:
 
 		m(0,0) =	chcb + shsp * sb;		m(0,1) = -ch * sb + shsp * cb;	m(0,2) = sh * cp;
 		m(1,0) = sb * cp;				    m(1,1) = cb * cp;				m(1,2) = -sp;
-		m(2,0) = -sh * cb + ch * sp * sb;	m(2,1) = sb * sh + chcb * sp	m(2,2) = ch * cp;
+        m(2,0) = -sh * cb + ch * sp * sb;	m(2,1) = sb * sh + chcb * sp;	m(2,2) = ch * cp;
 	};
 };
 // "Wrap" an angle in range –pi...pi by adding the correct multiple

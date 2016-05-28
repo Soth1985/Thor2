@@ -16,9 +16,6 @@ ThRttiManager::~ThRttiManager()
 //----------------------------------------------------------------------------------------
 void ThRttiManager::UnregisterType(const ThiType* t)
 {
-	if (!strcmp(t->GetName(), "Thor::ThWideStringField"))
-		int y = 0;
-
 	for (TypeMap::Iterator i = m_RegisteredTypes.Begin(); i < m_RegisteredTypes.End(); ++i)
 	{
 		ThiType* curType = i->Value();

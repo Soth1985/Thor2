@@ -19,7 +19,7 @@ namespace Thor
 
 	THOR_DECLARE_CLASS_NS(ThLoggerFileOutput, Thor);
 
-#ifdef THOR_MS_WIN
+#ifdef THOR_PLATFORM_WIN
 	THOR_DECLARE_CLASS_NS(ThWinDynamicLibrary, Thor);
 #endif
 }

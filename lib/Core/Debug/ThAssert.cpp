@@ -3,7 +3,7 @@
 #include <Thor/Core/String/String.h>
 #include <Thor/Core/Debug/ThLogger.h>
 
-#ifdef THOR_MS_WIN
+#ifdef THOR_PLATFORM_WIN
 	#include <windows.h>
 #endif
 
@@ -14,7 +14,7 @@ namespace Thor
 //					ThAssert
 //
 //----------------------------------------------------------------------------------------
-#ifdef THOR_MS_WIN
+#ifdef THOR_PLATFORM_WIN
 
 void ThAssert::Assert(ThBool result, const ThString& expr, const ThString& msg, const ThString& file, int line)
 {

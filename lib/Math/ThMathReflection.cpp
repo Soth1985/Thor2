@@ -1,4 +1,7 @@
 #include <Thor/Math/ThMathReflection.h>
+#include <Thor/Math/FixedMatrix.h>
+#include <Thor/Math/FixedVector.h>
+#include <Thor/Math/Quaternion.h>
 
 namespace Thor
 {

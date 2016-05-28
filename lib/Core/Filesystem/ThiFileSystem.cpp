@@ -1,6 +1,6 @@
 #include <Thor/Core/Filesystem/ThiFileSystem.h>
 
-#ifdef THOR_MS_WIN
+#ifdef THOR_PLATFORM_WIN
 	#include <Thor/Framework/Filesystem/ThWinDynamicLibrary.h>
 #endif
 
@@ -25,7 +25,7 @@ ThiDynamicLibraryPtr ThiFileSystem::LoadDynamicLibrary(const ThString& path)
 	if( Exists(path) )
 	{
 		ThiDynamicLibraryPtr result;
-#ifdef THOR_MS_WIN
+#ifdef THOR_PLATFORM_WIN
 		//check if the library was previously loaded bypassing the framework api
 		HMODULE module = GetModuleHandle( path.c_str() );
 

@@ -6,9 +6,10 @@
 	#include <Thor/Math/OpTags.h>
 	#include <Thor/Math/ExpressionNodes.h>
 #endif
-#include <Thor/Math/ThorMath.h>
-#include <Thor/Math/FixedVectorFwd.h>
+
 #include <Thor/Math/FixedMatrixFwd.h>
+#include <Thor/Math/FixedVectorFwd.h>
+#include <Thor/Math/ThorMath.h>
 
 //#define ROW_MAJOR_MATRIX
 

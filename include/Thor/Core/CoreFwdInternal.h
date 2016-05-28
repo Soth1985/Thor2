@@ -16,7 +16,7 @@ namespace Thor
 	THOR_DECLARE_CLASS_NS(ThXmlArchiveReader, Thor);
 	THOR_DECLARE_CLASS_NS(ThXmlArchiveWriter, Thor);
 
-#ifdef THOR_MS_WIN
+#ifdef THOR_PLATFORM_WIN
 	THOR_DECLARE_CLASS_NS(ThWinSystemWindow, Thor);
 #endif
 }

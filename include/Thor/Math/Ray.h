@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Thor/ThorMath/FixedVector.h>
+#include <Thor/Math/FixedVector.h>
 
 namespace Thor{
 	/*!

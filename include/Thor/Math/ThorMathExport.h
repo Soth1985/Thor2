@@ -2,7 +2,7 @@
 
 #include <Thor/Core/Common.h>
 
-#ifdef THOR_MS_WIN
+#ifdef THOR_PLATFORM_WIN
 	#ifdef THOR_MATH_EXPORT
 		#define THOR_MATH_DLL __declspec(dllexport)
 	#elif defined THOR_MATH_IMPORT
