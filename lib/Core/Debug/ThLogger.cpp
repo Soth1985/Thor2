@@ -63,48 +63,6 @@ ThiType* ThLoggerConsoleOutput::GetType()const
 }
 //----------------------------------------------------------------------------------------
 //
-//					ThFormatHelper
-//
-//----------------------------------------------------------------------------------------
-ThFormatHelper::ThFormatHelper()
-{
-	m_FormatSize = 128;
-	m_Format = new ThI8[m_FormatSize];
-
-	m_WideFormatSize = 128;
-	m_WideFormat = new ThWchar[m_WideFormatSize];
-}
-//----------------------------------------------------------------------------------------
-ThFormatHelper::~ThFormatHelper()
-{
-	delete[] m_Format;
-	delete[] m_WideFormat;
-}
-//----------------------------------------------------------------------------------------
-void ThFormatHelper::operator()(const ThI8* mid, ...)
-{
-	if(strlen(m_Format) > 0)
-	{
-		va_list args;
-		va_start(args, mid);
-		
-		ThLogger::Instance().Log(mid, m_Format, args);
-
-		va_end(args);
-	}
-
-	if (wcslen(m_WideFormat) > 0)
-	{
-		va_list args;
-		va_start(args, mid);
-
-		ThLogger::Instance().Log(mid, m_WideFormat, args);
-
-		va_end(args);
-	}
-}
-//----------------------------------------------------------------------------------------
-//
 //					ThLogger
 //
 //----------------------------------------------------------------------------------------
@@ -115,6 +73,7 @@ ThLogger::ThLogger()
 	m_WideBufferSize = 256;
 	m_WideBuffer = new ThWchar[m_WideBufferSize];
 	m_Enabled = true;
+    m_BufferOffset = 0;
 	m_PrefixFlags.Combine( ePrefix::Func );
     ThiLoggerOutputTargetPtr tgt = ThiLoggerOutputTargetPtr( new ThLoggerDebuggerOutput() );
 	AddOutputTarget( tgt );
@@ -127,173 +86,6 @@ ThLogger::~ThLogger()
 
 	if(m_WideBuffer)
 		delete[] m_WideBuffer;
-}
-//----------------------------------------------------------------------------------------
-ThFormatHelper& ThLogger::MakeFormatHelper(eMessageSeverity::Val severity, const ThI8* func, const ThI8* file, ThI32 line, const ThI8* format)
-{
-	ThFormatHelper& result = m_Helpers;
-
-	if(!m_Enabled)
-		return result;
-
-	ThSize sz = 5 * 3 + 4 + 1 + 5 + 1;//5*3 for description, 5 for severity type, 4 for tag placeholder {%s}, 1 for end line, 9 for "-> [" format tag, 2 for "]"
-
-	if( m_PrefixFlags.CheckFlag(ePrefix::File) )
-	{
-		sz += strlen(file);
-	}
-
-	if( m_PrefixFlags.CheckFlag(ePrefix::Line) )
-	{
-		sz += 9;
-	}
-
-	if( m_PrefixFlags.CheckFlag(ePrefix::Func) )
-	{
-		sz += strlen(func);
-	}
-
-	sz += strlen(format);
-
-	if (result.m_FormatSize < sz)
-	{
-		result.m_FormatSize = sz;
-		delete[] result.m_Format;
-		result.m_Format = new ThI8[result.m_FormatSize];
-	}
-
-	result.m_WideFormat[0] = 0;
-	result.m_Format[0] = 0;
-
-	switch(severity)
-	{
-	case eMessageSeverity::Info:
-		strcat(result.m_Format, "Inf: ");
-		break;
-	case eMessageSeverity::Warning:
-		strcat(result.m_Format, "Wrn: ");
-		break;
-	case eMessageSeverity::Error:
-		strcat(result.m_Format, "Err: ");
-		break;
-	case eMessageSeverity::Critical:
-		strcat(result.m_Format, "Crt: ");
-		break;
-	}
-
-	if( m_PrefixFlags.CheckFlag(ePrefix::File) )
-	{
-		strcat(result.m_Format, "Fl: ");
-		strcat(result.m_Format, file);
-		strcat(result.m_Format, " ");
-	}
-
-	if( m_PrefixFlags.CheckFlag(ePrefix::Line) )
-	{
-		strcat(result.m_Format, "Ln: ");
-		ThI8 buf[16];
-		ThStringUtilities::ToString(line, buf, 16);
-		strcat(result.m_Format, buf);
-		strcat(result.m_Format, " ");
-	}
-
-	if( m_PrefixFlags.CheckFlag(ePrefix::Func) )
-	{
-		strcat(result.m_Format, "Fn: ");
-		strcat(result.m_Format, func);
-		strcat(result.m_Format, " ");
-	}
-
-	strcat(result.m_Format, "-> [");
-	strcat(result.m_Format, format);
-	strcat(result.m_Format, "]");
-
-	return result;
-}
-//----------------------------------------------------------------------------------------
-ThFormatHelper& ThLogger::MakeFormatHelper(eMessageSeverity::Val severity, const ThI8* func, const ThI8* file, ThI32 line, const ThWchar* format)
-{
-	ThFormatHelper& result = m_Helpers;
-
-	if(!m_Enabled)
-		return result;
-
-	ThWchar buf[128];
-
-	ThSize sz = 5 * 3 + 4 + 1 + 5 + 1;//5*3 for description, 5 for severity type, 4 for tag placeholder {%s}, 1 for end line, 9 for "-> [" format tag, 2 for "]"
-
-	if( m_PrefixFlags.CheckFlag(ePrefix::File) )
-	{
-		sz += strlen(file);
-	}
-
-	if( m_PrefixFlags.CheckFlag(ePrefix::Line) )
-	{
-		sz += 9;
-	}
-
-	if( m_PrefixFlags.CheckFlag(ePrefix::Func) )
-	{
-		sz += strlen(func);
-	}
-
-	sz += wcslen(format);
-
-	if (result.m_WideFormatSize < sz)
-	{
-		result.m_WideFormatSize = sz;
-		delete[] result.m_WideFormat;
-		result.m_WideFormat = new ThWchar[result.m_WideFormatSize];
-	}
-
-	result.m_WideFormat[0] = 0;
-	result.m_Format[0] = 0;
-
-	switch(severity)
-	{
-	case eMessageSeverity::Info:
-		wcscat(result.m_WideFormat, L"Inf: ");
-		break;
-	case eMessageSeverity::Warning:
-		wcscat(result.m_WideFormat, L"Wrn: ");
-		break;
-	case eMessageSeverity::Error:
-		wcscat(result.m_WideFormat, L"Err: ");
-		break;
-	case eMessageSeverity::Critical:
-		wcscat(result.m_WideFormat, L"Crt: ");
-		break;
-	}
-
-	if( m_PrefixFlags.CheckFlag(ePrefix::File) )
-	{
-		wcscat(result.m_WideFormat, L"Fl: ");
-		ThStringUtilities::Utf8ToWideString(file, buf, 128);
-		wcscat(result.m_WideFormat, buf);
-		wcscat(result.m_WideFormat, L" ");
-	}
-
-	if( m_PrefixFlags.CheckFlag(ePrefix::Line) )
-	{
-		wcscat(result.m_WideFormat, L"Ln: ");
-		ThStringUtilities::ToWideString(line, buf, 128);
-		wcscat(result.m_WideFormat, buf);
-		wcscat(result.m_WideFormat, L" ");
-	}
-
-	if( m_PrefixFlags.CheckFlag(ePrefix::Func) )
-	{
-		wcscat(result.m_WideFormat, L"Fn: ");
-		ThStringUtilities::Utf8ToWideString(func, buf, 128);
-		wcscat(result.m_WideFormat, buf);
-		wcscat(result.m_WideFormat, L" ");
-	}
-
-	wcscat(result.m_WideFormat, L"-> [");
-	wcscat(result.m_WideFormat, format);
-	wcscat(result.m_WideFormat, L"]");
-
-	return result;
 }
 //----------------------------------------------------------------------------------------
 void ThLogger::AddIgnore(MessageId id)
@@ -348,6 +140,11 @@ ThBool ThLogger::GetEnabled()const
 //----------------------------------------------------------------------------------------
 void ThLogger::Log(MessageId id, const ThI8* formatString, ...)
 {
+    if (!IsEnabled(id))
+        return;
+    
+    std::lock_guard<std::mutex> lock(m_Mutex);
+    m_Buffer[0] = 0;
 	va_list args;	
 	va_start(args, formatString);
 
@@ -358,6 +155,11 @@ void ThLogger::Log(MessageId id, const ThI8* formatString, ...)
 //----------------------------------------------------------------------------------------
 void ThLogger::Log(MessageId id, const ThWchar* formatString, ...)
 {
+    if (!IsEnabled(id))
+        return;
+    
+    m_WideBuffer[0] = 0;
+    std::lock_guard<std::mutex> lock(m_Mutex);
 	va_list args;	
 	va_start(args, formatString);
 
@@ -366,114 +168,287 @@ void ThLogger::Log(MessageId id, const ThWchar* formatString, ...)
 	va_end(args);
 }
 //----------------------------------------------------------------------------------------
+bool ThLogger::IsEnabled(MessageId id)
+{
+    //check if the logger is enabled
+    if(!m_Enabled)
+        return false;
+    
+    //check if this message is not in the ignore list
+    if(m_IgnoreList.Find(id) != m_IgnoreList.End())
+        return false;
+    
+    return true;
+}
+    //----------------------------------------------------------------------------------------
 void ThLogger::Log(MessageId id, const ThI8* formatString, va_list args)
 {
-	std::lock_guard<std::mutex> lock(m_Mutex);
-
-	//check if the logger is enabled
-	if(!m_Enabled)
-		return;
-
-	//check if this message is not in the ignore list
-	if(m_IgnoreList.Find(id) != m_IgnoreList.End())
-		return;
-
-	ThI32 written = vsnprintf(m_Buffer, m_BufferSize, formatString, args);
+    ThI8* buffer = m_Buffer + m_BufferOffset;
+    ThI32 bufferSize = m_BufferSize - m_BufferOffset;// * sizeof(ThI8);
+	ThI32 written = vsnprintf(buffer, bufferSize, formatString, args);
 
 	//if the message is too short for the message, increase its size
 	while(written == -1)
 	{		
 		m_BufferSize *= 2;
 
-		if (m_BufferSize > 512)
+		if (m_BufferSize > 1024)
 		{
+            m_Buffer[0] = 0;
 			strcpy(m_Buffer, "Message is too long or has invalid format.");
 			//assert(0 && "Invalid log message.");
 			break;
 		}
 
+        ThI8* newBuffer = new ThI8[m_BufferSize];
+        strcpy(newBuffer, m_Buffer);
 		delete[] m_Buffer;
-		m_Buffer = new ThI8[m_BufferSize];
-		written = vsnprintf(m_Buffer, m_BufferSize, formatString, args);
+		m_Buffer = newBuffer;
+        buffer = m_Buffer + m_BufferOffset;
+        bufferSize = m_BufferSize - m_BufferOffset;// * sizeof(ThI8);
+		written = vsnprintf(buffer, bufferSize, formatString, args);
 	}	
 
 	//write message tag
 	ThU32 tagSize = strlen(id) + 3;//tag + {}\n
-	if( (m_BufferSize - written) < tagSize )
+	if( (bufferSize - written) > tagSize )
 	{
-		m_BufferSize = m_BufferSize + tagSize + 1;
-		ThI8* tmpStr = new ThI8[m_BufferSize];
-		strcpy(tmpStr, m_Buffer);
-		delete[]m_Buffer;
-		m_Buffer = tmpStr;
+        strcat(buffer, "{");
+        strcat(buffer, id);
+        strcat(buffer, "}\n");
 	}
-
-	strcat(m_Buffer, "{");
-	strcat(m_Buffer, id);
-	strcat(m_Buffer, "}\n");
 
 	//output to the targets
 	for(OutputTargets::Iterator i = m_OutputTargets.Begin(); i != m_OutputTargets.End(); ++i)
 	{
-		i->Value()->Print(m_Buffer);
+		i->Value()->Print(buffer);
 	}
 }
 //----------------------------------------------------------------------------------------
 void ThLogger::Log(MessageId id, const ThWchar* formatString, va_list args)
 {
-	std::lock_guard<std::mutex> lock(m_Mutex);
-
-	//check if the logger is enabled
-	if(!m_Enabled)
-		return;
-
-	//check if this message is not in the ignore list
-	if(m_IgnoreList.Find(id) != m_IgnoreList.End())
-		return;
-
-    ThI32 written = std::swprintf(m_WideBuffer, m_WideBufferSize, formatString, args);
+    ThWchar* buffer = m_WideBuffer + m_BufferOffset;
+    ThI32 bufferSize = m_WideBufferSize - m_BufferOffset;// * sizeof(ThWchar);
+    ThI32 written = std::swprintf(buffer, bufferSize, formatString, args);
 
 	//if the message is too short for the message, increase its size
 	while(written == -1)
 	{		
 		m_WideBufferSize *= 2;
 
-		if (m_WideBufferSize > 512)
+		if (m_WideBufferSize > 1024)
 		{
 			wcscpy(m_WideBuffer, L"Message is too long or has invalid format.");
 			//assert(0 && "Invalid log message.");
 			break;
 		}
-
-		delete[] m_WideBuffer;
-		m_WideBuffer = new ThWchar[m_WideBufferSize];
-		written = std::swprintf(m_WideBuffer, m_WideBufferSize, formatString, args);
+        
+        ThWchar* newBuffer = new ThWchar[m_WideBufferSize];
+        wcscpy(newBuffer, m_WideBuffer);
+        delete[] m_WideBuffer;
+        m_WideBuffer = newBuffer;
+        buffer = m_WideBuffer + m_BufferOffset;
+        bufferSize = m_WideBufferSize - m_BufferOffset;// * sizeof(ThWchar);
+		written = std::swprintf(buffer, bufferSize, formatString, args);
 	}	
 
 	//write message tag
 	ThU32 tagSize = strlen(id) + 3;//tag + {}\n
-	if( (m_WideBufferSize - written) < tagSize )
+	if( (m_WideBufferSize - written) > tagSize )
 	{
-		m_WideBufferSize = m_WideBufferSize + tagSize + 1;
-		ThWchar* tmpStr = new ThWchar[m_WideBufferSize];
-		wcscpy(tmpStr, m_WideBuffer);
-		delete[]m_WideBuffer;
-		m_WideBuffer = tmpStr;
-	}
-
-	wcscat(m_WideBuffer, L"{");
-	ThWchar buf[128];
-	ThStringUtilities::Utf8ToWideString(id, buf, 128);
-	wcscat(m_WideBuffer, buf);
-	wcscat(m_WideBuffer, L"}\n");
+        wcscat(m_WideBuffer, L"{");
+        ThWchar buf[128];
+        ThStringUtilities::Utf8ToWideString(id, buf, 128);
+        wcscat(m_WideBuffer, buf);
+        wcscat(m_WideBuffer, L"}\n");
+    }	
 
 	//output to the targets
 	for(OutputTargets::Iterator i = m_OutputTargets.Begin(); i != m_OutputTargets.End(); ++i)
 	{
-		i->Value()->Print(m_WideBuffer);
+		i->Value()->Print(buffer);
 	}
 }
 //----------------------------------------------------------------------------------------
+void ThLogger::LogExtended(eMessageSeverity::Val severity, const ThI8* func, const ThI8* file, ThI32 line, const ThI8* formatString, MessageId id, ...)
+{
+    if (!IsEnabled(id))
+        return;
+    
+    std::lock_guard<std::mutex> lock(m_Mutex);
+    
+    ThSize sz = 5 * 3 + 4 + 1 + 5 + 1;//5*3 for description, 5 for severity type, 4 for tag placeholder {%s}, 1 for end line, 9 for "-> [" format tag, 2 for "]"
+    
+    if( m_PrefixFlags.CheckFlag(ePrefix::File) )
+    {
+        sz += strlen(file);
+    }
+    
+    if( m_PrefixFlags.CheckFlag(ePrefix::Line) )
+    {
+        sz += 9;
+    }
+    
+    if( m_PrefixFlags.CheckFlag(ePrefix::Func) )
+    {
+        sz += strlen(func);
+    }
+    
+    sz += strlen(formatString);
+    
+    if (m_BufferSize < sz)
+    {
+        m_BufferSize = sz;
+        delete[] m_Buffer;
+        m_Buffer = new ThI8[m_BufferSize];
+    }
+    
+    m_Buffer[0] = 0;
+    
+    switch(severity)
+    {
+        case eMessageSeverity::Info:
+            strcat(m_Buffer, "Inf: ");
+            break;
+        case eMessageSeverity::Warning:
+            strcat(m_Buffer, "Wrn: ");
+            break;
+        case eMessageSeverity::Error:
+            strcat(m_Buffer, "Err: ");
+            break;
+        case eMessageSeverity::Critical:
+            strcat(m_Buffer, "Crt: ");
+            break;
+    }
+    
+    if( m_PrefixFlags.CheckFlag(ePrefix::File) )
+    {
+        strcat(m_Buffer, "Fl: ");
+        strcat(m_Buffer, file);
+        strcat(m_Buffer, " ");
+    }
+    
+    if( m_PrefixFlags.CheckFlag(ePrefix::Line) )
+    {
+        strcat(m_Buffer, "Ln: ");
+        ThI8 buf[16];
+        ThStringUtilities::ToString(line, buf, 16);
+        strcat(m_Buffer, buf);
+        strcat(m_Buffer, " ");
+    }
+    
+    if( m_PrefixFlags.CheckFlag(ePrefix::Func) )
+    {
+        strcat(m_Buffer, "Fn: ");
+        strcat(m_Buffer, func);
+        strcat(m_Buffer, " ");
+    }
+    
+    strcat(m_Buffer, "-> [");
+    strcat(m_Buffer, formatString);
+    strcat(m_Buffer, "]");
+    
+    va_list args;
+    va_start(args, id);
+    
+    m_BufferOffset = strlen(m_Buffer) + 1;
+    ThLogger::Instance().Log(id, m_Buffer, args);
+    m_BufferOffset = 0;
+    
+    va_end(args);
+}
+    //----------------------------------------------------------------------------------------
+void ThLogger::LogExtended(eMessageSeverity::Val severity, const ThI8* func, const ThI8* file, ThI32 line, const ThWchar* formatString, MessageId id, ...)
+{
+    if (!IsEnabled(id))
+        return;
+    
+    std::lock_guard<std::mutex> lock(m_Mutex);
+    
+    ThWchar buf[128];
+    
+    ThSize sz = 5 * 3 + 4 + 1 + 5 + 1;//5*3 for description, 5 for severity type, 4 for tag placeholder {%s}, 1 for end line, 9 for "-> [" format tag, 2 for "]"
+    
+    if( m_PrefixFlags.CheckFlag(ePrefix::File) )
+    {
+        sz += strlen(file);
+    }
+    
+    if( m_PrefixFlags.CheckFlag(ePrefix::Line) )
+    {
+        sz += 9;
+    }
+    
+    if( m_PrefixFlags.CheckFlag(ePrefix::Func) )
+    {
+        sz += strlen(func);
+    }
+    
+    sz += wcslen(formatString);
+    
+    if (m_WideBufferSize < sz)
+    {
+        m_WideBufferSize = sz;
+        delete[] m_WideBuffer;
+        m_WideBuffer = new ThWchar[m_WideBufferSize];
+    }
+    
+    m_WideBuffer[0] = 0;
+    
+    switch(severity)
+    {
+        case eMessageSeverity::Info:
+            wcscat(m_WideBuffer, L"Inf: ");
+            break;
+        case eMessageSeverity::Warning:
+            wcscat(m_WideBuffer, L"Wrn: ");
+            break;
+        case eMessageSeverity::Error:
+            wcscat(m_WideBuffer, L"Err: ");
+            break;
+        case eMessageSeverity::Critical:
+            wcscat(m_WideBuffer, L"Crt: ");
+            break;
+    }
+    
+    if( m_PrefixFlags.CheckFlag(ePrefix::File) )
+    {
+        wcscat(m_WideBuffer, L"Fl: ");
+        ThStringUtilities::Utf8ToWideString(file, buf, 128);
+        wcscat(m_WideBuffer, buf);
+        wcscat(m_WideBuffer, L" ");
+    }
+    
+    if( m_PrefixFlags.CheckFlag(ePrefix::Line) )
+    {
+        wcscat(m_WideBuffer, L"Ln: ");
+        ThStringUtilities::ToWideString(line, buf, 128);
+        wcscat(m_WideBuffer, buf);
+        wcscat(m_WideBuffer, L" ");
+    }
+    
+    if( m_PrefixFlags.CheckFlag(ePrefix::Func) )
+    {
+        wcscat(m_WideBuffer, L"Fn: ");
+        ThStringUtilities::Utf8ToWideString(func, buf, 128);
+        wcscat(m_WideBuffer, buf);
+        wcscat(m_WideBuffer, L" ");
+    }
+    
+    wcscat(m_WideBuffer, L"-> [");
+    wcscat(m_WideBuffer, formatString);
+    wcscat(m_WideBuffer, L"]");
+    
+    va_list args;
+    va_start(args, id);
+    
+    m_BufferOffset = wcslen(m_WideBuffer) + 1;
+    ThLogger::Instance().Log(id, m_WideBuffer, args);
+    m_BufferOffset = 0;
+    
+    va_end(args);
+}
+    //----------------------------------------------------------------------------------------
 bool ThLogger::AddOutputTarget( ThiLoggerOutputTargetPtr& tgt )
 {
 	return m_OutputTargets.Insert( tgt->GetType(), tgt);

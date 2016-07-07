@@ -56,7 +56,7 @@ void ThPhysFileStream::OpenImpl()const
 	{
 		ThWideString fname = ThStringUtilities::Utf8ToWideString(m_VirtualName);
 		ThWideString error = ThStringUtilities::Utf8ToWideString(PHYSFS_getLastError());
-		THOR_ERR_W("Failed to open file %ls , error = %ls")(coreSysLogTag, fname.c_str(), error.c_str());
+		THOR_ERR_W("Failed to open file %ls , error = %ls", coreSysLogTag, fname.c_str(), error.c_str());
 		THOR_ASSERT(0, "Failed to open file.");
 	}
 }

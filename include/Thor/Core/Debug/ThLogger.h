@@ -11,15 +11,17 @@
 #include <Thor/Core/Containers/ThHashSet.h>
 #include <Thor/Core/Containers/ThHashMap.h>
 
-#define THOR_INF(msg) Thor::ThLogger::Instance().MakeFormatHelper(eMessageSeverity::Info, __FUNCTION__, __FILE__, __LINE__, #msg)
-#define THOR_WRN(msg) Thor::ThLogger::Instance().MakeFormatHelper(eMessageSeverity::Warning, __FUNCTION__, __FILE__, __LINE__, #msg)
-#define THOR_ERR(msg) Thor::ThLogger::Instance().MakeFormatHelper(eMessageSeverity::Error, __FUNCTION__, __FILE__, __LINE__, #msg)
-#define THOR_CRT(msg) Thor::ThLogger::Instance().MakeFormatHelper(eMessageSeverity::Critical, __FUNCTION__, __FILE__, __LINE__, #msg)
+//msvc should truncate comma if no extra params without ##__VA_ARGS__
 
-#define THOR_INF_W(msg) Thor::ThLogger::Instance().MakeFormatHelper(eMessageSeverity::Info, __FUNCTION__, __FILE__, __LINE__, THOR_CONCAT(L, #msg))
-#define THOR_WRN_W(msg) Thor::ThLogger::Instance().MakeFormatHelper(eMessageSeverity::Warning, __FUNCTION__, __FILE__, __LINE__, THOR_CONCAT(L, #msg))
-#define THOR_ERR_W(msg) Thor::ThLogger::Instance().MakeFormatHelper(eMessageSeverity::Error, __FUNCTION__, __FILE__, __LINE__, THOR_CONCAT(L, #msg))
-#define THOR_CRT_W(msg) Thor::ThLogger::Instance().MakeFormatHelper(eMessageSeverity::Critical, __FUNCTION__, __FILE__, __LINE__, THOR_CONCAT(L, #msg))
+#define THOR_INF(fmt, tag, ...) Thor::ThLogger::Instance().LogExtended(eMessageSeverity::Info, __FUNCTION__, __FILE__, __LINE__, #fmt, #tag, ##__VA_ARGS__)
+#define THOR_WRN(fmt, tag, ...) Thor::ThLogger::Instance().LogExtended(eMessageSeverity::Warning, __FUNCTION__, __FILE__, __LINE__, #fmt, #tag, ##__VA_ARGS__)
+#define THOR_ERR(fmt, tag, ...) Thor::ThLogger::Instance().LogExtended(eMessageSeverity::Error, __FUNCTION__, __FILE__, __LINE__, #fmt, #tag, ##__VA_ARGS__)
+#define THOR_CRT(fmt, tag, ...) Thor::ThLogger::Instance().LogExtended(eMessageSeverity::Critical, __FUNCTION__, __FILE__, __LINE__, #fmt, #tag, ##__VA_ARGS__)
+
+#define THOR_INF_W(fmt, tag, ...) Thor::ThLogger::Instance().LogExtended(eMessageSeverity::Info, __FUNCTION__, __FILE__, __LINE__, #fmt, #tag, ##__VA_ARGS__)
+#define THOR_WRN_W(fmt, tag, ...) Thor::ThLogger::Instance().LogExtended(eMessageSeverity::Warning, __FUNCTION__, __FILE__, __LINE__, #fmt, #tag, ##__VA_ARGS__)
+#define THOR_ERR_W(fmt, tag, ...) Thor::ThLogger::Instance().LogExtended(eMessageSeverity::Error, __FUNCTION__, __FILE__, __LINE__, #fmt, #tag, ##__VA_ARGS__)
+#define THOR_CRT_W(fmt, tag, ...) Thor::ThLogger::Instance().LogExtended(eMessageSeverity::Critical, __FUNCTION__, __FILE__, __LINE__, #fmt, #tag, ##__VA_ARGS__)
 
 namespace Thor{
 //----------------------------------------------------------------------------------------
@@ -137,34 +139,6 @@ public:
 };
 //----------------------------------------------------------------------------------------
 //
-//					ThFormatHelper
-//
-//----------------------------------------------------------------------------------------
-/*!
-* \brief
-* Intermediate class, which helps to decorate the message with additional information.
-*
-*/
-struct THOR_FRAMEWORK_DLL ThFormatHelper
-{
-private:
-	friend class ThLogger;
-
-	ThI8* m_Format;
-	ThSize m_FormatSize;
-
-	ThWchar* m_WideFormat;
-	ThSize m_WideFormatSize;
-
-public:
-
-	ThFormatHelper();
-	~ThFormatHelper();
-
-	void operator()(const ThI8* mid, ...);
-};
-//----------------------------------------------------------------------------------------
-//
 //					ThLogger
 //
 //----------------------------------------------------------------------------------------
@@ -207,9 +181,9 @@ public:
 	* Format string of the message.
 	*
 	*/
-	ThFormatHelper& MakeFormatHelper(eMessageSeverity::Val severity, const ThI8* func, const ThI8* file, ThI32 line, const ThI8* format);
-
-	ThFormatHelper& MakeFormatHelper(eMessageSeverity::Val severity, const ThI8* func, const ThI8* file, ThI32 line, const ThWchar* format);
+    void LogExtended(eMessageSeverity::Val severity, const ThI8* func, const ThI8* file, ThI32 line, const ThI8* formatString, MessageId id, ...);
+    
+    void LogExtended(eMessageSeverity::Val severity, const ThI8* func, const ThI8* file, ThI32 line, const ThWchar* formatString, MessageId id, ...);
 
 	/*!
 	* \brief
@@ -339,6 +313,8 @@ private:
 	void Log(MessageId id, const ThI8* formatString, va_list args);
 
 	void Log(MessageId id, const ThWchar* formatString, va_list args);
+    
+    bool IsEnabled(MessageId id);
 
 	friend struct ThFormatHelper;
 	friend class Singleton<ThLogger>;
@@ -372,6 +348,8 @@ private:
 	ThU32				m_BufferSize;
 
 	ThU32				m_WideBufferSize;
+    
+    ThI32               m_BufferOffset;
 
 	/*!
 	* \brief
@@ -390,8 +368,6 @@ private:
 	* Logger output targets.
 	*/	
 	OutputTargets		m_OutputTargets;
-
-	ThFormatHelper m_Helpers;
 };	
 
 }//Thor

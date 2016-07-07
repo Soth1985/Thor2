@@ -15,12 +15,12 @@ ThException::ThException()
 //----------------------------------------------------------------------------------------
 ThException::ThException(const char* str)
 {
-	THOR_CRT("%s")("ThException", str );
+	THOR_CRT("%s", "ThException", str );
 };	
 //----------------------------------------------------------------------------------------
 ThException::ThException(const ThString& str)
 {
-	THOR_CRT("%s")("ThException", str.c_str() );
+	THOR_CRT("%s", "ThException", str.c_str() );
 };
 
 };//Thor
