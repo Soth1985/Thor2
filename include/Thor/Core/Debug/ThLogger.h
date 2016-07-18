@@ -177,7 +177,7 @@ public:
 	* \param line
 	* Source code line number of the call to the logger.
 	*
-	* \param format
+	* \param formatString
 	* Format string of the message.
 	*
 	*/

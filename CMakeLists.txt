@@ -22,5 +22,6 @@ include(ImportedTargetsNix)
 add_subdirectory(lib)
 add_subdirectory(tests)
 add_subdirectory(tools)
+add_subdirectory(templates)
 
 install(DIRECTORY ${THOR_INCLUDE_DIR}/Thor DESTINATION include)

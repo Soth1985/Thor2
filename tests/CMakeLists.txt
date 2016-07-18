@@ -1,1 +1,2 @@
-add_subdirectory(experiments)
+add_subdirectory(Experiments)
+add_subdirectory(MetalTriangle)
