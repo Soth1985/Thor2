@@ -1,9 +1,9 @@
 project(template_mac_os VERSION ${THOR_VERSION})
 
 set(template_mac_os_SRC
-    AppDelegate.m
+    AppDelegate.mm
+    ViewController.mm
     main.m
-    ViewController.m
 )
 
 set(template_mac_os_H

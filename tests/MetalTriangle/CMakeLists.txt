@@ -1,9 +1,9 @@
 project(MetalTriangle VERSION ${THOR_VERSION})
 
 set(MetalTriangle_SRC
-    AppDelegate.m
+    AppDelegate.mm
+    ViewController.mm
     main.m
-    ViewController.m
 )
 
 set(MetalTriangle_H
