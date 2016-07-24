@@ -1,5 +1,5 @@
 //
-//  ViewController.h
+//  AppDelegate.h
 //  Test
 //
 //  Created by Victor Rykov on 7/16/16.
@@ -7,9 +7,8 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <MetalKit/MetalKit.h>
 
-@interface ViewController : NSViewController <MTKViewDelegate>
+@interface AppDelegate : NSObject <NSApplicationDelegate>
 
 
 @end

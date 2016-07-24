@@ -51,6 +51,12 @@ set(Math_H
 add_library(Math ${Math_SRC} ${Math_H})
 
 target_compile_options(Math PUBLIC -msse4.2)
+
+if(APPLE)
+    set_target_properties(Math PROPERTIES XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++14")
+    set_target_properties(Math PROPERTIES XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
+endif()
+
 target_include_directories(Math PUBLIC {$THOR_INCLUDE_DIR})
 target_link_libraries(Math Core)
 export(TARGETS Math FILE Math.cmake)

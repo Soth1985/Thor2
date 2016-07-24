@@ -98,14 +98,20 @@ else()
     target_compile_definitions(Core PUBLIC THOR_USE_STLFS)
 endif()
 
-#target_compile_options(Core PUBLIC -std=gnu++11 -stdlib=libc++)
-target_compile_options(Core PRIVATE -std=c++14 -stdlib=libc++)
+
 target_include_directories(Core PUBLIC ${THOR_INCLUDE_DIR})
 target_link_libraries(Core PhysFS)
+
 if(APPLE)
+    set_target_properties(Core PROPERTIES XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++14")
+    set_target_properties(Core PROPERTIES XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
     target_link_libraries(Core "-framework CoreFoundation" "-framework CoreServices" "-framework Carbon" "-framework IOKit")
     target_link_libraries(Core z)
+else()
+    #target_compile_options(Core PUBLIC -std=gnu++11 -stdlib=libc++)
+    target_compile_options(Core PRIVATE -std=c++14 -stdlib=libc++)
 endif()
+
 export(TARGETS Core FILE Core.cmake)
 
 install(TARGETS Core
