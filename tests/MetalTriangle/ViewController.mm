@@ -60,9 +60,9 @@
     {
         0.0f, 0.8f,
         1.0f, 0.0f, 0.0f, 1.0f,
-        0.8f, 0.0f,
+        0.8f, -0.8f,
         0.0f, 1.0f, 0.0f, 1.0f,
-        -0.8f, 0.0f,
+        -0.8f, -0.8f,
         0.0f, 0.0f, 1.0f, 1.0f
     };
     
@@ -77,8 +77,8 @@
     vertexDesc.attributes[0].offset = 0;
     vertexDesc.attributes[1].format = MTLVertexFormatFloat4;
     vertexDesc.attributes[1].bufferIndex = 0;
-    vertexDesc.attributes[1].offset = 2 * sizeof(float);  // 8 bytes
-    vertexDesc.layouts[0].stride = 6 * sizeof(float);    // 40 bytes
+    vertexDesc.attributes[1].offset = 2 * sizeof(float);
+    vertexDesc.layouts[0].stride = 6 * sizeof(float);
     vertexDesc.layouts[0].stepFunction = MTLVertexStepFunctionPerVertex;
     renderPipelineDesc.vertexFunction = vertexFunc;
     renderPipelineDesc.fragmentFunction = fragmentFunc;
@@ -90,7 +90,6 @@
     // Create MTLRenderPipelineState from MTLRenderPipelineDescriptor
     NSError *errors = nil;
     _pipelineState = [_device newRenderPipelineStateWithDescriptor:renderPipelineDesc error:&errors];
-    int i =0;
 }
 
 - (void)reshape
