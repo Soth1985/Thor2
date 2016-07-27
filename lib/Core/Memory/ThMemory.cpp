@@ -1,5 +1,6 @@
 #include <Thor/Core/Memory/ThMemory.h>
 #include <stdlib.h>
+#include <malloc/malloc.h>
 
 namespace Thor{
 
@@ -44,6 +45,16 @@ void ThMemory::AlignedFree(void* ptr)
     free(ptr);
 #elif defined THOR_PLATFORM_WIN
     _aligned_free(ptr);
+#endif
+}
+//----------------------------------------------------------------------------------------
+ThSize ThMemory::MallocSize(void* ptr)
+{
+#ifdef THOR_PLATFORM_OSX
+    ThSize sz = malloc_size(ptr);
+    return malloc_good_size(sz);
+#elif defined THOR_PLATFORM_WIN
+    msize(ptr);
 #endif
 }
 //----------------------------------------------------------------------------------------

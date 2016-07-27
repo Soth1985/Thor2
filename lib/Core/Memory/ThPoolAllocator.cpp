@@ -21,8 +21,7 @@ namespace Thor
 		enum Val
 		{
 			TypeInfo,
-			RttiManager,
-            Allocators
+			RttiManager
 		};
 	};
 }

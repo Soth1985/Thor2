@@ -66,7 +66,7 @@
         0.0f, 0.0f, 1.0f, 1.0f
     };
     
-    _vertexBuffer = [_device newBufferWithBytes:Vertices length:sizeof(Vertices) options:MTLResourceStorageModeShared];
+    _vertexBuffer = [_device newBufferWithBytes:Vertices length:sizeof(Vertices) options:MTLResourceStorageModeManaged];
     id<MTLFunction> vertexFunc = [_defaultLibrary newFunctionWithName:@"vertexFunc"];
     id<MTLFunction> fragmentFunc = [_defaultLibrary newFunctionWithName:@"fragmentFunc"];
     MTLRenderPipelineDescriptor *renderPipelineDesc = [[MTLRenderPipelineDescriptor alloc] init];

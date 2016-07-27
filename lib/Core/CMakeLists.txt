@@ -20,6 +20,12 @@ set(Core_SRC
     Rtti/ThRttiManager.cpp
     Rtti/ThiRtti.cpp
     Memory/ThMemory.cpp
+    Memory/ThStackAllocator.cpp
+    Memory/ThPoolAllocator.cpp
+    Memory/ThSystemAllocator.cpp
+    Memory/ThSmallMemoryAllocator.cpp
+    Memory/ThiMemoryAllocator.cpp
+    Memory/ThAllocators.cpp
     String/ThStringUtilities.cpp
     ThiObject.cpp)
 
@@ -54,6 +60,12 @@ set(Core_H
     ${THOR_INCLUDE_DIR}/Thor/Core/Filesystem/ThiFileSystem.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Filesystem/ThiMemoryStream.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThMemory.h
+    ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThStackAllocator.h
+    ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThPoolAllocator.h
+    ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThSystemAllocator.h
+    ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThSmallMemoryAllocator.h
+    ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThiMemoryAllocator.h
+    ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThAllocators.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Platform/ThPlatformUtils.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Rtti/ThRttiManager.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Rtti/ThTypeInfo.h

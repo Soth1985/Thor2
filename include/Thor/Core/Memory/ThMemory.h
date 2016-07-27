@@ -75,6 +75,8 @@ public:
 	* 
 	*/
 	static void AlignedFree(void* ptr);
+    
+    static ThSize MallocSize(void* ptr);
 
 	/*!
 	* \brief
