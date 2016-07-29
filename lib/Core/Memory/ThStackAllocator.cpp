@@ -4,31 +4,65 @@
 
 using namespace Thor;
 
-ThStackAllocator::ThStackAllocator(ThSize size, const char* name)
+ThStackAllocator::ThStackAllocator(const char* name)
     :
 ThiMemoryAllocator(name),
-m_Size(size),
+m_Memory(nullptr),
+m_Parent(nullptr),
+m_Size(0),
+m_Alignment(0),
 m_Marker(0)
 {
-    ThiMemoryAllocator* systemAllocator = ThAllocators::Instance().GetSystemMemoryAllocator();
     
-    m_Memory = (ThU8*)systemAllocator->Allocate(m_Size);
+}
+
+void ThStackAllocator::Init(ThSize size, ThSize alignment, ThU8* memory, ThiMemoryAllocator* parent)
+{
+    THOR_ASSERT(size > 0, "Invalid size");
+    THOR_ASSERT(size % alignment, "Size must be in multiples of alignment");
+    THOR_ASSERT(memory || parent, "Parent allocator or memory block must be provided");
+    
+    m_Size = size;
+    m_Alignment = alignment;
+    
+    if (parent)
+        m_Parent = parent;
+    else
+        m_Parent = ThAllocators::Instance().GetSystemMemoryAllocator();
+    
+    if (memory)
+    {
+        m_Memory = memory;
+        m_Parent = 0;
+    }
+    else
+        m_Memory = (ThU8*)m_Parent->Allocate(m_Size, m_Alignment);
 }
 
 ThStackAllocator::~ThStackAllocator()
 {
-    
+    if (m_Parent)
+        m_Parent->Deallocate(m_Memory);
 }
 
 void* ThStackAllocator::Allocate(ThSize size, ThU32 alignment)
 {
+    THOR_ASSERT(m_Alignment == alignment, "Invalid alignment");
+    
     ThU8* currentPos = &m_Memory[m_Marker];
     ThSize newMarker = m_Marker + size + (alignment - size % alignment);
-    if (newMarker > m_Marker)
+    if (newMarker > m_Size)
     {
-        THOR_WRN("Stack allocator %s is out of memory, reverting to system allocator", coreSysLogTag, GetName());
-        ThiMemoryAllocator* systemAllocator = ThAllocators::Instance().GetSystemMemoryAllocator();
-        return systemAllocator->Allocate(size, alignment);
+        if (m_Parent)
+        {
+            THOR_WRN("Stack allocator %s is out of memory, reverting to parent allocator", coreSysLogTag, GetName());
+            return m_Parent->Allocate(size, alignment);
+        }
+        else
+        {
+            THOR_WRN("Stack allocator %s is out of memory", coreSysLogTag, GetName());
+            return nullptr;
+        }
     }
     else
     {
@@ -43,8 +77,8 @@ void ThStackAllocator::Deallocate(void* ptr)
     ThU8* end = &m_Memory[m_Size];
     if (ptrU8 >= end)
     {
-        ThiMemoryAllocator* systemAllocator = ThAllocators::Instance().GetSystemMemoryAllocator();
-        systemAllocator->Deallocate(ptr);
+        if (m_Parent)
+            m_Parent->Deallocate(ptr);
     }
         
 }
@@ -66,10 +100,10 @@ ThSize ThStackAllocator::GetMarker()const
 
 void ThStackAllocator::FreeToMarker(ThSize Marker)
 {
-    if (Marker >= m_Marker)
+    if (Marker >= m_Size)
         m_Marker = 0;
     else
-        m_Marker = m_Marker - Marker;
+        m_Marker = Marker;
 }
 
 void ThStackAllocator::Reset()
