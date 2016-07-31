@@ -15,6 +15,7 @@ set(MetalTriangle_H
 set(MetalTriangle_SHADERS Shaders.metal)
 #set_source_files_properties(${MetalTriangle_SHADERS} PROPERTIES XCODE_EXPLICIT_FILE_TYPE ".metal")
 #set_source_files_properties(${MetalTriangle_SHADERS} PROPERTIES COMPILE_FLAGS "-fno-fast-math")
+set_source_files_properties(${MetalTriangle_SHADERS} PROPERTIES LANGUAGE METAL)
 
 set(MetalTriangle_STORYBOARDS
     MetalTriangle.storyboard

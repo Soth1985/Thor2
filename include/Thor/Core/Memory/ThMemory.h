@@ -77,6 +77,16 @@ public:
 	static void AlignedFree(void* ptr);
     
     static ThSize MallocSize(void* ptr);
+    
+    static ThSize GetPageSize();
+    
+    static void* VmReserveMemory(ThSize size);
+    
+    static void* VmCommitMemory(void* ptr, ThSize size);
+    
+    static void VmDecommitMemory(void* ptr, ThSize size);
+    
+    static void VmFreeMemory(void* ptr, ThSize size);
 
 	/*!
 	* \brief

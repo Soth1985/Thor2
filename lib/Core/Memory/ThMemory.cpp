@@ -2,7 +2,16 @@
 #include <stdlib.h>
 #include <malloc/malloc.h>
 
-namespace Thor{
+#ifdef THOR_PLATFORM_OSX
+    #include <unistd.h>
+    #include <sys/mman.h>
+#endif
+
+#ifdef THOR_PLATFORM_WIN
+    #include <windows.h>
+#endif
+
+using namespace Thor;
 
 //----------------------------------------------------------------------------------------
 //
@@ -58,9 +67,60 @@ ThSize ThMemory::MallocSize(void* ptr)
 #endif
 }
 //----------------------------------------------------------------------------------------
+ThSize ThMemory::GetPageSize()
+{
+#ifdef THOR_PLATFORM_OSX
+    return getpagesize();
+#elif defined THOR_PLATFORM_WIN
+    SYSTEM_INFO sysInfo;
+    GetSystemInfo(&sysInfo);
+    return sysInfo.dwPageSize;
+#endif
+}
+//----------------------------------------------------------------------------------------
+void* ThMemory::VmReserveMemory(ThSize size)
+{
+#ifdef THOR_PLATFORM_OSX
+    void* ptr = mmap((void*)0, size, PROT_NONE, MAP_PRIVATE | MAP_ANON, -1, 0);
+    msync(ptr, size, MS_SYNC | MS_INVALIDATE);
+    return ptr;
+#elif defined THOR_PLATFORM_WIN
+    return VirtualAlloc(NULL, size, MEM_RESERVE , PAGE_NOACCESS);
+#endif
+}
+//----------------------------------------------------------------------------------------
+void* ThMemory::VmCommitMemory(void* ptr, ThSize size)
+{
+#ifdef THOR_PLATFORM_OSX
+    void* result = mmap(ptr, size, PROT_READ | PROT_WRITE, MAP_FIXED | MAP_SHARED | MAP_ANON, -1, 0);
+    msync(ptr, size, MS_SYNC|MS_INVALIDATE);
+    return result;
+#elif defined THOR_PLATFORM_WIN
+    return VirtualAlloc(addr, size, MEM_COMMIT, PAGE_READWRITE);
+#endif
+}
+//----------------------------------------------------------------------------------------
+void ThMemory::VmDecommitMemory(void* ptr, ThSize size)
+{
+#ifdef THOR_PLATFORM_OSX
+    mmap(ptr, size, PROT_NONE, MAP_FIXED | MAP_PRIVATE | MAP_ANON, -1, 0);
+    msync(ptr, size, MS_SYNC | MS_INVALIDATE);
+#elif defined THOR_PLATFORM_WIN
+    VirtualFree((void*)addr, size, MEM_DECOMMIT);
+#endif
+}
+//----------------------------------------------------------------------------------------
+void ThMemory::VmFreeMemory(void* ptr, ThSize size)
+{
+#ifdef THOR_PLATFORM_OSX
+    msync(ptr, size, MS_SYNC);
+    munmap(ptr, size);
+#elif defined THOR_PLATFORM_WIN
+    VirtualFree((void*)addr, 0, MEM_RELEASE);
+#endif
+}
+//----------------------------------------------------------------------------------------
 void* ThMemory::MemoryCopy(void* destination, const void* source, ThSize numBytes)
 {
 	return memcpy(destination, source, numBytes);
 }
-
-}//Thor

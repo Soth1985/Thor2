@@ -1,28 +1,13 @@
 #pragma once
 
-#include <Thor/Core/Memory/ThMemory.h>
+#include <Thor/Core/Memory/ThAllocators.h>
 #include <Thor/Core/Debug/ThAssert.h>
 #include <Thor/Core/ThFlags.h>
 
 #include <type_traits>
 
 namespace Thor {
-//----------------------------------------------------------------------------------------
-//
-//					eThVectorFlags
-//
-//----------------------------------------------------------------------------------------
-struct eThVectorFlags
-{
-	enum Val
-	{
-		eStaticArray = 1 << 0,
-		eExternalStorageBuffer = 1 << 1,
-		eCallCopyConstructorOnMove = 1 << 2,
-		//eCallDestructorOnMove = 1 << 3
-	};
-};
-    
+
 namespace Private
 {
     template <bool IsClass, class SizeType, class Pointer>
@@ -101,64 +86,43 @@ public:
 	typedef ThSize DifferenceType;
 		
 	//construct/copy/destroy:
-	explicit ThVector()
+	explicit ThVector(ThiMemoryAllocator* allocator = nullptr)
 		:
 	m_Data(0),
 	m_Size(0),
 	m_Capacity(0),
-	m_Flags(eThVectorFlags::eCallCopyConstructorOnMove)
+    m_Allocator(allocator)
 	{
-
+        if (!m_Allocator)
+            m_Allocator = ThAllocators::Instance().GetSystemMemoryAllocator();
 	}
 
-	explicit ThVector(SizeType n, const ThFlags32& flags = 0)
+	explicit ThVector(SizeType n, ThiMemoryAllocator* allocator = nullptr)
 		:
-	m_Size(0),
-	m_Data(0),
-	m_Capacity(0),
-	m_Flags(eThVectorFlags::eCallCopyConstructorOnMove)
+    ThVector(allocator)
 	{
-		if (flags.GetBitField() != 0)
-			m_Flags = flags;
-
-		Resize(n);
+        Resize(n);
 	}
 
-	ThVector(SizeType n, const T& value, const ThFlags32& flags = 0)
+	ThVector(SizeType n, const T& value, ThiMemoryAllocator* allocator = nullptr)
 		:
-	m_Data(0),
-    m_Size(0),
-	m_Capacity(0),
-	m_Flags(eThVectorFlags::eCallCopyConstructorOnMove)
-	{
-		if (flags.GetBitField() != 0)
-			m_Flags = flags;
-
-		Resize(n, value);
+	ThVector(allocator)
+    {
+        Resize(n, value);
 	}
 
-	ThVector(Pointer data, SizeType size, const ThFlags32& flags = 0)
+	ThVector(Pointer data, SizeType size, ThiMemoryAllocator* allocator = nullptr)
 		:
-	m_Data(data),
-	m_Size(size),
-	m_Capacity(size),
-	m_Flags(eThVectorFlags::eCallCopyConstructorOnMove)
+	ThVector(allocator)
 	{
-		if (flags.GetBitField() != 0)
-			m_Flags = flags;
+		
 	}
 
 	template <class InputIterator>
-	ThVector(InputIterator first, InputIterator last, const ThFlags32& flags = 0)
+	ThVector(InputIterator first, InputIterator last, ThiMemoryAllocator* allocator = nullptr)
 		:
-	m_Size(0),
-	m_Data(0),
-	m_Capacity(0),
-	m_Flags(eThVectorFlags::eCallCopyConstructorOnMove)
+	ThVector(allocator)
 	{
-		if (flags.GetBitField() != 0)
-			m_Flags = flags;
-
 		Assign(first, last);
 	}
 
@@ -166,8 +130,7 @@ public:
 		:
 	m_Size(0),
 	m_Data(0),
-	m_Capacity(0),
-	m_Flags(eThVectorFlags::eCallCopyConstructorOnMove)
+	m_Capacity(0)
 	{
 		*this = v;
 	}
@@ -241,25 +204,8 @@ public:
 		return m_Size;
 	}
 		
-	ThSize MaxSize()const
-	{
-		if (m_Flags.CheckFlag(eThVectorFlags::eStaticArray))
-			return m_Capacity;
-		else
-		{
-			ThSize result = 0;
-			return ~result;
-		}
-	}
-		
 	void Resize(SizeType size)
 	{
-		if (m_Flags.CheckFlag(eThVectorFlags::eStaticArray))
-		{
-			THOR_ASSERT(0, "Cannot modify static vector size");
-			return;
-		}
-
 		if (size > Size())
 			Insert(End(), size - Size(), T());
 		else if (size < Size())
@@ -267,13 +213,7 @@ public:
 	}
 
 	void Resize(SizeType size, const T& value)
-	{
-		if (m_Flags.CheckFlag(eThVectorFlags::eStaticArray))
-		{
-			THOR_ASSERT(0, "Cannot modify static vector size");
-			return;
-		}
-
+    {
 		if (size > Size())
 			Insert(End(), size - Size(), value);
 		else if (size < Size())
@@ -292,12 +232,6 @@ public:
 
 	void Reserve(SizeType n)
 	{
-		if (m_Flags.CheckFlag(eThVectorFlags::eStaticArray))
-		{
-			THOR_ASSERT(0, "Cannot modify static vector capacity");
-			return;
-		}
-
 		if (n != m_Capacity)
 		{
 			SizeType bound = Thor::Min(n, m_Size);
@@ -306,24 +240,19 @@ public:
 
 			if (m_Data && prevBuffer)
 			{
-				if (m_Flags.CheckFlag(eThVectorFlags::eCallCopyConstructorOnMove))
+				//if (m_Flags.CheckFlag(eThVectorFlags::eCallCopyConstructorOnMove))
 				{
 					ConstructRange(&prevBuffer[0], &prevBuffer[bound], m_Data);
 					DestroyRange(0, bound, prevBuffer);
 				}
-				else
-					ThMemory::MemoryCopy(m_Data, prevBuffer, bound * sizeof(T));
+				//else
+				//	ThMemory::MemoryCopy(m_Data, prevBuffer, bound * sizeof(T));
 
 				//if (m_Flags.CheckFlag(eThVectorFlags::eCallDestructorOnMove))
 				//	DestroyRange(0, m_Size, prevBuffer);
 			}
 
-			if (!m_Flags.CheckFlag(eThVectorFlags::eExternalStorageBuffer))
-			{
-				SafeDelete(prevBuffer);
-			}
-
-			m_Flags.SetFlag(false, eThVectorFlags::eExternalStorageBuffer);
+			SafeDelete(prevBuffer);
 		}
 	}
 
@@ -404,12 +333,6 @@ public:
 
 	Iterator Insert(ConstIterator position, SizeType n, const T& value)
 	{
-		if (m_Flags.CheckFlag(eThVectorFlags::eStaticArray))
-		{
-			THOR_ASSERT(0, "Cannot modify static vector");
-			return Iterator(position);
-		}
-
 		SizeType newSize = m_Size + n;
 		SizeType index = position - m_Data;
 
@@ -418,12 +341,7 @@ public:
 
 		if (prevBuffer != m_Data)
 		{
-			if (!m_Flags.CheckFlag(eThVectorFlags::eExternalStorageBuffer))
-			{
-				SafeDelete(prevBuffer);
-			}
-
-			m_Flags.SetFlag(false, eThVectorFlags::eExternalStorageBuffer);
+			SafeDelete(prevBuffer);
 		}
 
 		m_Size = newSize;
@@ -433,12 +351,6 @@ public:
 	template <class InputIterator>
 	Iterator Insert(ConstIterator position, InputIterator first, InputIterator last)
 	{
-		if (m_Flags.CheckFlag(eThVectorFlags::eStaticArray))
-		{
-			THOR_ASSERT(0, "Cannot modify static vector");
-			return Iterator(position);
-		}
-
 		SizeType newSize = m_Size + last - first;
 		SizeType index = position - m_Data;
 
@@ -447,12 +359,7 @@ public:
 
 		if (prevBuffer && prevBuffer != m_Data)
 		{
-			if (!m_Flags.CheckFlag(eThVectorFlags::eExternalStorageBuffer))
-			{
-				SafeDelete(prevBuffer);
-			}
-
-			m_Flags.SetFlag(false, eThVectorFlags::eExternalStorageBuffer);
+            SafeDelete(prevBuffer);
 		}
 
 		m_Size = newSize;
@@ -466,12 +373,6 @@ public:
 
 	Iterator Erase(ConstIterator first, ConstIterator last)
 	{
-		if (m_Flags.CheckFlag(eThVectorFlags::eStaticArray))
-		{
-			THOR_ASSERT(0, "Cannot modify static vector");
-			return Iterator(first);
-		}
-
 		SizeType numElems = last - first;
 		SizeType firstIndex = first - m_Data;
 		SizeType lastIndex = last - m_Data;
@@ -484,24 +385,19 @@ public:
 
 			T* prevBuffer = Realloc(newSize);
 
-			if (m_Flags.CheckFlag(eThVectorFlags::eCallCopyConstructorOnMove))
+			//if (m_Flags.CheckFlag(eThVectorFlags::eCallCopyConstructorOnMove))
 			{
 				ConstructRange(&prevBuffer[0], &prevBuffer[firstIndex], m_Data);
 				ConstructRange(&prevBuffer[lastIndex], &prevBuffer[m_Size], &m_Data[firstIndex]);
 			}
-			else
-			{
-				ThMemory::MemoryCopy(m_Data, prevBuffer, firstIndex * sizeof (T));
-				ThMemory::MemoryCopy(&m_Data[firstIndex], &prevBuffer[lastIndex], (m_Size - lastIndex) * sizeof (T));
-			}
+			//else
+			//{
+			//	ThMemory::MemoryCopy(m_Data, prevBuffer, firstIndex * sizeof (T));
+			//	ThMemory::MemoryCopy(&m_Data[firstIndex], &prevBuffer[lastIndex], (m_Size - lastIndex) * sizeof (T));
+			//}
 
-			if (!m_Flags.CheckFlag(eThVectorFlags::eExternalStorageBuffer))
-			{
-				DestroyRange(0, m_Size, prevBuffer);
-				SafeDelete(prevBuffer);				
-			}
-
-			m_Flags.SetFlag(false, eThVectorFlags::eExternalStorageBuffer);
+			DestroyRange(0, m_Size, prevBuffer);
+            SafeDelete(prevBuffer);
 
 			m_Size = newSize;
 		}
@@ -513,26 +409,20 @@ public:
 	{
 		Thor::Swap(m_Capacity, rhs.m_Capacity);
 		Thor::Swap(m_Data, rhs.m_Data);
-		Thor::Swap(m_Flags, rhs.m_Flags);
 		Thor::Swap(m_Size, rhs.m_Size);
+        Thor::Swap(m_Allocator, rhs.m_Allocator);
 	}
 
 	void MoveToBackAndRemove(SizeType index)
 	{
-		if (m_Flags.CheckFlag(eThVectorFlags::eStaticArray))
-		{
-			THOR_ASSERT(0, "Cannot modify static vector");
-			return;
-		}
-
 		if (m_Size > 1)
 		{
 			DestroyRange(index, 1, m_Data);
 
-			if (m_Flags.CheckFlag(eThVectorFlags::eCallCopyConstructorOnMove))
+			//if (m_Flags.CheckFlag(eThVectorFlags::eCallCopyConstructorOnMove))
 				ConstructRange(&m_Data[m_Size - 1], &m_Data[m_Size], &m_Data[index]);
-			else
-				ThMemory::MemoryCopy(&m_Data[index], &m_Data[m_Size - 1], sizeof (T));
+			//else
+			//	ThMemory::MemoryCopy(&m_Data[index], &m_Data[m_Size - 1], sizeof (T));
 
 			DestroyRange(m_Size - 1, 1, m_Data);
 
@@ -555,17 +445,13 @@ public:
 		FreeMemory();
 	}
 
-	//extensions
-	const ThFlags32& GetFlags()const
-	{
-		return m_Flags;
-	}
-
 private:
-	Pointer		m_Data;
-	SizeType	m_Size;
-	SizeType	m_Capacity;
-	ThFlags32	m_Flags;
+	Pointer	m_Data;
+	SizeType m_Size;
+	SizeType m_Capacity;
+	ThFlags32 m_Flags;
+    ThiMemoryAllocator* m_Allocator;
+    
 
 	void DestroyRange(SizeType position, SizeType numElems, Pointer target)
 	{
@@ -606,12 +492,6 @@ private:
 
 	T* Realloc(SizeType n)
 	{
-		if (m_Flags.CheckBit(eThVectorFlags::eStaticArray))
-		{
-			THOR_ASSERT(0, "Cannot modify static vector capacity");
-			return m_Data;
-		}
-
 		T* prevBuffer = m_Data;
 
 		if (n != m_Capacity)
@@ -620,8 +500,7 @@ private:
 
 			if (n)
 			{
-				newBuffer = (ThI8*)ThMemory::Malloc(n * sizeof (T));
-				//newBuffer = new ThI8[ n * sizeof T ];
+				newBuffer = (ThI8*)m_Allocator->Allocate(n * sizeof (T));
 			}
 
 			m_Data = (T*)newBuffer;
@@ -648,23 +527,23 @@ private:
 			{
 				SizeType gap = Min(m_Size, index);
 				
-				if (m_Flags.CheckFlag(eThVectorFlags::eCallCopyConstructorOnMove))
+				//if (m_Flags.CheckFlag(eThVectorFlags::eCallCopyConstructorOnMove))
 				{
 					ConstructRange(prevBuffer, prevBuffer + gap, m_Data);
 					DestroyRange(0, gap, prevBuffer);
 				}
-				else
-					ThMemory::MemoryCopy(m_Data, prevBuffer, gap * sizeof (T));
+				//else
+				//	ThMemory::MemoryCopy(m_Data, prevBuffer, gap * sizeof (T));
 
 				if(index + numElems < m_Size)
 				{
-					if (m_Flags.CheckFlag(eThVectorFlags::eCallCopyConstructorOnMove))
+					//if (m_Flags.CheckFlag(eThVectorFlags::eCallCopyConstructorOnMove))
 					{
 						ConstructRange(&prevBuffer[index], &prevBuffer[index + numElems - m_Size], &m_Data[index + numElems]);
 						DestroyRange(index, index + numElems - m_Size, prevBuffer);
 					}
-					else
-						ThMemory::MemoryCopy(&m_Data[index + numElems], &prevBuffer[index], (index + numElems - m_Size) * sizeof (T));
+					//else
+					//	ThMemory::MemoryCopy(&m_Data[index + numElems], &prevBuffer[index], (index + numElems - m_Size) * sizeof (T));
 				}
 			}
 			else
@@ -681,14 +560,11 @@ private:
 
 	void FreeMemory()
 	{
-		if (m_Data && !m_Flags.CheckFlag(eThVectorFlags::eExternalStorageBuffer) && !m_Flags.CheckFlag(eThVectorFlags::eStaticArray))
+		if (m_Data)
 		{
 			DestroyRange(0, m_Size, m_Data);
 			SafeDelete(m_Data);
 		}
-
-		m_Flags.SetFlag(false, eThVectorFlags::eExternalStorageBuffer);
-		m_Flags.SetFlag(false, eThVectorFlags::eStaticArray);
 
 		m_Data = 0;
 		m_Capacity = 0;
@@ -698,8 +574,7 @@ private:
 	void SafeDelete(T* buffer)
 	{
 		ThI8* rawBuffer = (ThI8*)buffer;
-		ThMemory::Free(rawBuffer);
-		//delete[] rawBuffer;
+        m_Allocator->Deallocate(rawBuffer);
 	}
 };
 
