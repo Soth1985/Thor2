@@ -29,7 +29,7 @@
     #define THOR_INLINE inline
 #endif
 
-#ifdef _DEBUG
+#ifndef NDEBUG
 	#define THOR_DEBUG
 #endif
 

@@ -17,14 +17,20 @@ namespace Thor
         virtual ThSize GetCapacity()override;
         virtual ThSize GetTotalAllocated()override;
         
-        void Init(ThSize chunkSize, ThSize numChunks, ThSize alignment, ThU8* memory = nullptr, ThiMemoryAllocator* parent = nullptr);
+        void Init(ThSize chunkSize, ThSize numChunks, ThSize alignment, ThiMemoryAllocator* parent = nullptr);
+        void Reset();
+        void Release();
+        bool IsFilled()const;
+        ThSize GetChunkSize()const;
+        ThSize GetNumChunks()const;
+        bool IsInPool(ThU8* ptr)const;
     private:
         ThU8* m_Memory;
         ThSize m_NumChunks;
         ThSize m_ChunkSize;
         ThSize m_Alignment;
-        ThU32 m_FirstFreeBlock;
-        ThU32 m_NumFreeBlocks;
+        ThSize m_FirstFreeChunk;
+        ThSize m_NumFreeChunks;
         ThiMemoryAllocator* m_Parent;
     };
 }

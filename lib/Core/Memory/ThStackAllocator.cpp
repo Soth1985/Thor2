@@ -16,11 +16,16 @@ m_Marker(0)
     
 }
 
-void ThStackAllocator::Init(ThSize size, ThSize alignment, ThU8* memory, ThiMemoryAllocator* parent)
+ThStackAllocator::~ThStackAllocator()
+{
+    m_Parent->Deallocate(m_Memory);
+}
+
+void ThStackAllocator::Init(ThSize size, ThSize alignment, ThiMemoryAllocator* parent)
 {
     THOR_ASSERT(size > 0, "Invalid size");
-    THOR_ASSERT(size % alignment, "Size must be in multiples of alignment");
-    THOR_ASSERT(memory || parent, "Parent allocator or memory block must be provided");
+    THOR_ASSERT(size % alignment == 0, "Size must be in multiples of alignment");
+    THOR_ASSERT(parent, "Parent allocator must be provided");
     
     m_Size = size;
     m_Alignment = alignment;
@@ -30,19 +35,9 @@ void ThStackAllocator::Init(ThSize size, ThSize alignment, ThU8* memory, ThiMemo
     else
         m_Parent = ThAllocators::Instance().GetSystemMemoryAllocator();
     
-    if (memory)
-    {
-        m_Memory = memory;
-        m_Parent = 0;
-    }
-    else
-        m_Memory = (ThU8*)m_Parent->Allocate(m_Size, m_Alignment);
-}
-
-ThStackAllocator::~ThStackAllocator()
-{
-    if (m_Parent)
-        m_Parent->Deallocate(m_Memory);
+    m_Memory = (ThU8*)m_Parent->Allocate(m_Size, m_Alignment);
+    
+    THOR_ASSERT(m_Memory != nullptr, "Failed to allocate memory");
 }
 
 void* ThStackAllocator::Allocate(ThSize size, ThU32 alignment)
@@ -53,16 +48,8 @@ void* ThStackAllocator::Allocate(ThSize size, ThU32 alignment)
     ThSize newMarker = m_Marker + size + (alignment - size % alignment);
     if (newMarker > m_Size)
     {
-        if (m_Parent)
-        {
-            THOR_WRN("Stack allocator %s is out of memory, reverting to parent allocator", coreSysLogTag, GetName());
-            return m_Parent->Allocate(size, alignment);
-        }
-        else
-        {
-            THOR_WRN("Stack allocator %s is out of memory", coreSysLogTag, GetName());
-            return nullptr;
-        }
+        THOR_WRN("Stack allocator %s is out of memory", coreSysLogTag, GetName());
+        return nullptr;
     }
     else
     {
@@ -73,13 +60,6 @@ void* ThStackAllocator::Allocate(ThSize size, ThU32 alignment)
 
 void ThStackAllocator::Deallocate(void* ptr)
 {
-    ThU8* ptrU8 = (ThU8*)ptr;
-    ThU8* end = &m_Memory[m_Size];
-    if (ptrU8 >= end)
-    {
-        if (m_Parent)
-            m_Parent->Deallocate(ptr);
-    }
         
 }
 
