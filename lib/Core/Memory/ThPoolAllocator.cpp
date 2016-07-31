@@ -7,12 +7,12 @@ using namespace Thor;
 ThPoolAllocator::ThPoolAllocator(const char* name)
     :
 m_Memory(nullptr),
+m_Parent(nullptr),
 m_NumChunks(0),
 m_ChunkSize(0),
 m_Alignment(0),
 m_FirstFreeChunk(0),
-m_NumFreeChunks(0),
-m_Parent(nullptr)
+m_NumFreeChunks(0)
 {
     
 }
@@ -124,6 +124,16 @@ ThSize ThPoolAllocator::GetChunkSize()const
 ThSize ThPoolAllocator::GetNumChunks()const
 {
     return m_NumChunks;
+}
+
+ThSize ThPoolAllocator::GetAlignment()const
+{
+    return m_Alignment;
+}
+
+ThiMemoryAllocator* ThPoolAllocator::GetParentAllocator()const
+{
+    return m_Parent;
 }
 
 bool ThPoolAllocator::IsInPool(ThU8* ptr)const

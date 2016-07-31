@@ -24,6 +24,8 @@ namespace Thor
         bool IsFree()const;
         ThSize GetChunkSize()const;
         ThSize GetNumChunks()const;
+        ThSize GetAlignment()const;
+        ThiMemoryAllocator* GetParentAllocator()const;
         bool IsInPool(ThU8* ptr)const;
     private:
         ThU8* m_Memory;
