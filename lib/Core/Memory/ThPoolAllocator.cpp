@@ -111,6 +111,11 @@ bool ThPoolAllocator::IsFilled()const
     return m_NumFreeChunks == 0;
 }
 
+bool ThPoolAllocator::IsFree()const
+{
+    return m_NumFreeChunks == m_NumChunks;
+}
+
 ThSize ThPoolAllocator::GetChunkSize()const
 {
     return m_ChunkSize;

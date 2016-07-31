@@ -17,7 +17,7 @@ namespace Thor
         virtual ThSize GetCapacity()override;
         virtual ThSize GetTotalAllocated()override;
         
-        void Init(ThSize size, ThSize alignment, ThiMemoryAllocator* parent = nullptr);
+        void Init(ThSize size, ThSize alignment = DEFAULT_ALIGNMENT, ThiMemoryAllocator* parent = nullptr);
         ThSize GetMarker()const;
         void FreeToMarker(ThSize Marker);
         void Reset();

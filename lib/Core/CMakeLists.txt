@@ -26,6 +26,10 @@ set(Core_SRC
     Memory/ThSmallMemoryAllocator.cpp
     Memory/ThiMemoryAllocator.cpp
     Memory/ThAllocators.cpp
+    Memory/ThGrowingPoolAllocator.cpp
+    Memory/ThVirtualPoolAllocator.cpp
+    Memory/ThVirtualSmallObjectAllocator.cpp
+    Memory/ThVirtualStackAllocator.cpp
     String/ThStringUtilities.cpp
     ThiObject.cpp)
 
@@ -66,6 +70,10 @@ set(Core_H
     ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThSmallMemoryAllocator.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThiMemoryAllocator.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThAllocators.h
+    ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThGrowingPoolAllocator.h
+    ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThVirtualPoolAllocator.h
+    ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThVirtualSmallObjectAllocator.h
+    ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThVirtualStackAllocator.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Platform/ThPlatformUtils.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Rtti/ThRttiManager.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Rtti/ThTypeInfo.h
@@ -112,7 +120,10 @@ endif()
 
 
 target_include_directories(Core PUBLIC ${THOR_INCLUDE_DIR})
-target_link_libraries(Core PhysFS)
+
+if(THOR_USE_PHYSFS)
+    target_link_libraries(Core PhysFS)
+endif()
 
 if(APPLE)
     set_target_properties(Core PROPERTIES XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++14")
