@@ -26,7 +26,7 @@ namespace Thor
     private:
         ThPoolAllocator* AddPool();
         
-        ThVector<ThPoolAllocator> m_Pools;
+        ThVector<ThPoolAllocator*> m_Pools;
         ThPoolAllocator* m_AllocPool;
         ThPoolAllocator* m_DeallocPool;
     };

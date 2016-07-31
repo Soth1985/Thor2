@@ -23,7 +23,24 @@ namespace Thor
         ThiMemoryAllocator(ThiMemoryAllocator&&) = delete;
         ThiMemoryAllocator(const ThiMemoryAllocator&) = delete;
         ThiMemoryAllocator& operator=(const ThiMemoryAllocator&) = delete;
+        ThiMemoryAllocator& operator=(const ThiMemoryAllocator&&) = delete;
     private:
         const char* m_pName;
     };
+    
+    template<class T, class... Args>
+    T* CreateObject(ThiMemoryAllocator* allocator, const Args&... args)
+    {
+        void* memory = allocator->Allocate(sizeof(T));
+        T* result = new(memory)T(args...);
+        return result;
+    }
+    
+    
+    template<class T>
+    void DestroyObject(ThiMemoryAllocator* allocator, T* ptr)
+    {
+        ptr->~T();
+        allocator->Deallocate(ptr);
+    }
 }
