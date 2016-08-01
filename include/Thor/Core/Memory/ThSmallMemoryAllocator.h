@@ -9,6 +9,8 @@ namespace Thor
     {
     public:
         
+        static const ThSize MAX_OBJECT_SIZE = 512;
+        
         ThSmallMemoryAllocator(const char* name = nullptr);
         ~ThSmallMemoryAllocator();
         
@@ -17,16 +19,12 @@ namespace Thor
         virtual ThSize GetCapacity()override;
         virtual ThSize GetTotalAllocated()override;
         
-        void Init(ThSize chunkSize, ThSize numChunks, ThSize alignment = DEFAULT_ALIGNMENT, ThiMemoryAllocator* parent = nullptr);
-        
-        void InitToPageSize(ThSize chunkSize, ThSize minNumChunks = 16, ThSize maxNumChunks = 256, ThSize alignment = DEFAULT_ALIGNMENT, ThiMemoryAllocator* parent = nullptr);
+        void Init(ThSize maxObjectSize = MAX_OBJECT_SIZE, ThSize alignment = DEFAULT_ALIGNMENT, ThiMemoryAllocator* parent = nullptr);
         
         void Shrink();
     private:
-        ThPoolAllocator* AddPool();
         
-        ThVector<ThPoolAllocator> m_Pools;
-        ThPoolAllocator* m_AllocPool;
-        ThPoolAllocator* m_DeallocPool;
+        ThVector<ThGrowingPoolAllocator*> m_Pools;
+        ThGrowingPoolAllocator* m_DeallocPool;
     };
 }

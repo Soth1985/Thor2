@@ -10,6 +10,9 @@ namespace Thor
     {
     public:
         
+        static const ThSize MIN_NUM_CHUNKS = 16;
+        static const ThSize MAX_NUM_CHUNKS = 256;
+        
         ThGrowingPoolAllocator(const char* name = nullptr);
         ~ThGrowingPoolAllocator();
         
@@ -20,9 +23,11 @@ namespace Thor
         
         void Init(ThSize chunkSize, ThSize numChunks, ThSize alignment = DEFAULT_ALIGNMENT, ThiMemoryAllocator* parent = nullptr);
         
-        void InitToPageSize(ThSize chunkSize, ThSize minNumChunks = 16, ThSize maxNumChunks = 256, ThSize alignment = DEFAULT_ALIGNMENT, ThiMemoryAllocator* parent = nullptr);
+        void InitToPageSize(ThSize chunkSize, ThSize alignment = DEFAULT_ALIGNMENT, ThiMemoryAllocator* parent = nullptr);
         
         void Shrink();
+        bool IsInPool(ThU8* ptr);
+        ThiMemoryAllocator* GetParentAllocator();
     private:
         ThPoolAllocator* AddPool();
         

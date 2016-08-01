@@ -14,6 +14,9 @@ m_DeallocPool(nullptr)
 
 ThGrowingPoolAllocator::~ThGrowingPoolAllocator()
 {
+    if (m_Pools.Empty())
+        return;
+    
     ThiMemoryAllocator* allocator = m_Pools[0]->GetParentAllocator();
     for (ThSize i = 0; i < m_Pools.Size(); ++i)
     {
@@ -108,6 +111,9 @@ ThSize ThGrowingPoolAllocator::GetTotalAllocated()
 
 void ThGrowingPoolAllocator::Init(ThSize chunkSize, ThSize numChunks, ThSize alignment, ThiMemoryAllocator* parent)
 {
+    if (!parent)
+        parent = ThAllocators::Instance().GetSystemMemoryAllocator();
+    
     ThPoolAllocator* pool = CreateObject<ThPoolAllocator>(parent, GetName());
     m_Pools.PushBack(pool);
     pool->Init(chunkSize, numChunks, alignment, parent);
@@ -115,15 +121,18 @@ void ThGrowingPoolAllocator::Init(ThSize chunkSize, ThSize numChunks, ThSize ali
     m_DeallocPool = m_AllocPool;
 }
 
-void ThGrowingPoolAllocator::InitToPageSize(ThSize chunkSize, ThSize minNumChunks, ThSize maxNumChunks, ThSize alignment, ThiMemoryAllocator* parent)
+void ThGrowingPoolAllocator::InitToPageSize(ThSize chunkSize, ThSize alignment, ThiMemoryAllocator* parent)
 {
+    if (!parent)
+        parent = ThAllocators::Instance().GetSystemMemoryAllocator();
+    
     ThSize pageSize = ThMemory::GetPageSize();
     ThSize numChunks = pageSize / chunkSize;
     
-    if (numChunks < minNumChunks)
-        numChunks = minNumChunks;
-    else if (numChunks > maxNumChunks)
-        numChunks = maxNumChunks;
+    if (numChunks < MIN_NUM_CHUNKS)
+        numChunks = MIN_NUM_CHUNKS;
+    else if (numChunks > MAX_NUM_CHUNKS)
+        numChunks = MAX_NUM_CHUNKS;
     
     Init(chunkSize, numChunks, alignment, parent);
 }
@@ -142,9 +151,26 @@ void ThGrowingPoolAllocator::Shrink()
     {
         if (m_Pools[i]->IsFree() && (m_Pools.Size() > 1))
         {
+            DestroyObject(m_Pools[0]->GetParentAllocator(), m_Pools[i]);
             m_Pools.MoveToBackAndRemove(i);
         }
         else
             ++i;
     }
+}
+
+bool ThGrowingPoolAllocator::IsInPool(ThU8* ptr)
+{
+    for (ThSize i = 0; i < m_Pools.Size(); ++i)
+    {
+        if (m_Pools[i]->IsInPool(ptr))
+            return true;
+    }
+    return false;
+}
+
+ThiMemoryAllocator* ThGrowingPoolAllocator::GetParentAllocator()
+{
+    THOR_ASSERT(m_Pools.Size() > 0, "Uninitialized pool");
+    return m_Pools[0]->GetParentAllocator();
 }
