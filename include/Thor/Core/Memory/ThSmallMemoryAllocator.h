@@ -26,5 +26,6 @@ namespace Thor
         
         ThVector<ThGrowingPoolAllocator*> m_Pools;
         ThGrowingPoolAllocator* m_DeallocPool;
+        ThSize m_MaxObjectSize;
     };
 }

@@ -7,7 +7,8 @@ using namespace Thor;
 ThSmallMemoryAllocator::ThSmallMemoryAllocator(const char* name)
     :
 ThiMemoryAllocator(name),
-m_DeallocPool(nullptr)
+m_DeallocPool(nullptr),
+m_MaxObjectSize(0)
 {
     
 }
@@ -27,7 +28,7 @@ ThSmallMemoryAllocator::~ThSmallMemoryAllocator()
 void* ThSmallMemoryAllocator::Allocate(ThSize size, ThU32 alignment)
 {
     THOR_ASSERT(m_Pools.Size() > 0, "No pools to allocate from");
-    THOR_ASSERT(size <= MAX_OBJECT_SIZE, "Invalid size");
+    THOR_ASSERT(size <= m_MaxObjectSize, "Invalid size");
     ThSize poolIndex = (size + alignment - 1) / alignment;
     
     if (poolIndex < m_Pools.Size())
@@ -100,6 +101,7 @@ void ThSmallMemoryAllocator::Init(ThSize maxObjectSize, ThSize alignment, ThiMem
     if (maxObjectSize > MAX_OBJECT_SIZE)
         maxObjectSize = MAX_OBJECT_SIZE;
     
+    m_MaxObjectSize = maxObjectSize;
     ThSize numPools = maxObjectSize / alignment;
     m_Pools.Reserve(numPools);
     
