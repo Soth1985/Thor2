@@ -48,6 +48,8 @@ set(Math_H
     ${THOR_INCLUDE_DIR}/Thor/Math/Nurbs/NurbsSurfaceTool.h
     ${THOR_INCLUDE_DIR}/Thor/Math/Nurbs/NurbsSurfaceTool.inl)
 
+list(SORT Math_SRC)
+list(SORT Math_H)
 add_library(Math ${Math_SRC} ${Math_H})
 
 target_compile_options(Math PUBLIC -msse4.2)

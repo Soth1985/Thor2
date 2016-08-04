@@ -111,6 +111,12 @@ ThSize ThGrowingPoolAllocator::GetTotalAllocated()
 
 void ThGrowingPoolAllocator::Init(ThSize chunkSize, ThSize numChunks, ThSize alignment, ThiMemoryAllocator* parent)
 {
+    if (!m_Pools.Empty())
+    {
+        THOR_WRN("Allocator %s is already initialized", coreSysLogTag, GetName());
+        return;
+    }
+    
     if (!parent)
         parent = ThAllocators::Instance().GetSystemMemoryAllocator();
     
@@ -123,6 +129,12 @@ void ThGrowingPoolAllocator::Init(ThSize chunkSize, ThSize numChunks, ThSize ali
 
 void ThGrowingPoolAllocator::InitToPageSize(ThSize chunkSize, ThSize alignment, ThiMemoryAllocator* parent)
 {
+    if (!m_Pools.Empty())
+    {
+        THOR_WRN("Allocator %s is already initialized", coreSysLogTag, GetName());
+        return;
+    }
+    
     if (!parent)
         parent = ThAllocators::Instance().GetSystemMemoryAllocator();
     

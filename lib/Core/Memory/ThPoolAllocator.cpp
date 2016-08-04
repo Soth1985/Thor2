@@ -66,6 +66,12 @@ ThSize ThPoolAllocator::GetTotalAllocated()
 
 void ThPoolAllocator::Init(ThSize chunkSize, ThSize numChunks, ThSize alignment, ThiMemoryAllocator* parent)
 {
+    if (m_Memory != nullptr)
+    {
+        THOR_WRN("Allocator %s is already initialized", coreSysLogTag, GetName());
+        return;
+    }
+    
     THOR_ASSERT(chunkSize * numChunks > 0, "Invalid pool size");
     THOR_ASSERT(chunkSize >= sizeof (ThSize), "Chunk size is too small");
     THOR_ASSERT(chunkSize % alignment == 0, "Chunk size must be in multiples of alignment");

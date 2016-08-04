@@ -110,6 +110,8 @@ if(WIN32)
         ${THOR_INCLUDE_DIR}/Thor/Core/Platform/ThWinSystemWindow.h)
 endif()
 
+list(SORT Core_SRC)
+list(SORT Core_H)
 add_library(Core ${Core_SRC} ${Core_H})
 
 if(THOR_USE_PHYSFS)

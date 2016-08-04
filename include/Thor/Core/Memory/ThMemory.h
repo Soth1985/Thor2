@@ -87,6 +87,12 @@ public:
     static void VmDecommitMemory(void* ptr, ThSize size);
     
     static void VmFreeMemory(void* ptr, ThSize size);
+    
+    static constexpr ThSize Kilobyte();
+    
+    static constexpr ThSize Megabyte();
+    
+    static constexpr ThSize Gigabyte();
 
 	/*!
 	* \brief

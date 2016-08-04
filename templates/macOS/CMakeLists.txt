@@ -17,6 +17,9 @@ set(template_mac_os_STORYBOARDS
 
 set(template_mac_os_ICONS "")
 
+list(SORT template_mac_os_SRC)
+list(SORT template_mac_os_H)
+list(SORT template_mac_os_STORYBOARDS)
 add_executable(template_mac_os MACOSX_BUNDLE ${template_mac_os_SRC} ${template_mac_os_H} ${template_mac_os_STORYBOARDS})
 target_link_libraries(template_mac_os Core)
 

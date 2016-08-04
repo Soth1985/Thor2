@@ -84,6 +84,12 @@ ThSize ThSmallMemoryAllocator::GetTotalAllocated()
 
 void ThSmallMemoryAllocator::Init(ThSize maxObjectSize, ThSize alignment, ThiMemoryAllocator* parent)
 {
+    if (!m_Pools.Empty())
+    {
+        THOR_WRN("Allocator %s is already initialized", coreSysLogTag, GetName());
+        return;
+    }
+    
     THOR_ASSERT(maxObjectSize <= MAX_OBJECT_SIZE, "Object size is too large");
     THOR_ASSERT(maxObjectSize > 0, "Size must be positive number");
     THOR_ASSERT(maxObjectSize % alignment == 0, "maxObjectSize must be aligned");

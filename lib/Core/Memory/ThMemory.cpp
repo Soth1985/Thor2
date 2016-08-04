@@ -120,6 +120,21 @@ void ThMemory::VmFreeMemory(void* ptr, ThSize size)
 #endif
 }
 //----------------------------------------------------------------------------------------
+constexpr ThSize ThMemory::Kilobyte()
+{
+    return 1024;
+}
+//----------------------------------------------------------------------------------------
+constexpr ThSize ThMemory::Megabyte()
+{
+    return 1024 * Kilobyte();
+}
+//----------------------------------------------------------------------------------------
+constexpr ThSize ThMemory::Gigabyte()
+{
+    return 1024 * Megabyte();
+}
+//----------------------------------------------------------------------------------------
 void* ThMemory::MemoryCopy(void* destination, const void* source, ThSize numBytes)
 {
 	return memcpy(destination, source, numBytes);

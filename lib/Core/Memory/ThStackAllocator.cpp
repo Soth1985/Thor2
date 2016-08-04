@@ -23,6 +23,12 @@ ThStackAllocator::~ThStackAllocator()
 
 void ThStackAllocator::Init(ThSize size, ThSize alignment, ThiMemoryAllocator* parent)
 {
+    if (m_Memory != nullptr)
+    {
+        THOR_WRN("Allocator %s is already initialized", coreSysLogTag, GetName());
+        return;
+    }
+    
     THOR_ASSERT(size > 0, "Invalid size");
     THOR_ASSERT(size % alignment == 0, "Size must be in multiples of alignment");
     THOR_ASSERT(parent, "Parent allocator must be provided");
@@ -80,9 +86,7 @@ ThSize ThStackAllocator::GetMarker()const
 
 void ThStackAllocator::FreeToMarker(ThSize Marker)
 {
-    if (Marker >= m_Size)
-        m_Marker = 0;
-    else
+    if (Marker < m_Marker)
         m_Marker = Marker;
 }
 
