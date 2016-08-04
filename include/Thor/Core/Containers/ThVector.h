@@ -126,11 +126,9 @@ public:
 		Assign(first, last);
 	}
 
-	ThVector(const ThVector& v)
+	ThVector(const ThVector& v, ThiMemoryAllocator* allocator = nullptr)
 		:
-	m_Size(0),
-	m_Data(0),
-	m_Capacity(0)
+    ThVector(allocator)
 	{
 		*this = v;
 	}
@@ -143,7 +141,9 @@ public:
 	ThVector& operator=(const ThVector& x)
 	{
 		if (!x.Empty())
+        {
 			Assign(x.Begin(), x.End());
+        }
 		else
 			FreeMemory();
 		

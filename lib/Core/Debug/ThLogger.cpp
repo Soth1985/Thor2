@@ -352,7 +352,7 @@ void ThLogger::LogExtended(eMessageSeverity::Val severity, const ThI8* func, con
     va_start(args, id);
     
     m_BufferOffset = strlen(m_Buffer) + 1;
-    ThLogger::Instance().Log(id, m_Buffer, args);
+    Log(id, m_Buffer, args);
     m_BufferOffset = 0;
     
     va_end(args);
@@ -443,7 +443,7 @@ void ThLogger::LogExtended(eMessageSeverity::Val severity, const ThI8* func, con
     va_start(args, id);
     
     m_BufferOffset = wcslen(m_WideBuffer) + 1;
-    ThLogger::Instance().Log(id, m_WideBuffer, args);
+    Log(id, m_WideBuffer, args);
     m_BufferOffset = 0;
     
     va_end(args);

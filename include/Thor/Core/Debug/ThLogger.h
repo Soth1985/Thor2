@@ -5,6 +5,7 @@
 #include <unordered_set>
 #include <stdarg.h>
 #include <mutex>
+#include <Thor/Core/CoreFwd.h>
 #include <Thor/Core/ThiObject.h>
 #include <Thor/Core/Containers/Singleton.h>
 #include <Thor/Core/ThFlags.h>
@@ -13,15 +14,15 @@
 
 //msvc should truncate comma if no extra params without ##__VA_ARGS__
 
-#define THOR_INF(fmt, tag, ...) Thor::ThLogger::Instance().LogExtended(eMessageSeverity::Info, __FUNCTION__, __FILE__, __LINE__, #fmt, #tag, ##__VA_ARGS__)
-#define THOR_WRN(fmt, tag, ...) Thor::ThLogger::Instance().LogExtended(eMessageSeverity::Warning, __FUNCTION__, __FILE__, __LINE__, #fmt, #tag, ##__VA_ARGS__)
-#define THOR_ERR(fmt, tag, ...) Thor::ThLogger::Instance().LogExtended(eMessageSeverity::Error, __FUNCTION__, __FILE__, __LINE__, #fmt, #tag, ##__VA_ARGS__)
-#define THOR_CRT(fmt, tag, ...) Thor::ThLogger::Instance().LogExtended(eMessageSeverity::Critical, __FUNCTION__, __FILE__, __LINE__, #fmt, #tag, ##__VA_ARGS__)
+#define THOR_INF(fmt, tag, ...) Thor::ThLogger::Instance().LogExtended(eMessageSeverity::Info, __FUNCTION__, __FILE__, __LINE__, fmt, tag, ##__VA_ARGS__)
+#define THOR_WRN(fmt, tag, ...) Thor::ThLogger::Instance().LogExtended(eMessageSeverity::Warning, __FUNCTION__, __FILE__, __LINE__, fmt, tag, ##__VA_ARGS__)
+#define THOR_ERR(fmt, tag, ...) Thor::ThLogger::Instance().LogExtended(eMessageSeverity::Error, __FUNCTION__, __FILE__, __LINE__, fmt, tag, ##__VA_ARGS__)
+#define THOR_CRT(fmt, tag, ...) Thor::ThLogger::Instance().LogExtended(eMessageSeverity::Critical, __FUNCTION__, __FILE__, __LINE__, fmt, tag, ##__VA_ARGS__)
 
-#define THOR_INF_W(fmt, tag, ...) Thor::ThLogger::Instance().LogExtended(eMessageSeverity::Info, __FUNCTION__, __FILE__, __LINE__, #fmt, #tag, ##__VA_ARGS__)
-#define THOR_WRN_W(fmt, tag, ...) Thor::ThLogger::Instance().LogExtended(eMessageSeverity::Warning, __FUNCTION__, __FILE__, __LINE__, #fmt, #tag, ##__VA_ARGS__)
-#define THOR_ERR_W(fmt, tag, ...) Thor::ThLogger::Instance().LogExtended(eMessageSeverity::Error, __FUNCTION__, __FILE__, __LINE__, #fmt, #tag, ##__VA_ARGS__)
-#define THOR_CRT_W(fmt, tag, ...) Thor::ThLogger::Instance().LogExtended(eMessageSeverity::Critical, __FUNCTION__, __FILE__, __LINE__, #fmt, #tag, ##__VA_ARGS__)
+#define THOR_INF_W(fmt, tag, ...) Thor::ThLogger::Instance().LogExtended(eMessageSeverity::Info, __FUNCTION__, __FILE__, __LINE__, fmt, tag, ##__VA_ARGS__)
+#define THOR_WRN_W(fmt, tag, ...) Thor::ThLogger::Instance().LogExtended(eMessageSeverity::Warning, __FUNCTION__, __FILE__, __LINE__, fmt, tag, ##__VA_ARGS__)
+#define THOR_ERR_W(fmt, tag, ...) Thor::ThLogger::Instance().LogExtended(eMessageSeverity::Error, __FUNCTION__, __FILE__, __LINE__, fmt, tag, ##__VA_ARGS__)
+#define THOR_CRT_W(fmt, tag, ...) Thor::ThLogger::Instance().LogExtended(eMessageSeverity::Critical, __FUNCTION__, __FILE__, __LINE__, fmt, tag, ##__VA_ARGS__)
 
 namespace Thor{
 //----------------------------------------------------------------------------------------

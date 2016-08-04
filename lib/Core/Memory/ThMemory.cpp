@@ -1,4 +1,5 @@
 #include <Thor/Core/Memory/ThMemory.h>
+#include <Thor/Core/Debug/ThAssert.h>
 #include <stdlib.h>
 #include <malloc/malloc.h>
 
@@ -41,7 +42,12 @@ void* ThMemory::AlignedMalloc(ThSize size, ThSize alignment)
 {	
 #ifdef THOR_PLATFORM_OSX
     void* result = 0;
-    posix_memalign(&result, size, alignment);
+    
+    if (alignment < sizeof (void*))
+        alignment = sizeof (void*);
+    
+    /*int status =*/posix_memalign(&result, alignment, size);
+    THOR_ASSERT(result != nullptr, "Failed to allocate memory");
     return result;
 #elif defined THOR_PLATFORM_WIN
     return _aligned_malloc(size, alignment);

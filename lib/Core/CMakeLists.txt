@@ -28,9 +28,10 @@ set(Core_SRC
     Memory/ThAllocators.cpp
     Memory/ThGrowingPoolAllocator.cpp
     Memory/ThVirtualPoolAllocator.cpp
-    Memory/ThVirtualSmallObjectAllocator.cpp
+    Memory/ThVirtualSmallMemoryAllocator.cpp
     Memory/ThVirtualStackAllocator.cpp
     String/ThStringUtilities.cpp
+    String/ThStringBuilder.cpp
     ThiObject.cpp)
 
 set(Core_H
@@ -72,7 +73,7 @@ set(Core_H
     ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThAllocators.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThGrowingPoolAllocator.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThVirtualPoolAllocator.h
-    ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThVirtualSmallObjectAllocator.h
+    ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThVirtualSmallMemoryAllocator.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThVirtualStackAllocator.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Platform/ThPlatformUtils.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Rtti/ThRttiManager.h
@@ -80,6 +81,7 @@ set(Core_H
     ${THOR_INCLUDE_DIR}/Thor/Core/Rtti/ThiRtti.h
     ${THOR_INCLUDE_DIR}/Thor/Core/SmartPointers/RefPtr.h
     ${THOR_INCLUDE_DIR}/Thor/Core/String/String.h
+    ${THOR_INCLUDE_DIR}/Thor/Core/String/ThStringBuilder.h
     ${THOR_INCLUDE_DIR}/Thor/Core/String/ThStringUtilities.h)
 
 if(THOR_USE_PHYSFS)
