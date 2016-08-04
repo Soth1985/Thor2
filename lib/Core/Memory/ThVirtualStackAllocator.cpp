@@ -19,8 +19,7 @@ m_Marker(0)
 
 ThVirtualStackAllocator::~ThVirtualStackAllocator()
 {
-    ThSize size = (m_NextPage - m_BaseAddress);// / m_PageSize;
-    ThMemory::VmFreeMemory(m_BaseAddress, size);
+    ThMemory::VmFreeMemory(m_BaseAddress, m_Size);
 }
 
 void* ThVirtualStackAllocator::Allocate(ThSize size, ThU32 alignment)
@@ -79,7 +78,7 @@ void ThVirtualStackAllocator::Init(ThSize size, ThSize alignment)
     m_Alignment = alignment;
     m_PageSize = ThMemory::GetPageSize();
     m_BaseAddress = (ThU8*)ThMemory::VmReserveMemory(size);
-    m_NextPage = m_BaseAddress + m_PageSize;
+    m_NextPage = m_BaseAddress;
 }
 
 ThSize ThVirtualStackAllocator::GetMarker()const
@@ -102,9 +101,4 @@ void ThVirtualStackAllocator::Reset()
     ThSize size = (m_NextPage - m_BaseAddress);// / m_PageSize;
     ThMemory::VmDecommitMemory(m_BaseAddress, size);
     m_Marker = 0;
-}
-
-void ThVirtualStackAllocator::AllocatePage()
-{
-    
 }

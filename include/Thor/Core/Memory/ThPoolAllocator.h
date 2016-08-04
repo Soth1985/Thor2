@@ -23,17 +23,17 @@ namespace Thor
         bool IsFilled()const;
         bool IsFree()const;
         ThSize GetChunkSize()const;
-        ThSize GetNumChunks()const;
+        ThU32 GetNumChunks()const;
         ThSize GetAlignment()const;
         ThiMemoryAllocator* GetParentAllocator()const;
         bool IsInPool(ThU8* ptr)const;
     private:
         ThU8* m_Memory;
         ThiMemoryAllocator* m_Parent;
-        ThSize m_NumChunks;
         ThSize m_ChunkSize;
         ThSize m_Alignment;
-        ThSize m_FirstFreeChunk;
-        ThSize m_NumFreeChunks;        
+        ThU32 m_NumChunks;
+        ThU32 m_FirstFreeChunk;
+        ThU32 m_NumFreeChunks;
     };
 }

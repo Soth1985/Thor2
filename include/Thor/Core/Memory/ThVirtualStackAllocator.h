@@ -24,8 +24,6 @@ namespace Thor
         
     private:
         
-        void AllocatePage();
-        
         ThU8* m_BaseAddress;
         ThU8* m_NextPage;
         ThSize m_PageSize;
