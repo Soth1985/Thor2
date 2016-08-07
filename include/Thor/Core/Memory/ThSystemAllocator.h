@@ -12,10 +12,10 @@ namespace Thor
     public:
         ThSystemAllocator(const char* name = nullptr);
         
-        virtual void* Allocate(ThSize size, ThU32 alignment = DEFAULT_ALIGNMENT);
-        virtual void Deallocate(void* ptr);
-        virtual ThSize GetCapacity();
-        virtual ThSize GetTotalAllocated();
+        virtual void* Allocate(ThSize size, ThU32 alignment = DEFAULT_ALIGNMENT)override;
+        virtual void Deallocate(void* ptr)override;
+        virtual ThSize GetCapacity()override;
+        virtual ThSize GetTotalAllocated()override;
     private:
         std::atomic<std::size_t> m_Allocated;
     };

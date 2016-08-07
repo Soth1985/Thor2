@@ -185,10 +185,20 @@ void ThLogger::Log(MessageId id, const ThI8* formatString, va_list args)
 {
     ThI8* buffer = m_Buffer + m_BufferOffset;
     ThI32 bufferSize = m_BufferSize - m_BufferOffset;// * sizeof(ThI8);
-	ThI32 written = vsnprintf(buffer, bufferSize, formatString, args);
+    va_list temp;
+    va_copy(temp, args);
+	ThI32 written = vsnprintf(buffer, bufferSize, formatString, temp);
+    va_end(temp);
+    
+    if (written == -1)
+    {
+        strcpy(buffer, "Encoding error");
+        THOR_ASSERT(0, "Encoding error");
+        return;
+    }
 
 	//if the message is too short for the message, increase its size
-	while(written == -1)
+	while(written >= bufferSize)
 	{		
 		m_BufferSize *= 2;
 
@@ -199,14 +209,27 @@ void ThLogger::Log(MessageId id, const ThI8* formatString, va_list args)
 			//assert(0 && "Invalid log message.");
 			break;
 		}
-
+        
+        bool formatAliases = false;
+        
+        if (formatString >= m_Buffer && formatString < (m_Buffer + m_BufferSize))
+            formatAliases = true;
+        
         ThI8* newBuffer = new ThI8[m_BufferSize];
         strcpy(newBuffer, m_Buffer);
 		delete[] m_Buffer;
 		m_Buffer = newBuffer;
+        
+        if (formatAliases)
+            formatString = m_Buffer;
+        
         buffer = m_Buffer + m_BufferOffset;
         bufferSize = m_BufferSize - m_BufferOffset;// * sizeof(ThI8);
-		written = vsnprintf(buffer, bufferSize, formatString, args);
+		
+        va_list temp;
+        va_copy(temp, args);
+        written = vsnprintf(buffer, bufferSize, formatString, args);
+        va_end(temp);
 	}	
 
 	//write message tag
@@ -229,7 +252,10 @@ void ThLogger::Log(MessageId id, const ThWchar* formatString, va_list args)
 {
     ThWchar* buffer = m_WideBuffer + m_BufferOffset;
     ThI32 bufferSize = m_WideBufferSize - m_BufferOffset;// * sizeof(ThWchar);
-    ThI32 written = std::swprintf(buffer, bufferSize, formatString, args);
+    va_list temp;
+    va_copy(temp, args);
+    ThI32 written = std::swprintf(buffer, bufferSize, formatString, temp);
+    va_end(temp);
 
 	//if the message is too short for the message, increase its size
 	while(written == -1)
@@ -243,13 +269,25 @@ void ThLogger::Log(MessageId id, const ThWchar* formatString, va_list args)
 			break;
 		}
         
+        bool formatAliases = false;
+        
+        if (formatString >= m_WideBuffer && formatString < (m_WideBuffer + m_BufferSize))
+            formatAliases = true;
+        
         ThWchar* newBuffer = new ThWchar[m_WideBufferSize];
         wcscpy(newBuffer, m_WideBuffer);
         delete[] m_WideBuffer;
         m_WideBuffer = newBuffer;
+        
+        if (formatAliases)
+            formatString = m_WideBuffer;
+        
         buffer = m_WideBuffer + m_BufferOffset;
         bufferSize = m_WideBufferSize - m_BufferOffset;// * sizeof(ThWchar);
-		written = std::swprintf(buffer, bufferSize, formatString, args);
+        va_list temp;
+        va_copy(temp, args);
+        written = std::swprintf(buffer, bufferSize, formatString, temp);
+        va_end(temp);
 	}	
 
 	//write message tag

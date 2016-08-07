@@ -88,11 +88,20 @@ public:
     
     static void VmFreeMemory(void* ptr, ThSize size);
     
-    static constexpr ThSize Kilobyte();
+    static constexpr ThSize Kilobyte()
+    {
+        return 1024;
+    }
     
-    static constexpr ThSize Megabyte();
+    static constexpr ThSize Megabyte()
+    {
+        return 1024 * Kilobyte();
+    }
     
-    static constexpr ThSize Gigabyte();
+    static constexpr ThSize Gigabyte()
+    {
+        return 1024 * Megabyte();
+    }
 
 	/*!
 	* \brief

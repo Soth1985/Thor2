@@ -12,7 +12,7 @@ namespace Thor
         ThStackAllocator(const char* name = nullptr);
         ~ThStackAllocator();
         
-        virtual void* Allocate(ThSize size, ThU32 alignment)override;
+        virtual void* Allocate(ThSize size, ThU32 alignment = DEFAULT_ALIGNMENT)override;
         virtual void Deallocate(void* ptr)override;
         virtual ThSize GetCapacity()override;
         virtual ThSize GetTotalAllocated()override;

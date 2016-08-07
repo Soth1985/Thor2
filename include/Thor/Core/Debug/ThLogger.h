@@ -5,6 +5,7 @@
 #include <unordered_set>
 #include <stdarg.h>
 #include <mutex>
+#include <Thor/Core/Debug/ThAssert.h>
 #include <Thor/Core/CoreFwd.h>
 #include <Thor/Core/ThiObject.h>
 #include <Thor/Core/Containers/Singleton.h>

@@ -43,10 +43,16 @@ void* ThMemory::AlignedMalloc(ThSize size, ThSize alignment)
 #ifdef THOR_PLATFORM_OSX
     void* result = 0;
     
-    if (alignment < sizeof (void*))
-        alignment = sizeof (void*);
+    if (alignment == 4)
+        result = malloc(size);
+    else
+    {
+        if (alignment < sizeof (void*))
+            alignment = sizeof (void*);
+        
+        /*int status =*/posix_memalign(&result, alignment, size);
+    }    
     
-    /*int status =*/posix_memalign(&result, alignment, size);
     THOR_ASSERT(result != nullptr, "Failed to allocate memory");
     return result;
 #elif defined THOR_PLATFORM_WIN
@@ -124,21 +130,6 @@ void ThMemory::VmFreeMemory(void* ptr, ThSize size)
 #elif defined THOR_PLATFORM_WIN
     VirtualFree((void*)addr, 0, MEM_RELEASE);
 #endif
-}
-//----------------------------------------------------------------------------------------
-constexpr ThSize ThMemory::Kilobyte()
-{
-    return 1024;
-}
-//----------------------------------------------------------------------------------------
-constexpr ThSize ThMemory::Megabyte()
-{
-    return 1024 * Kilobyte();
-}
-//----------------------------------------------------------------------------------------
-constexpr ThSize ThMemory::Gigabyte()
-{
-    return 1024 * Megabyte();
 }
 //----------------------------------------------------------------------------------------
 void* ThMemory::MemoryCopy(void* destination, const void* source, ThSize numBytes)

@@ -31,7 +31,6 @@ void ThStackAllocator::Init(ThSize size, ThSize alignment, ThiMemoryAllocator* p
     
     THOR_ASSERT(size > 0, "Invalid size");
     THOR_ASSERT(size % alignment == 0, "Size must be in multiples of alignment");
-    THOR_ASSERT(parent, "Parent allocator must be provided");
     
     m_Size = size;
     m_Alignment = alignment;
@@ -51,7 +50,14 @@ void* ThStackAllocator::Allocate(ThSize size, ThU32 alignment)
     THOR_ASSERT(m_Alignment == alignment, "Invalid alignment");
     
     ThU8* currentPos = &m_Memory[m_Marker];
-    ThSize newMarker = m_Marker + size + (alignment - size % alignment);
+    ThSize offset = size % alignment;
+    
+    if (offset != 0)
+        offset = alignment - offset;
+    else
+        offset = 0;
+    
+    ThSize newMarker = m_Marker + size + offset;
     if (newMarker > m_Size)
     {
         THOR_WRN("Stack allocator %s is out of memory", coreSysLogTag, GetName());

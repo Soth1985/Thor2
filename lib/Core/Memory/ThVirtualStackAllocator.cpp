@@ -26,7 +26,14 @@ void* ThVirtualStackAllocator::Allocate(ThSize size, ThU32 alignment)
 {
     ThU8* currentPos = &m_BaseAddress[m_Marker];
     ThU8* endPos = &m_BaseAddress[m_Size];
-    ThSize newMarker = m_Marker + size + (alignment - size % alignment);
+    ThSize offset = size % alignment;
+    
+    if (offset != 0)
+        offset = alignment - offset;
+    else
+        offset = 0;
+    
+    ThSize newMarker = m_Marker + size + offset;
     ThU8* newPos = &m_BaseAddress[newMarker];
     
     if (newPos > endPos)
