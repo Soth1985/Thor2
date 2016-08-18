@@ -70,10 +70,10 @@ public:
 		:mx( DataT(0.0) ),my( DataT(0.0) ),mz( DataT(0.0) ),mw( DataT(0.0) )
 	{};
 
-	template< class _T, class _TagT >
-	THOR_INLINE ThFixedVecContainer( const ThFixedVecContainer<_T,4,_TagT>& copy )
-		:mx( DataT(copy.mx) ),my( DataT(copy.my) ),mz( DataT(copy.mz) ),mw( DataT(copy.mw) )
-	{};
+	//template< class _T, class _TagT >
+	//THOR_INLINE ThFixedVecContainer( const ThFixedVecContainer<_T,4,_TagT>& copy )
+	//	:mx( DataT(copy.mx) ),my( DataT(copy.my) ),mz( DataT(copy.mz) ),mw( DataT(copy.mw) )
+	//{};
 
 	template< class _T, class _TagT >
 	THOR_INLINE ThFixedVecContainer( const ThFixedVector<_T,3,_TagT>& vec, const DataT& w_ )
@@ -187,9 +187,9 @@ public:
 	THOR_INLINE ThFixedVecContainer():mx( DataT(0.0) ),my( DataT(0.0) ),mz( DataT(0.0) )
 	{};
 	
-    template< class _T, class _TagT >
-	THOR_INLINE ThFixedVecContainer( const ThFixedVecContainer<_T,3,_TagT>& copy ):mx( copy.mx ),my( copy.my ),mz( copy.mz )
-	{};
+    //template< class _T, class _TagT >
+	//THOR_INLINE ThFixedVecContainer( const ThFixedVecContainer<_T,3,_TagT>& copy ):mx( copy.mx ),my( copy.my ),mz( copy.mz )
+	//{};
 
 	THOR_INLINE ThFixedVecContainer( const DataT& x_, const DataT& y_, const DataT& z_ )
 		:mx(x_),my(y_),mz(z_)
@@ -276,9 +276,10 @@ public:
 	
 	THOR_INLINE ThFixedVecContainer():mx( DataT(0.0) ),my( DataT(0.0) )
 	{};
-	template< class _T, class _TagT >
-	THOR_INLINE ThFixedVecContainer( const ThFixedVecContainer<_T,2,_TagT>& copy ):mx( copy.mx ),my( copy.my )
-	{};
+	
+    //template< class _T, class _TagT >
+	//THOR_INLINE ThFixedVecContainer( const ThFixedVecContainer<_T,2,_TagT>& copy ):mx( copy.mx ),my( copy.my )
+	//{};
 
 	THOR_INLINE ThFixedVecContainer( const DataT& x_, const DataT& y_ )
 		:mx(x_),my(y_)
@@ -344,14 +345,11 @@ class ThFixedVecContainer<float,4,sse4f_vec_tag>
 public:	
 
 	THOR_INLINE ThFixedVecContainer():mx( float(0.0) ),my( float(0.0) ),mz( float(0.0) ),mw( float(0.0) )
-	{
-		//memset(&Vec[0], 0, num_blocks * block_sz * sizeof(DataT) );
-	};
-	template< class _T, class _TagT >
-	THOR_INLINE ThFixedVecContainer( const ThFixedVecContainer<_T,4,_TagT>& copy ):mx( copy.mx ),my( copy.my ),mz( copy.mz ),mw( copy.mw )
-	{
-		//memcpy(&Vec[0], &copy.Vec[0], num_blocks * block_sz * sizeof(DataT) );
-	};
+    {};
+    
+	//template< class _T, class _TagT >
+	//THOR_INLINE ThFixedVecContainer( const ThFixedVecContainer<_T,4,_TagT>& copy ):mx( copy.mx ),my( copy.my ),mz( copy.mz ),mw( copy.mw )
+	//{};
 
 	THOR_INLINE ThFixedVecContainer( const float& x_, const float& y_, const float& z_, const float& w_ )
 		:mx(x_),my(y_),mz(z_),mw(w_)
@@ -578,8 +576,8 @@ public:
 		:container_t(v0,v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15)
 	{};
 	
-	template< class _T, class _TagT >
-	ThFixedVector( const ThFixedVector<_T,sz,_TagT>& copy ):container_t(copy){};
+	//template< class _T, class _TagT >
+	//ThFixedVector( const ThFixedVector<_T,sz,_TagT>& copy ):container_t(copy){};
 	//assigns all elements of the vector to s
 	template < class RealT >
 	inline ThListConstructor< iterator, DataT > operator=(const RealT& s)

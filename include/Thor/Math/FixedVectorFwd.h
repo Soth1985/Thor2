@@ -19,7 +19,7 @@ typedef ThFixedVector< ThI32,4,generic_vec_tag > ThSseVec4i;
 typedef ThFixedVector< ThF32,4 > ThVec4f;
 typedef ThFixedVector< ThF32,3 > ThVec3f;
 typedef ThFixedVector< ThF32,2 > ThVec2f;
-typedef ThFixedVector< ThF32,4,quaternion_tag > ThQuat;
+typedef ThFixedVector< ThF32,4,quaternion_tag > ThQuatf;
 
 typedef ThFixedVector< ThI32,4 > ThVec4i;
 typedef ThFixedVector< ThI32,3 > ThVec3i;

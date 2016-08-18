@@ -13,15 +13,15 @@ template <
 		 >
 class ThFixedMatrix;
 
-typedef ThFixedMatrix<float,4,4> ThMat4x4;
-typedef ThFixedMatrix<float,3,3> ThMat3x3;
-typedef ThFixedMatrix<float,2,2> ThMat2x2;
-typedef ThFixedMatrix<float,2,3> ThMat2x3;
-typedef ThFixedMatrix<float,2,4> ThMat2x4;
-typedef ThFixedMatrix<float,3,2> ThMat3x2;
-typedef ThFixedMatrix<float,3,4> ThMat3x4;
-typedef ThFixedMatrix<float,4,2> ThMat4x2;
-typedef ThFixedMatrix<float,4,3> ThMat4x3;
+typedef ThFixedMatrix<float,4,4> ThMat4x4f;
+typedef ThFixedMatrix<float,3,3> ThMat3x3f;
+typedef ThFixedMatrix<float,2,2> ThMat2x2f;
+typedef ThFixedMatrix<float,2,3> ThMat2x3f;
+typedef ThFixedMatrix<float,2,4> ThMat2x4f;
+typedef ThFixedMatrix<float,3,2> ThMat3x2f;
+typedef ThFixedMatrix<float,3,4> ThMat3x4f;
+typedef ThFixedMatrix<float,4,2> ThMat4x2f;
+typedef ThFixedMatrix<float,4,3> ThMat4x3f;
 
 typedef ThFixedMatrix<double,4,4> ThMat4x4d;
 typedef ThFixedMatrix<double,3,3> ThMat3x3d;

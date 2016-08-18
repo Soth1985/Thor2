@@ -252,11 +252,11 @@ void TestSSE()
 
 int main()
 {
-    bool pod = std::is_pod<ThVec3f>::value;
-    bool trivial = std::is_trivial<ThVec3f>::value;
-    bool stl = std::is_standard_layout<ThVec3f>::value;
-    bool tvc = std::is_trivially_copyable<ThVec3f>::value;
-    bool tdc = std::is_trivially_default_constructible<ThVec3f>::value;
+    bool tvc1 = std::is_trivially_copyable<ThMat4x4f>::value;
+    bool tvc2 = std::is_trivially_copyable<ThMat3x3f>::value;
+    bool tvc3 = std::is_trivially_copyable<ThVec4f>::value;
+    bool tvc4 = std::is_trivially_copyable<ThVec3f>::value;
+    bool tvc5 = std::is_trivially_copyable<ThVec2f>::value;
 	TestSSE();
 	return 0;
 }

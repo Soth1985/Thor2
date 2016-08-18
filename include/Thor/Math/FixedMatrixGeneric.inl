@@ -637,9 +637,9 @@ TranslateImpl( ThFixedMatrix<T,4,4,TagT>& arg, const VecT& t )
 	arg(3,0) = value_type(0.0);	arg(3,1) = value_type(0.0);	arg(3,2) = value_type(0.0);	arg(3,3) = value_type(1.0);
 }
 
-template< class MatT, class VecT >
+template< class MatT, class TagVT, class DataVT, unsigned int sz >
 THOR_INLINE void
-ScaleImpl( MatT& arg, const VecT& s )
+ScaleImpl( MatT& arg, const ThFixedVector<DataVT, sz, TagVT>& s )
 {
 	//typedef typename FixedMatrix<T,4,4,TagT>::value_type value_type;	
 
@@ -648,6 +648,19 @@ ScaleImpl( MatT& arg, const VecT& s )
 	arg(0,0) = s.x();				
 					arg(1,1) = s.y();
 									arg(2,2) = s.z();	
+}
+
+template< class MatT, class RealT >
+THOR_INLINE void
+ScaleImpl( MatT& arg, const RealT& s )
+{
+    //typedef typename FixedMatrix<T,4,4,TagT>::value_type value_type;
+    
+    LoadIdentityImpl( arg );
+    
+    arg(0,0) = s;
+    arg(1,1) = s;
+    arg(2,2) = s;
 }
 
 template< class MatT, class RealT >

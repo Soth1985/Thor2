@@ -81,12 +81,12 @@ public:
 		m30( DataT(0.0) ), m31( DataT(0.0) ), m32( DataT(0.0) ), m33( DataT(1.0) )
 	{};
 	
-	THOR_INLINE ThFixedMatContainer( const ThFixedMatContainer& copy ):
-		m00( copy.m00 ), m01( copy.m01 ), m02( copy.m02 ), m03( copy.m03 ),
-		m10( copy.m10 ), m11( copy.m11 ), m12( copy.m12 ), m13( copy.m13 ),
-		m20( copy.m20 ), m21( copy.m21 ), m22( copy.m22 ), m23( copy.m23 ),
-		m30( copy.m30 ), m31( copy.m31 ), m32( copy.m32 ), m33( copy.m33 )
-	{};
+	//THOR_INLINE ThFixedMatContainer( const ThFixedMatContainer& copy ):
+	//	m00( copy.m00 ), m01( copy.m01 ), m02( copy.m02 ), m03( copy.m03 ),
+	//	m10( copy.m10 ), m11( copy.m11 ), m12( copy.m12 ), m13( copy.m13 ),
+	//	m20( copy.m20 ), m21( copy.m21 ), m22( copy.m22 ), m23( copy.m23 ),
+	//	m30( copy.m30 ), m31( copy.m31 ), m32( copy.m32 ), m33( copy.m33 )
+	//{};
 
 	THOR_INLINE ThFixedMatContainer
 				( 
@@ -179,8 +179,16 @@ public:
 		ScaleImpl( *ptr, s );
 		return *ptr;
 	}
-
-	THOR_INLINE mat_t& 
+    
+    THOR_INLINE mat_t&
+    Scale( const DataT& s )
+    {
+        mat_t* ptr = (mat_t*)this;
+        ScaleImpl( *ptr, s );
+        return *ptr;
+    }
+    
+    THOR_INLINE mat_t& 
 	RotateX( DataT angle )
 	{
 		mat_t* ptr = (mat_t*)this;
@@ -225,8 +233,6 @@ public:
 			Mat[i] = tmp.Mat[i];
 	};
 #endif
-
-	~ThFixedMatContainer(){};
 	
 protected:
 	union
@@ -259,11 +265,11 @@ public:
 		m20( DataT(0.0) ), m21( DataT(0.0) ), m22( DataT(1.0) )
 	{};
 	
-	THOR_INLINE ThFixedMatContainer( const ThFixedMatContainer& copy ):
-		m00( copy.m00 ), m01( copy.m01 ), m02( copy.m02 ),
-		m10( copy.m10 ), m11( copy.m11 ), m12( copy.m12 ),
-		m20( copy.m20 ), m21( copy.m21 ), m22( copy.m22 )
-	{};
+	//THOR_INLINE ThFixedMatContainer( const ThFixedMatContainer& copy ):
+	//	m00( copy.m00 ), m01( copy.m01 ), m02( copy.m02 ),
+	//	m10( copy.m10 ), m11( copy.m11 ), m12( copy.m12 ),
+	//	m20( copy.m20 ), m21( copy.m21 ), m22( copy.m22 )
+	//{};
 
 	THOR_INLINE ThFixedMatContainer
 				( 
@@ -390,10 +396,10 @@ public:
 		m10( DataT(0.0) ), m11( DataT(1.0) )
 	{};
 	
-	THOR_INLINE ThFixedMatContainer( const ThFixedMatContainer& copy ):
-		m00( copy.m00 ), m01( copy.m01 ),
-		m10( copy.m10 ), m11( copy.m11 )
-	{};
+	//THOR_INLINE ThFixedMatContainer( const ThFixedMatContainer& copy ):
+	//	m00( copy.m00 ), m01( copy.m01 ),
+	//	m10( copy.m10 ), m11( copy.m11 )
+	//{};
 
 	THOR_INLINE ThFixedMatContainer
 				( 
@@ -569,7 +575,7 @@ public:
 		:container_t(v0,v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15)
 	{};
 	
-	ThFixedMatrix( const ThFixedMatrix& copy ):container_t(copy){};	
+	//ThFixedMatrix( const ThFixedMatrix& copy ):container_t(copy){};
 	//assigns all elements of the vector to s
 	template < class RealT >
 	inline ThListConstructor< iterator, DataT > operator=(const RealT& s)
