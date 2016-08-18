@@ -11,11 +11,11 @@ namespace Thor{
 //////////////////////////
 //Quaternion decl
 template <
-			class DataT,class AllocatorT
+			class DataT
 		 >
-class ThFixedVecContainer<DataT,4,quaternion_tag,AllocatorT> : public AllocatorT
+class ThFixedVecContainer<DataT,4,quaternion_tag>
 {
-	typedef ThFixedVector<DataT,4,quaternion_tag,AllocatorT> quat_t;
+	typedef ThFixedVector<DataT,4,quaternion_tag> quat_t;
 
 	template <class MatT>
 	void MakeMatrix( MatT& mat ) const
@@ -58,8 +58,8 @@ public:
 		Rotate(w_, x_, y_, z_);
 	};
 
-	template< class T, class TagT, class AllocT >
-	THOR_INLINE ThFixedVecContainer( const DataT& angle, const ThFixedVector<T,3,TagT,AllocT>& vec )		
+	template< class T, class TagT >
+	THOR_INLINE ThFixedVecContainer( const DataT& angle, const ThFixedVector<T,3,TagT>& vec )
 	{
 		Rotate( angle, vec );
 	};
@@ -118,9 +118,9 @@ public:
 		return *(quat_t*)(this);
 	};
 	
-	template < class VdT,class TagT, class AllocT >
+	template < class VdT,class TagT >
 	THOR_INLINE quat_t& 
-	Rotate(DataT theta, ThFixedVector<VdT,3,TagT,AllocT> axis) 
+	Rotate(DataT theta, ThFixedVector<VdT,3,TagT> axis)
 	{
 		axis.Normalize();
 		theta = Math::DegToRad(theta) * DataT(0.5);
@@ -136,9 +136,8 @@ public:
 	};
 	
 	THOR_INLINE quat_t& 
-	Rotate(DataT theta,DataT _x,DataT _y,DataT _z) 
+	Rotate(DataT theta, DataT _x, DataT _y, DataT _z)
 	{
-		
 		theta = Math::DegToRad(theta) * DataT(0.5);
 		DataT s,c;
 		Math::SinCos(theta,s,c);	
@@ -195,21 +194,21 @@ public:
 		return result;
 	}
 
-	ThFixedMatrix<DataT,3,3,generic_mat_tag,AllocatorT> ToMat3x3() const 
+	ThFixedMatrix<DataT,3,3,generic_mat_tag> ToMat3x3() const
 	{
-		ThFixedMatrix<DataT,3,3,generic_mat_tag,AllocatorT>	mat;
+		ThFixedMatrix<DataT,3,3,generic_mat_tag>	mat;
 		MakeMatrix(mat);
 		return mat;		
 	}
 	/////////////////////////////////////////////////////////////////////////////
-	ThFixedMatrix<DataT,4,4,generic_mat_tag,AllocatorT> ToMat4x4() const 
+	ThFixedMatrix<DataT,4,4,generic_mat_tag> ToMat4x4() const
 	{
-		ThFixedMatrix<DataT,4,4,generic_mat_tag,AllocatorT>	mat;
+		ThFixedMatrix<DataT,4,4,generic_mat_tag>	mat;
 		MakeMatrix(mat);
 		return mat;		
 	}
 
-	ThEulerAngles<DataT,AllocatorT> ToAngles() const 
+	ThEulerAngles<DataT> ToAngles() const
 	{
 		// Extract sin(pitch)
 		DataT sp = DataT(-2.0) * (my*mz - mw*mx), heading, pitch, bank;
@@ -228,7 +227,7 @@ public:
 			bank	= Math::Atan2(mx * my + mw * mz, DataT(0.5) - mx * mx - mz * mz);
 		}
 
-		return ThEulerAngles<DataT,AllocatorT>(Math::RadToDeg(heading), Math::RadToDeg(pitch), Math::RadToDeg(bank));
+		return ThEulerAngles<DataT>(Math::RadToDeg(heading), Math::RadToDeg(pitch), Math::RadToDeg(bank));
 	}
 #ifdef USE_VECTOR_EXPRESSION_TEMPLATES
 	template < class ExprT >

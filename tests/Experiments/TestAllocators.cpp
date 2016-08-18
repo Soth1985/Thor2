@@ -59,10 +59,32 @@ void TestStackAllocator()
     THOR_INF("Allocator %s bufferSize = %d allocSize = %d capacity = %d totalAllocated = %d numAllocs = %d", logTag, allocator.GetName(), bufferSize, allocSize, capacity, totalAllocated, numAllocs);
 }
 
+class Test
+{
+public:
+    virtual ~Test(){}
+    int i;
+private:
+    int j;
+};
+
+class TestDerived : public Test
+{
+public:
+    struct Std
+    {
+        int k;
+        int l;
+    };
+    Std s;
+};
+
 int main()
 {
     THOR_INF("Program has started", logTag );
     TestVirtualStackAllocator();
     TestStackAllocator();
+    ThSize offI = offsetof(Test, i);
+    ThSize offL = offsetof(TestDerived::Std, l);
 	return 0;
 }

@@ -10,10 +10,11 @@ namespace Thor{
 	 * Represents a ray with an origin and unit direction.
 	 * 
 	 */
-	template<class RealT>
+	template<class Vec3>
 	class ThRayT
 	{
 	public:
+        typedef typename Vec3::value_type value_type;
 		/*!
 		 * \brief
 		 * Returns ray origin.
@@ -22,7 +23,7 @@ namespace Thor{
 		 * Returns ray origin.
 		 * 
 		 */
-		THOR_INLINE ThVec3& Origin() 
+		THOR_INLINE Vec3& Origin()
 		{
 			return origin;
 		}
@@ -34,7 +35,7 @@ namespace Thor{
 		* Returns ray origin.
 		* 
 		*/
-		THOR_INLINE const ThVec3& Origin() const
+		THOR_INLINE const Vec3& Origin() const
 		{
 			return origin;
 		}
@@ -47,7 +48,7 @@ namespace Thor{
 		 * New ray direction.
 		 * 
 		 */
-		THOR_INLINE void SetDirection(const ThVec3& d)
+		THOR_INLINE void SetDirection(const Vec3& d)
 		{
 			direction = d;
 			direction.Normalize();
@@ -60,7 +61,7 @@ namespace Thor{
 		 * \returns
 		 * Returns ray direction.		
 		 */
-		THOR_INLINE const ThVec3& GetDirection() const
+		THOR_INLINE const Vec3& GetDirection() const
 		{
 			return direction;
 		}
@@ -77,24 +78,24 @@ namespace Thor{
 		 * 
 		 * 
 		 */
-		ThVec3 ProjectPoint(const ThVec3& p) const
+		Vec3 ProjectPoint(const Vec3& p) const
 		{
-			ThVec3 v = p - origin;
-			RealT d = direction * v;
+			Vec3 v = p - origin;
+			value_type d = direction * v;
 			return origin + d * direction;
 		}
 
-		ThVec3 Point(RealT t)const
+		Vec3 Point(value_type t)const
 		{
 			return origin + t * direction;
 		}
 
-		ThVec3 operator()(RealT t)const
+		Vec3 operator()(value_type t)const
 		{
 			return origin + t * direction;
 		}
 
-		ThRayT(const ThVec3& origin_, const ThVec3& direction_)
+		ThRayT(const Vec3& origin_, const Vec3& direction_)
 			:origin(origin_),direction(direction_)
 		{
 			direction.Normalize();
@@ -105,14 +106,14 @@ namespace Thor{
 		 * Ray origin.
 		 * 
 		 */
-		ThVec3 origin;
+		Vec3 origin;
 		/*!
 		 * \brief
 		 * Ray direction.
 		 * 
 		 */
-		ThVec3 direction;
+		Vec3 direction;
 	};
 
-	typedef ThRayT<ThF32> ThRay;
+	typedef ThRayT<ThVec3f> ThRayf;
 }//Thor

@@ -226,8 +226,8 @@ THOR_INLINE void LoadDiagImpl( MatT& arg, const RealT d )
  * 
  * 
  */
-template< class T, unsigned int r, class TagT, class AllocT >
-THOR_INLINE void TransposeImpl( ThFixedMatrix<T,r,r,TagT,AllocT>& arg )
+template< class T, unsigned int r, class TagT >
+THOR_INLINE void TransposeImpl( ThFixedMatrix<T,r,r,TagT>& arg )
 {
 	for ( unsigned int i = 0; i < r; ++i )
 	{
@@ -255,10 +255,10 @@ THOR_INLINE void TransposeImpl( ThFixedMatrix<T,r,r,TagT,AllocT>& arg )
  * 
  * 
  */
-template< class T, unsigned int r, unsigned int c, class TagT, class AllocT >
-THOR_INLINE void TransposeImpl( ThFixedMatrix<T,r,c,TagT,AllocT>& arg )
+template< class T, unsigned int r, unsigned int c, class TagT >
+THOR_INLINE void TransposeImpl( ThFixedMatrix<T,r,c,TagT>& arg )
 {
-	ThFixedMatrix<T,c,r,TagT,AllocT> temp;
+	ThFixedMatrix<T,c,r,TagT> temp;
 	for ( unsigned int i = 0; i < arg.Rows(); ++i )
 	{
 		for ( unsigned int j = 0; j < arg.Coloumns(); ++j )
@@ -270,20 +270,20 @@ THOR_INLINE void TransposeImpl( ThFixedMatrix<T,r,c,TagT,AllocT>& arg )
 	//return temp;
 };
 
-template< class T, unsigned int r, class TagT, class AllocT >
+template< class T, unsigned int r, class TagT >
 THOR_INLINE T 
-DeterminantImpl( ThFixedMatrix<T,r,r,TagT,AllocT>& arg )
+DeterminantImpl( ThFixedMatrix<T,r,r,TagT>& arg )
 {
 	
 	///TODO: implement generic matrix determinant calculation
 };
 
-template< class T, class TagT, class AllocT >
+template< class T, class TagT >
 THOR_INLINE T 
-DeterminantImpl( ThFixedMatrix<T,4,4,TagT,AllocT>& arg )
+DeterminantImpl( ThFixedMatrix<T,4,4,TagT>& arg )
 {
 	
-	typedef ThFixedMatrix<T,4,4,TagT,AllocT> mat_t;
+	typedef ThFixedMatrix<T,4,4,TagT> mat_t;
 	typedef typename mat_t::value_type value_type;
 	value_type pairs[6], diff[3], tM[4];
 	//mat_t tM;
@@ -322,18 +322,18 @@ DeterminantImpl( ThFixedMatrix<T,4,4,TagT,AllocT>& arg )
 	return tM[0] * arg(0,0) + tM[1] * arg(0,1) + tM[2] * arg(0,2) + tM[3] * arg(0,3);
 };
 
-template< class T, class TagT, class AllocT >
+template< class T, class TagT >
 THOR_INLINE T 
-DeterminantImpl( ThFixedMatrix<T,3,3,TagT,AllocT>& arg )
+DeterminantImpl( ThFixedMatrix<T,3,3,TagT>& arg )
 {
 	return	arg(0,0) * ( arg(1,1) * arg(2,2) - arg(1,2) * arg(2,1) ) +
 			arg(0,1) * ( arg(1,2) * arg(2,0) - arg(1,0) * arg(2,2) ) +
 			arg(0,2) * ( arg(1,0) * arg(2,1) - arg(1,1) * arg(2,0) );
 }
 
-template< class T, class TagT, class AllocT >
+template< class T, class TagT >
 THOR_INLINE T 
-DeterminantImpl( ThFixedMatrix<T,2,2,TagT,AllocT>& arg )
+DeterminantImpl( ThFixedMatrix<T,2,2,TagT>& arg )
 {
 	return arg(0,0) * arg(1,1) - arg(0,1) * arg(1,0);
 }
@@ -353,9 +353,9 @@ DeterminantImpl( ThFixedMatrix<T,2,2,TagT,AllocT>& arg )
  * This function works only with square matrices.
  * 
  */
-template< class T, unsigned int r, class TagT, class AllocT >
+template< class T, unsigned int r, class TagT >
 THOR_INLINE T 
-InverseImpl( ThFixedMatrix<T,r,r,TagT,AllocT>& arg)
+InverseImpl( ThFixedMatrix<T,r,r,TagT>& arg)
 {
 	
 	///TODO: implement generic matrix inversion algorithm
@@ -364,11 +364,11 @@ InverseImpl( ThFixedMatrix<T,r,r,TagT,AllocT>& arg)
 };
 
 //invert a 4x4 matrix
-template< class T, class TagT, class AllocT >
+template< class T, class TagT >
 THOR_INLINE T
-InverseImpl( ThFixedMatrix<T,4,4,TagT,AllocT>& arg )
+InverseImpl( ThFixedMatrix<T,4,4,TagT>& arg )
 {
-	typedef ThFixedMatrix<T,4,4,TagT,AllocT> mat_t;
+	typedef ThFixedMatrix<T,4,4,TagT> mat_t;
 	typedef typename mat_t::value_type value_type;
 	value_type det, resdet;
 	value_type pairs[6], diff[6];
@@ -476,11 +476,11 @@ InverseImpl( ThFixedMatrix<T,4,4,TagT,AllocT>& arg )
 		return resdet;
 };
 //inverse 3x3 matrix
-template< class T, class TagT, class AllocT >
+template< class T, class TagT >
 THOR_INLINE T
-InverseImpl( ThFixedMatrix<T,3,3,TagT,AllocT>& arg )
+InverseImpl( ThFixedMatrix<T,3,3,TagT>& arg )
 {
-	typedef ThFixedMatrix<T,3,3,TagT,AllocT> mat_t;
+	typedef ThFixedMatrix<T,3,3,TagT> mat_t;
 	typedef typename mat_t::value_type value_type;
 	value_type det, retdet;
 	mat_t temp;
@@ -514,11 +514,11 @@ InverseImpl( ThFixedMatrix<T,3,3,TagT,AllocT>& arg )
 };
 
 //inverse 2x2 matrix
-template< class T, class TagT, class AllocT >
+template< class T, class TagT >
 THOR_INLINE T
-InverseImpl( ThFixedMatrix<T,2,2,TagT,AllocT>& arg )
+InverseImpl( ThFixedMatrix<T,2,2,TagT>& arg )
 {
-	typedef ThFixedMatrix<T,2,2,TagT,AllocT> mat_t;
+	typedef ThFixedMatrix<T,2,2,TagT> mat_t;
 	typedef typename mat_t::value_type value_type;
 	value_type det, retdet;
 
@@ -538,11 +538,11 @@ InverseImpl( ThFixedMatrix<T,2,2,TagT,AllocT>& arg )
 	return retdet;
 };
 
-template< class T, class TagT, class AllocT, class RealT >
+template< class T, class TagT, class RealT >
 THOR_INLINE void
-PerspectiveImpl( ThFixedMatrix<T,4,4,TagT,AllocT>& arg, RealT fovy, RealT aspect, RealT zNear, RealT zFar )
+PerspectiveImpl( ThFixedMatrix<T,4,4,TagT>& arg, RealT fovy, RealT aspect, RealT zNear, RealT zFar )
 {
-	typedef typename ThFixedMatrix<T,4,4,TagT,AllocT>::value_type value_type;
+	typedef typename ThFixedMatrix<T,4,4,TagT>::value_type value_type;
 	value_type f=Math::Cotan( fovy / value_type(2.0) );
 	/*value_type inv = value_type(1.0) / (zNear-zFar);
 
@@ -559,11 +559,11 @@ PerspectiveImpl( ThFixedMatrix<T,4,4,TagT,AllocT>& arg, RealT fovy, RealT aspect
 	arg(3,0) = value_type(0.0);	arg(3,1) = value_type(0.0);	arg(3,2) = -value_type(1.0);		arg(3,3) = value_type(0.0);
 };
 
-template< class T, class TagT, class AllocT, class RealT >
+template< class T, class TagT, class RealT >
 THOR_INLINE void
-OrthoImpl( ThFixedMatrix<T,4,4,TagT,AllocT>& arg, RealT left, RealT right, RealT bottom, RealT top, RealT zNear, RealT zFar )
+OrthoImpl( ThFixedMatrix<T,4,4,TagT>& arg, RealT left, RealT right, RealT bottom, RealT top, RealT zNear, RealT zFar )
 {
-	typedef typename ThFixedMatrix<T,4,4,TagT,AllocT>::value_type value_type;
+	typedef typename ThFixedMatrix<T,4,4,TagT>::value_type value_type;
 	value_type rl = value_type(1.0) / (right - left);
 	value_type tb = value_type(1.0) / (top - bottom);
 	value_type fn = value_type(1.0) / (zFar - zNear);
@@ -574,11 +574,11 @@ OrthoImpl( ThFixedMatrix<T,4,4,TagT,AllocT>& arg, RealT left, RealT right, RealT
 	arg(3,0) = value_type(0.0);			arg(3,1) = value_type(0.0);			arg(3,2) = value_type(0.0);			arg(3,3) = value_type(1.0);
 };
 
-template< class T, class TagT, class AllocT, class RealT >
+template< class T, class TagT, class RealT >
 THOR_INLINE void
-PerspectiveDXImpl( ThFixedMatrix<T,4,4,TagT,AllocT>& arg, RealT fovy, RealT aspect, RealT zNear, RealT zFar )
+PerspectiveDXImpl( ThFixedMatrix<T,4,4,TagT>& arg, RealT fovy, RealT aspect, RealT zNear, RealT zFar )
 {
-	typedef typename ThFixedMatrix<T,4,4,TagT,AllocT>::value_type value_type;
+	typedef typename ThFixedMatrix<T,4,4,TagT>::value_type value_type;
 
 	value_type yScale = Math::Cotan( fovy / value_type(2.0) );
 	value_type xScale = yScale / aspect;
@@ -591,11 +591,11 @@ PerspectiveDXImpl( ThFixedMatrix<T,4,4,TagT,AllocT>& arg, RealT fovy, RealT aspe
 	arg(3,0) = value_type(0.0);		arg(3,1) = value_type(0.0);		arg(3,2) = -value_type(1.0);	arg(3,3) = value_type(0.0);
 };
 
-template< class T, class TagT, class AllocT, class RealT >
+template< class T, class TagT, class RealT >
 THOR_INLINE void
-OrthoDXImpl( ThFixedMatrix<T,4,4,TagT,AllocT>& arg, RealT left, RealT right, RealT bottom, RealT top, RealT zNear, RealT zFar )
+OrthoDXImpl( ThFixedMatrix<T,4,4,TagT>& arg, RealT left, RealT right, RealT bottom, RealT top, RealT zNear, RealT zFar )
 {
-	typedef typename ThFixedMatrix<T,4,4,TagT,AllocT>::value_type value_type;
+	typedef typename ThFixedMatrix<T,4,4,TagT>::value_type value_type;
 	value_type rl = value_type(1.0) / (right - left);
 	value_type tb = value_type(1.0) / (top - bottom);
 	value_type nf = value_type(1.0) / (zNear - zFar);
@@ -607,11 +607,11 @@ OrthoDXImpl( ThFixedMatrix<T,4,4,TagT,AllocT>& arg, RealT left, RealT right, Rea
 
 };
 
-template< class T, class TagT, class AllocT, class VecT >
+template< class T, class TagT, class VecT >
 THOR_INLINE void
-LookAtImpl( ThFixedMatrix<T,4,4,TagT,AllocT>& arg, const VecT& eye_ , const VecT& center_ , const VecT& up_ )
+LookAtImpl( ThFixedMatrix<T,4,4,TagT>& arg, const VecT& eye_ , const VecT& center_ , const VecT& up_ )
 {
-	typedef typename ThFixedMatrix<T,4,4,TagT,AllocT>::value_type value_type;
+	typedef typename ThFixedMatrix<T,4,4,TagT>::value_type value_type;
 	VecT eye = center_ - eye_;//f
 	eye.Normalize();
 	VecT up(up_);
@@ -625,11 +625,11 @@ LookAtImpl( ThFixedMatrix<T,4,4,TagT,AllocT>& arg, const VecT& eye_ , const VecT
 	arg(3,0) = value_type(0.0);	arg(3,1) = value_type(0.0);	arg(3,2) = value_type(0.0);	arg(3,3) = value_type(1.0);
 }
 
-template< class T, class TagT, class AllocT, class VecT >
+template< class T, class TagT, class VecT >
 THOR_INLINE void
-TranslateImpl( ThFixedMatrix<T,4,4,TagT,AllocT>& arg, const VecT& t )
+TranslateImpl( ThFixedMatrix<T,4,4,TagT>& arg, const VecT& t )
 {
-	typedef typename ThFixedMatrix<T,4,4,TagT,AllocT>::value_type value_type;	
+	typedef typename ThFixedMatrix<T,4,4,TagT>::value_type value_type;
 
 	arg(0,0) = value_type(1.0);	arg(0,1) = value_type(0.0);	arg(0,2) = value_type(0.0);	arg(0,3) = t.x();
 	arg(1,0) = value_type(0.0);	arg(1,1) = value_type(1.0);	arg(1,2) = value_type(0.0);	arg(1,3) = t.y();
@@ -641,7 +641,7 @@ template< class MatT, class VecT >
 THOR_INLINE void
 ScaleImpl( MatT& arg, const VecT& s )
 {
-	//typedef typename FixedMatrix<T,4,4,TagT,AllocT>::value_type value_type;	
+	//typedef typename FixedMatrix<T,4,4,TagT>::value_type value_type;	
 
 	LoadIdentityImpl( arg );
 

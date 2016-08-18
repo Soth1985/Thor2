@@ -1,8 +1,8 @@
 /////////////////////////////////////////////////////
 
 //product of 2 quaternions res=q1%q2
-template< class T1, class AllocT1, class T2, class AllocT2, class ResT >
-THOR_INLINE void VecModulus( const ThFixedVector<T1,4,quaternion_tag,AllocT1>& lhs, const ThFixedVector<T2,4,quaternion_tag,AllocT2>& rhs, ResT& res )
+template< class T1, class T2, class ResT >
+THOR_INLINE void VecModulus( const ThFixedVector<T1,4,quaternion_tag>& lhs, const ThFixedVector<T2,4,quaternion_tag>& rhs, ResT& res )
 {	
 	res.x() = lhs.w() * rhs.x() + lhs.x() * rhs.w() + lhs.z() * rhs.y() - lhs.y() * rhs.z();
 	res.y() = lhs.w() * rhs.y() + lhs.y() * rhs.w() + lhs.x() * rhs.z() - lhs.z() * rhs.x();
@@ -11,22 +11,22 @@ THOR_INLINE void VecModulus( const ThFixedVector<T1,4,quaternion_tag,AllocT1>& l
 };
 
 //vec3=vec3^q
-template< class T1, class VecTagT, class Alloc1T, class T2, class Alloc2T >
-THOR_INLINE ThFixedVector<T1,3,VecTagT,Alloc1T>
-operator^(const ThFixedVector<T1,3,VecTagT,Alloc1T> &v, const ThFixedVector<T2,4,quaternion_tag,Alloc2T>& q)
+template< class T1, class VecTagT, class T2 >
+THOR_INLINE ThFixedVector<T1,3,VecTagT>
+operator^(const ThFixedVector<T1,3,VecTagT> &v, const ThFixedVector<T2,4,quaternion_tag>& q)
 {
-	ThFixedVector<T1,3,VecTagT,Alloc1T> tmp;
+	ThFixedVector<T1,3,VecTagT> tmp;
 	//VecXor( v, q, tmp );
 	QuatMulVec(v, q, tmp);
 	return tmp;
 };
 
 //vec4=vec4^q
-template< class T1, class VecTagT, class Alloc1T, class T2, class Alloc2T >
-THOR_INLINE ThFixedVector<T1,4,VecTagT,Alloc1T>
-operator^(const ThFixedVector<T1,4,VecTagT,Alloc1T> &v, const ThFixedVector<T2,4,quaternion_tag,Alloc2T>& q)
+template< class T1, class VecTagT, class T2 >
+THOR_INLINE ThFixedVector<T1,4,VecTagT>
+operator^(const ThFixedVector<T1,4,VecTagT> &v, const ThFixedVector<T2,4,quaternion_tag>& q)
 {
-	ThFixedVector<T1, 4, VecTagT, Alloc1T> tmp;
+	ThFixedVector<T1, 4, VecTagT> tmp;
 	//VecXor( v, q, tmp );
 	QuatMulVec(v, q, tmp);
 	tmp.w() = v.w();
@@ -34,11 +34,11 @@ operator^(const ThFixedVector<T1,4,VecTagT,Alloc1T> &v, const ThFixedVector<T2,4
 };
 
 //vec4=q^vec4
-template< class T1, class VecTagT, class Alloc1T, class T2, class Alloc2T >
-THOR_INLINE ThFixedVector<T1,4,VecTagT,Alloc1T>
-operator^(const ThFixedVector<T1,4,quaternion_tag,Alloc2T>& q, const ThFixedVector<T2,4,VecTagT,Alloc1T> &v)
+template< class T1, class VecTagT, class T2 >
+THOR_INLINE ThFixedVector<T1,4,VecTagT>
+operator^(const ThFixedVector<T1,4,quaternion_tag>& q, const ThFixedVector<T2,4,VecTagT> &v)
 {
-	ThFixedVector<T1, 4, VecTagT, Alloc1T> tmp;
+	ThFixedVector<T1, 4, VecTagT> tmp;
 	//VecXor( v, q, tmp );
 	QuatMulVec(v, q, tmp);
 	tmp.w() = v.w();
@@ -46,11 +46,11 @@ operator^(const ThFixedVector<T1,4,quaternion_tag,Alloc2T>& q, const ThFixedVect
 };
 
 //vec3=q^vec3
-template< class T, class VecTagT, class Alloc1T, class Alloc2T >
-THOR_INLINE ThFixedVector<T,3,VecTagT,Alloc1T>
-operator^(const ThFixedVector<T,4,quaternion_tag,Alloc2T>& q, const ThFixedVector<T,3,VecTagT,Alloc1T> &v)
+template< class T, class VecTagT >
+THOR_INLINE ThFixedVector<T,3,VecTagT>
+operator^(const ThFixedVector<T,4,quaternion_tag>& q, const ThFixedVector<T,3,VecTagT> &v)
 {	
-	ThFixedVector<T,3,VecTagT,Alloc1T> tmp;
+	ThFixedVector<T,3,VecTagT> tmp;
 	//VecXor( v, q, tmp );
 	QuatMulVec(v, q, tmp);
 	return tmp;
@@ -87,24 +87,24 @@ THOR_INLINE void QuatMulVec(const VecT& v, const QuatT& q, ResT& res)
 }
 
 //vec=vec*q
-template< class T1, class TagT, class AllocT1, class T2, class AllocT2, class ResT >
-THOR_INLINE void VecXor( const ThFixedVector<T1,4,TagT,AllocT1>& v, const ThFixedVector<T2,4,quaternion_tag,AllocT2>& q, ResT& res )
+template< class T1, class TagT, class T2, class ResT >
+THOR_INLINE void VecXor( const ThFixedVector<T1,4,TagT>& v, const ThFixedVector<T2,4,quaternion_tag>& q, ResT& res )
 {	
 	//res = q.ToMat4x4() * v;
 };
 
-template< class T1, class TagT, class AllocT1, class T2, class AllocT2, class ResT >
-THOR_INLINE void VecXor( const ThFixedVector<T1,3,TagT,AllocT1>& v, const ThFixedVector<T2,4,quaternion_tag,AllocT2>& q, ResT& res )
+template< class T1, class TagT, class T2, class ResT >
+THOR_INLINE void VecXor( const ThFixedVector<T1,3,TagT>& v, const ThFixedVector<T2,4,quaternion_tag>& q, ResT& res )
 {
 	//res = q.ToMat3x3() * v;
 }
 
 
-template< class T, class AllocT, class RealT >
-THOR_INLINE ThFixedVector<T,4,quaternion_tag,AllocT>
-Slerp(const ThFixedVector<T,4,quaternion_tag,AllocT> &q0, const ThFixedVector<T,4,quaternion_tag,AllocT> &q1,const RealT t) 
+template< class T, class RealT >
+THOR_INLINE ThFixedVector<T,4,quaternion_tag>
+Slerp(const ThFixedVector<T,4,quaternion_tag> &q0, const ThFixedVector<T,4,quaternion_tag> &q1,const RealT t)
 {
-	typedef typename ThFixedVector<T, 4, quaternion_tag,AllocT>::value_type value_type;
+	typedef typename ThFixedVector<T, 4, quaternion_tag>::value_type value_type;
 	// Check for out-of range parameter and return edge points if so
 	if (t <= value_type(0.0) ) 
 		return q0;
@@ -153,7 +153,7 @@ Slerp(const ThFixedVector<T,4,quaternion_tag,AllocT> &q0, const ThFixedVector<T,
 		k1 = Math::Sin(t * omega) * SinOmega;
 	}
 	// Interpolate
-	ThFixedVector<T, 4, quaternion_tag, AllocT> result;
+	ThFixedVector<T, 4, quaternion_tag> result;
 	
 	result.x() = k0 * q0.x() + k1 * q1x;
 	result.y() = k0 * q0.y() + k1 * q1y;
@@ -165,11 +165,11 @@ Slerp(const ThFixedVector<T,4,quaternion_tag,AllocT> &q0, const ThFixedVector<T,
 
 /////////////////////////////////////////////////////////////////////////////
 
-template< class T, class AllocT, class RealT >
-THOR_INLINE ThFixedVector<T,4,quaternion_tag,AllocT>
-Pow(const ThFixedVector<T,4,quaternion_tag,AllocT> &q,const RealT exponent) 
+template< class T, class RealT >
+THOR_INLINE ThFixedVector<T,4,quaternion_tag>
+Pow(const ThFixedVector<T,4,quaternion_tag> &q,const RealT exponent)
 {
-	typedef typename ThFixedVector<T, 4, quaternion_tag, AllocT>::value_type value_type;
+	typedef typename ThFixedVector<T, 4, quaternion_tag>::value_type value_type;
 	// Check for the case of an identity Quaternion.
 	// This will protect against divide by zero
 	if (Math::Abs( q.w() ) > value_type(0.9999) ) 
@@ -181,7 +181,7 @@ Pow(const ThFixedVector<T,4,quaternion_tag,AllocT> &q,const RealT exponent)
 	
 	value_type NewAlpha = alpha * exponent;	
 
-	ThFixedVector<T, 4, quaternion_tag, AllocT> result;
+	ThFixedVector<T, 4, quaternion_tag> result;
 	result.w() = Math::Cos(NewAlpha);
 	
 	value_type mult = Math::Sin(NewAlpha) / Math::Sin(alpha);

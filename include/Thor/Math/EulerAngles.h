@@ -8,8 +8,8 @@
 
 namespace Thor{
 
-template <class RealT,class AllocatorT>
-struct ThEulerAngles: public AllocatorT
+template <class RealT>
+struct ThEulerAngles
 {
 	RealT heading, pitch, bank;//y-x-z
 
@@ -60,7 +60,7 @@ struct ThEulerAngles: public AllocatorT
 	}
 
 	
-	ThFixedVector<RealT,4,quaternion_tag,AllocatorT>
+	ThFixedVector<RealT,4,quaternion_tag>
 	ToQuaternion() const
 	{
 		RealT sh,ch;
@@ -77,7 +77,7 @@ struct ThEulerAngles: public AllocatorT
 		cpcb = cp * cb;
 		shsp = sh * sp;
 
-		ThFixedVector<RealT,4,quaternion_tag,AllocatorT> quat;
+		ThFixedVector<RealT,4,quaternion_tag> quat;
 		quat.x = chsp * cb + sh * cpsb;
 		quat.y = sh * cpcb - chsp * sb;
 		quat.z = ch * cpsb - shsp * cb;
@@ -86,20 +86,20 @@ struct ThEulerAngles: public AllocatorT
 		return quat;
 	}
 	
-	ThFixedMatrix<RealT,4,4,generic_mat_tag,AllocatorT> 
+	ThFixedMatrix<RealT,4,4,generic_mat_tag>
 	ToMat4(void) const
 	{
-		ThFixedMatrix<RealT,4,4,generic_mat_tag,AllocatorT> mat;
+		ThFixedMatrix<RealT,4,4,generic_mat_tag> mat;
 		//mal.LoadIdentity()
 		MakeMatrix( mat );
 		return mat;
 		
 	}
 
-	ThFixedMatrix<RealT,3,3,generic_mat_tag,AllocatorT> 
+	ThFixedMatrix<RealT,3,3,generic_mat_tag>
 	ToMat3(void) const
 	{
-		ThFixedMatrix<RealT,3,3,generic_mat_tag,AllocatorT> mat;
+		ThFixedMatrix<RealT,3,3,generic_mat_tag> mat;
 		//mal.LoadIdentity()
 		MakeMatrix( mat );
 		return mat;
@@ -138,8 +138,8 @@ THOR_INLINE RealT WrapAngle(RealT angle)
 }
 
 //product of a vector and euler angles
-template< class T1, unsigned int sz,class TagT, class AllocT1, class T2, class AllocT2, class ResT >
-THOR_INLINE void VecMulAngles( const ThFixedVector<T1,sz,TagT,AllocT1>& v, const ThEulerAngles<T2,AllocT2>& ea, ResT& res )
+template< class T1, unsigned int sz,class TagT, class T2, class ResT >
+THOR_INLINE void VecMulAngles( const ThFixedVector<T1,sz,TagT>& v, const ThEulerAngles<T2>& ea, ResT& res )
 {
 	typedef typename ResT::value_type value_type;
 	value_type sh,ch;
@@ -160,42 +160,42 @@ THOR_INLINE void VecMulAngles( const ThFixedVector<T1,sz,TagT,AllocT1>& v, const
 }
 
 //vec3=vec3*angles
-template< class T1, class VecTagT, class Alloc1T, class T2, class Alloc2T >
-THOR_INLINE ThFixedVector<T1,3,VecTagT,Alloc1T>
-operator*(const ThFixedVector<T1,3,VecTagT,Alloc1T> &v, const ThEulerAngles<T2,Alloc2T>& a)
+template< class T1, class VecTagT, class T2 >
+THOR_INLINE ThFixedVector<T1,3,VecTagT>
+operator*(const ThFixedVector<T1,3,VecTagT> &v, const ThEulerAngles<T2>& a)
 {
-	ThFixedVector<T1,3,VecTagT,Alloc1T> tmp;
+	ThFixedVector<T1,3,VecTagT> tmp;
 	VecMulAngles( v,a,tmp );
 	return tmp;
 }
 
 //vec4=vec4*angles
-template< class T1, class VecTagT, class Alloc1T, class T2, class Alloc2T >
-THOR_INLINE ThFixedVector<T1,4,VecTagT,Alloc1T>
-operator*(const ThFixedVector<T1,4,VecTagT,Alloc1T> &v, const ThEulerAngles<T2,Alloc2T>& a)
+template< class T1, class VecTagT, class T2 >
+THOR_INLINE ThFixedVector<T1,4,VecTagT>
+operator*(const ThFixedVector<T1,4,VecTagT> &v, const ThEulerAngles<T2>& a)
 {
-	ThFixedVector<T1,4,VecTagT,Alloc1T> tmp;
+	ThFixedVector<T1,4,VecTagT> tmp;
 	VecMulAngles( v,a,tmp );
 	tmp.w = v.w;
 	return tmp;
 }
 
 //vec3=angles*vec3
-template< class T1, class VecTagT, class Alloc1T, class T2, class Alloc2T >
-THOR_INLINE ThFixedVector<T1,3,VecTagT,Alloc1T>
-operator*(const ThEulerAngles<T2,Alloc2T>& a, const ThFixedVector<T1,3,VecTagT,Alloc1T> &v)
+template< class T1, class VecTagT, class T2 >
+THOR_INLINE ThFixedVector<T1,3,VecTagT>
+operator*(const ThEulerAngles<T2>& a, const ThFixedVector<T1,3,VecTagT> &v)
 {
-	ThFixedVector<T1,3,VecTagT,Alloc1T> tmp;
+	ThFixedVector<T1,3,VecTagT> tmp;
 	VecMulAngles( v,a,tmp );
 	return tmp;
 }
 
 //vec4=angles*vec4
-template< class T1, class VecTagT, class Alloc1T, class T2, class Alloc2T >
-THOR_INLINE ThFixedVector<T1,4,VecTagT,Alloc1T>
-operator*(const ThEulerAngles<T2,Alloc2T>& a, const ThFixedVector<T1,4,VecTagT,Alloc1T> &v)
+template< class T1, class VecTagT, class T2 >
+THOR_INLINE ThFixedVector<T1,4,VecTagT>
+operator*(const ThEulerAngles<T2>& a, const ThFixedVector<T1,4,VecTagT> &v)
 {
-	ThFixedVector<T1,4,VecTagT,Alloc1T> tmp;
+	ThFixedVector<T1,4,VecTagT> tmp;
 	VecMulAngles( v,a,tmp );
 	tmp.w = v.w;
 	return tmp;

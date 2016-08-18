@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComponentCompiler", "ComponentCompiler\ComponentCompiler.csproj", "{AD61C548-7080-4D4E-B92C-D9FC07D21A4F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComponentCompilerLib", "ComponentCompilerLib\ComponentCompilerLib.csproj", "{E44C32EA-774A-4CC2-8CA9-6A8D0A4E46A2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreComponents", "CoreComponents\CoreComponents.csproj", "{2EE7E182-0889-413C-93BF-2F7B94D181BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestComponents", "TestComponents\TestComponents.csproj", "{23847920-B0B3-430C-ABAA-FBE68DE1E46E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{23847920-B0B3-430C-ABAA-FBE68DE1E46E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{23847920-B0B3-430C-ABAA-FBE68DE1E46E}.Debug|x86.Build.0 = Debug|Any CPU
+		{23847920-B0B3-430C-ABAA-FBE68DE1E46E}.Release|x86.ActiveCfg = Release|Any CPU
+		{23847920-B0B3-430C-ABAA-FBE68DE1E46E}.Release|x86.Build.0 = Release|Any CPU
+		{2EE7E182-0889-413C-93BF-2F7B94D181BE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2EE7E182-0889-413C-93BF-2F7B94D181BE}.Debug|x86.Build.0 = Debug|Any CPU
+		{2EE7E182-0889-413C-93BF-2F7B94D181BE}.Release|x86.ActiveCfg = Release|Any CPU
+		{2EE7E182-0889-413C-93BF-2F7B94D181BE}.Release|x86.Build.0 = Release|Any CPU
+		{AD61C548-7080-4D4E-B92C-D9FC07D21A4F}.Debug|x86.ActiveCfg = Debug|x86
+		{AD61C548-7080-4D4E-B92C-D9FC07D21A4F}.Debug|x86.Build.0 = Debug|x86
+		{AD61C548-7080-4D4E-B92C-D9FC07D21A4F}.Release|x86.ActiveCfg = Release|x86
+		{AD61C548-7080-4D4E-B92C-D9FC07D21A4F}.Release|x86.Build.0 = Release|x86
+		{E44C32EA-774A-4CC2-8CA9-6A8D0A4E46A2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E44C32EA-774A-4CC2-8CA9-6A8D0A4E46A2}.Debug|x86.Build.0 = Debug|Any CPU
+		{E44C32EA-774A-4CC2-8CA9-6A8D0A4E46A2}.Release|x86.ActiveCfg = Release|Any CPU
+		{E44C32EA-774A-4CC2-8CA9-6A8D0A4E46A2}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <Thor/Math/Allocators.h>
 #include <Thor/Math/ListConstructor.h>
 #ifdef USE_MATRIX_EXPRESSION_TEMPLATES
 	#include <Thor/Math/OpTags.h>
@@ -27,10 +26,9 @@ namespace Thor{
 
 template < 
 			class DataT, unsigned int rows, unsigned int columns,
-			class TagT,
-			class AllocatorT
+			class TagT
 		 >
-class ThFixedMatContainer : public AllocatorT
+class ThFixedMatContainer
 {
 public:
 
@@ -67,13 +65,13 @@ protected:
 //Mat4 decl
 #pragma region Matrix4x4 specialization
 template <
-			class DataT,class AllocatorT
+			class DataT
 		 >
-class ThFixedMatContainer<DataT,4,4,generic_mat_tag,AllocatorT> : public AllocatorT
+class ThFixedMatContainer<DataT,4,4,generic_mat_tag>
 {
-	typedef ThFixedMatrix<DataT,4,4,generic_mat_tag,AllocatorT> mat_t;
-	typedef ThFixedMatrix<DataT,3,3,generic_mat_tag,AllocatorT> mat3_t;
-	typedef ThFixedVector<DataT,3,generic_vec_tag,AllocatorT> vec3_t;
+	typedef ThFixedMatrix<DataT,4,4,generic_mat_tag> mat_t;
+	typedef ThFixedMatrix<DataT,3,3,generic_mat_tag> mat3_t;
+	typedef ThFixedVector<DataT,3,generic_vec_tag> vec3_t;
 public:
 	
 	THOR_INLINE ThFixedMatContainer():
@@ -248,9 +246,9 @@ protected:
 
 #pragma region Matrix3x3 specialization
 template <
-			class DataT,class AllocatorT
+			class DataT
 		 >
-class ThFixedMatContainer<DataT,3,3,generic_mat_tag,AllocatorT> : public AllocatorT
+class ThFixedMatContainer<DataT,3,3,generic_mat_tag>
 {
 	typedef ThFixedVector< DataT,4,quaternion_tag > quat_t;
 public:
@@ -381,9 +379,9 @@ protected:
 
 #pragma region Matrix2x2 specialization
 template <
-			class DataT,class AllocatorT
+			class DataT
 		 >
-class ThFixedMatContainer<DataT,2,2,generic_mat_tag,AllocatorT> : public AllocatorT
+class ThFixedMatContainer<DataT,2,2,generic_mat_tag>
 {
 public:
 	
@@ -436,14 +434,13 @@ protected:
 /////////////////////////
 template < 
 			class DataT, unsigned int rows, unsigned int columns, //rows x columns matrix
-			class TagT,
-			class AllocatorT
+			class TagT
 		 >
-class ThFixedMatrix : public ThFixedMatContainer< DataT, rows, columns, TagT, AllocatorT >
+class ThFixedMatrix : public ThFixedMatContainer< DataT, rows, columns, TagT >
 {
 public:
-	typedef ThFixedMatContainer< DataT, rows, columns, TagT, AllocatorT > container_t;
-	typedef ThFixedMatrix< DataT, rows, columns, TagT, AllocatorT > self_t;
+	typedef ThFixedMatContainer< DataT, rows, columns, TagT > container_t;
+	typedef ThFixedMatrix< DataT, rows, columns, TagT > self_t;
 	typedef DataT value_type;
 
 
@@ -592,41 +589,40 @@ public:
 #else
 	
 	//Mat+Mat
-	template< class _T, class _TagT, class _AllocT >
-	THOR_INLINE ThFixedMatrix operator+(const ThFixedMatrix<_T,rows,columns,_TagT,_AllocT> &m) const
+	template< class _T, class _TagT >
+	THOR_INLINE ThFixedMatrix operator+(const ThFixedMatrix<_T,rows,columns,_TagT> &m) const
 	{
 		ThFixedMatrix tmp;
 		MatAdd( *this, m, tmp );
 		return tmp;
 	};
 	//Mat-Mat
-	template< class _T, class _TagT, class _AllocT >
-	THOR_INLINE ThFixedMatrix operator-(const ThFixedMatrix<_T,rows,columns,_TagT,_AllocT> &m) const
+	template< class _T, class _TagT >
+	THOR_INLINE ThFixedMatrix operator-(const ThFixedMatrix<_T,rows,columns,_TagT> &m) const
 	{
 		ThFixedMatrix tmp;
 		MatSub( *this, m, tmp );
 		return tmp;
 	};
 	//Mat*Mat
-	template< class _T, class _TagT, class _AllocT >
-	THOR_INLINE ThFixedMatrix operator*(const ThFixedMatrix<_T,rows,columns,_TagT,_AllocT> &m) const
+	template< class _T, class _TagT >
+	THOR_INLINE ThFixedMatrix operator*(const ThFixedMatrix<_T,rows,columns,_TagT> &m) const
 	{
 		ThFixedMatrix tmp;
 		MatMulMat( *this, m, tmp );
 		return tmp;
 	};
 	//Mat*Vec
-	template< class TV, class TagTV, class AllocTV >
+	template< class TV, class TagTV >
 	THOR_INLINE 
-	ThFixedVector<TV,columns,TagTV,AllocTV>
-	operator*(const ThFixedVector<TV,columns,TagTV,AllocTV> &v) const
+	ThFixedVector<TV,columns,TagTV>
+	operator*(const ThFixedVector<TV,columns,TagTV> &v) const
 	{
-		ThFixedVector<TV,columns,TagTV,AllocTV> tmp;
+		ThFixedVector<TV,columns,TagTV> tmp;
 		MatMulVec( *this, v, tmp );
 		return tmp;
 	};
 	//Mat*scalar
-	//template< /*class _T, class _TagT, class _AllocT,*/ class RealT >
 	THOR_INLINE ThFixedMatrix operator*(const value_type &s) const
 	{
 		ThFixedMatrix tmp;
@@ -634,7 +630,6 @@ public:
 		return tmp;
 	};
 	//Mat/scalar
-	//template< /*class _T, class _TagT, class _AllocT,*/ class RealT >
 	THOR_INLINE ThFixedMatrix operator/(const value_type &s) const
 	{
 		ThFixedMatrix tmp;
@@ -642,8 +637,8 @@ public:
 		return tmp;
 	};	
 	//-Mat
-	template< class _T, class _TagT, class _AllocT >
-	friend THOR_INLINE ThFixedMatrix operator-(const ThFixedMatrix<_T,rows,columns,_TagT,_AllocT>& arg)
+	template< class _T, class _TagT >
+	friend THOR_INLINE ThFixedMatrix operator-(const ThFixedMatrix<_T,rows,columns,_TagT>& arg)
 	{
 		ThFixedMatrix tmp;
 		MatUnaryMinus(arg,tmp);
@@ -651,29 +646,29 @@ public:
 	};
 #endif
 	//Mat=Mat
-	template< class _T, class _TagT, class _AllocT >
-	THOR_INLINE ThFixedMatrix& operator=(const ThFixedMatrix<_T,rows,columns,_TagT,_AllocT> &m)
+	template< class _T, class _TagT >
+	THOR_INLINE ThFixedMatrix& operator=(const ThFixedMatrix<_T,rows,columns,_TagT> &m)
 	{
 		MatAssign( *this, m );
 		return *this;
 	};
 	//Mat+=Mat
-	template< class _T, class _TagT, class _AllocT >
-	THOR_INLINE ThFixedMatrix& operator+=(const ThFixedMatrix<_T,rows,columns,_TagT,_AllocT> &m)
+	template< class _T, class _TagT >
+	THOR_INLINE ThFixedMatrix& operator+=(const ThFixedMatrix<_T,rows,columns,_TagT> &m)
 	{
 		MatAdd( *this, m, *this );
 		return *this;
 	};
 	//Mat-=Mat
-	template< class _T, class _TagT, class _AllocT >
-	THOR_INLINE ThFixedMatrix& operator-=(const ThFixedMatrix<_T,rows,columns,_TagT,_AllocT> &m)
+	template< class _T, class _TagT >
+	THOR_INLINE ThFixedMatrix& operator-=(const ThFixedMatrix<_T,rows,columns,_TagT> &m)
 	{
 		MatSub( *this, m, *this );
 		return *this;
 	};
 	//Mat*=Mat
-	template< class _T, class _TagT, class _AllocT >
-	THOR_INLINE ThFixedMatrix& operator*=(const ThFixedMatrix<_T,rows,columns,_TagT,_AllocT> &m)
+	template< class _T, class _TagT >
+	THOR_INLINE ThFixedMatrix& operator*=(const ThFixedMatrix<_T,rows,columns,_TagT> &m)
 	{
 		ThFixedMatrix tmp(*this);
 		MatMulMat( tmp, m, *this );
@@ -805,20 +800,20 @@ public:
 };
 
 //Vec*Mat
-template< class TV, class TagTV, class AllocTV, class T, class TagT, class AllocT, unsigned int rows, unsigned int columns >
-THOR_INLINE ThFixedVector<TV,rows,TagTV,AllocTV> 
-operator*(const ThFixedVector<TV,rows,TagTV,AllocTV> &v, const ThFixedMatrix<T,rows,columns,TagT,AllocT> &m)
+template< class TV, class TagTV, class T, class TagT, unsigned int rows, unsigned int columns >
+THOR_INLINE ThFixedVector<TV,rows,TagTV>
+operator*(const ThFixedVector<TV,rows,TagTV> &v, const ThFixedMatrix<T,rows,columns,TagT> &m)
 {
-	ThFixedVector<TV,rows,TagTV,AllocTV> tmp;
+	ThFixedVector<TV,rows,TagTV> tmp;
 	VecMulMat( v, m, tmp );
 	return tmp;
 };
 //scalar*Mat
-template< class T, class TagT, class AllocT, class RealT, unsigned int rows, unsigned int columns >
-THOR_INLINE ThFixedMatrix<T,rows,columns,TagT,AllocT>
-operator*(const RealT s,const ThFixedMatrix<T,rows,columns,TagT,AllocT> &m)
+template< class T, class TagT, class RealT, unsigned int rows, unsigned int columns >
+THOR_INLINE ThFixedMatrix<T,rows,columns,TagT>
+operator*(const RealT s,const ThFixedMatrix<T,rows,columns,TagT> &m)
 {
-	ThFixedMatrix<T,rows,columns,TagT,AllocT> tmp;
+	ThFixedMatrix<T,rows,columns,TagT> tmp;
 	MatMulScalar( m, s, tmp );
 	return tmp;
 };

@@ -1,7 +1,7 @@
 /**** Decompose.c ****/
 /* Ken Shoemake, 1993 */
 #include <math.h>
-#include <Thor/ThorMath/Decompose.h>
+#include <Thor/Math/Decompose.h>
 
 /******* Matrix Preliminaries *******/
 

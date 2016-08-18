@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Thor/Core/Common.h>
-#include <Thor/Math/Allocators.h>
 
 namespace Thor{
 
@@ -10,8 +9,7 @@ struct sse4x4f_mat_tag{};
 
 template < 
 			class DataT, unsigned int rows, unsigned int columns, //rows x columns matrix
-			class TagT = generic_mat_tag,
-			class AllocatorT = ThStandartAllocator
+			class TagT = generic_mat_tag
 		 >
 class ThFixedMatrix;
 

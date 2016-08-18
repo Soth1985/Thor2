@@ -7,9 +7,9 @@
 namespace Thor
 {
 
-THOR_DECL_TYPE(Thor::ThVec2);
-THOR_DECL_TYPE(Thor::ThVec3);
-THOR_DECL_TYPE(Thor::ThVec4);
+THOR_DECL_TYPE(Thor::ThVec2f);
+THOR_DECL_TYPE(Thor::ThVec3f);
+THOR_DECL_TYPE(Thor::ThVec4f);
 THOR_DECL_TYPE(Thor::ThVec2d);
 THOR_DECL_TYPE(Thor::ThVec3d);
 THOR_DECL_TYPE(Thor::ThVec4d);

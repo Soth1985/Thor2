@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Thor/Core/Common.h>
-#include <Thor/Math/Allocators.h>
 
 namespace Thor{
 
@@ -10,16 +9,16 @@ struct quaternion_tag{};
 struct sse4f_vec_tag{};
 
 template<class DataT, unsigned int sz, //sz is the number of elements in the vector
-         class TagT = generic_vec_tag,
-         class AllocatorT = ThStandartAllocator>
+         class TagT = generic_vec_tag
+         >
 class ThFixedVector;
 
-typedef ThFixedVector< ThF32,4,sse4f_vec_tag,ThAlignedAllocator<> > ThSseVec4;
-typedef ThFixedVector< ThI32,4,generic_vec_tag,ThStandartAllocator > ThSseVec4i;
+typedef ThFixedVector< ThF32,4,sse4f_vec_tag > ThSseVec4;
+typedef ThFixedVector< ThI32,4,generic_vec_tag > ThSseVec4i;
 
-typedef ThFixedVector< ThF32,4 > ThVec4;
-typedef ThFixedVector< ThF32,3 > ThVec3;
-typedef ThFixedVector< ThF32,2 > ThVec2;
+typedef ThFixedVector< ThF32,4 > ThVec4f;
+typedef ThFixedVector< ThF32,3 > ThVec3f;
+typedef ThFixedVector< ThF32,2 > ThVec2f;
 typedef ThFixedVector< ThF32,4,quaternion_tag > ThQuat;
 
 typedef ThFixedVector< ThI32,4 > ThVec4i;

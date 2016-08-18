@@ -25,4 +25,7 @@ if(APPLE)
 
     set_target_properties(TestAllocators PROPERTIES XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++14")
     set_target_properties(TestAllocators PROPERTIES XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
+
+    set_target_properties(TestSSE PROPERTIES XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++14")
+    set_target_properties(TestSSE PROPERTIES XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
 endif()

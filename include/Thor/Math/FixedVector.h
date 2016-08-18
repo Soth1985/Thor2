@@ -1,6 +1,5 @@
 #pragma once
 
-#include <Thor/Math/Allocators.h>
 #include <Thor/Math/ListConstructor.h>
 #ifdef USE_VECTOR_EXPRESSION_TEMPLATES
 	#include <Thor/Math/ExpressionNodes.h>
@@ -21,10 +20,9 @@ const double epsilon = 1e-30;
 
 template < 
 			class DataT, unsigned int sz, //sz is the number of elements in the vector
-			class TagT,
-			class AllocatorT
+			class TagT
 		 >
-class ThFixedVecContainer : public AllocatorT
+class ThFixedVecContainer
 {
 public:
 
@@ -33,8 +31,8 @@ public:
 		memset(&Vec[0], 0, sz * sizeof(DataT) );
 	};
 	
-	template< class _T, class _TagT, class _AllocT >
-	ThFixedVecContainer( const ThFixedVector<_T,sz,_TagT,_AllocT> &copy )
+	template< class _T, class _TagT >
+	ThFixedVecContainer( const ThFixedVector<_T,sz,_TagT> &copy )
 	{
 		for ( unsigned int i = 0; i < sz; ++i )
 			Vec[i] = copy(i);
@@ -61,29 +59,29 @@ protected:
 //////////////////////////
 //Vec4 decl
 template <
-			class DataT,class AllocatorT
+			class DataT
 		 >
-class ThFixedVecContainer<DataT,4,generic_vec_tag,AllocatorT> : public AllocatorT
+class ThFixedVecContainer<DataT,4,generic_vec_tag>
 {
-	typedef ThFixedVecContainer<DataT,3,generic_vec_tag,AllocatorT> vec3_t;
+	typedef ThFixedVecContainer<DataT,3,generic_vec_tag> vec3_t;
 public:
 	
 	THOR_INLINE ThFixedVecContainer()
 		:mx( DataT(0.0) ),my( DataT(0.0) ),mz( DataT(0.0) ),mw( DataT(0.0) )
 	{};
 
-	template< class _T, class _TagT, class _AllocT >
-	THOR_INLINE ThFixedVecContainer( const ThFixedVecContainer<_T,4,_TagT,_AllocT>& copy )
+	template< class _T, class _TagT >
+	THOR_INLINE ThFixedVecContainer( const ThFixedVecContainer<_T,4,_TagT>& copy )
 		:mx( DataT(copy.mx) ),my( DataT(copy.my) ),mz( DataT(copy.mz) ),mw( DataT(copy.mw) )
 	{};
 
-	template< class _T, class _TagT, class _AllocT >
-	THOR_INLINE ThFixedVecContainer( const ThFixedVector<_T,3,_TagT,_AllocT>& vec, const DataT& w_ )
+	template< class _T, class _TagT >
+	THOR_INLINE ThFixedVecContainer( const ThFixedVector<_T,3,_TagT>& vec, const DataT& w_ )
 		:mx( DataT( vec.x() ) ),my( DataT(vec.y() ) ),mz( DataT(vec.z() ) ),mw( DataT(w_) )
 	{};
 
-	template< class _T, class _TagT, class _AllocT >
-	THOR_INLINE ThFixedVecContainer( const ThFixedVector<_T,2,_TagT,_AllocT>& vec, const DataT& z_, const DataT& w_ )
+	template< class _T, class _TagT >
+	THOR_INLINE ThFixedVecContainer( const ThFixedVector<_T,2,_TagT>& vec, const DataT& z_, const DataT& w_ )
 		:mx( DataT( vec.x() ) ),my( DataT(vec.y() ) ),mz( DataT(z_) ),mw( DataT(w_) )
 	{};
 
@@ -180,26 +178,27 @@ protected:
 //////////////////////////
 //Vec3 decl
 template <
-			class DataT,class AllocatorT
+			class DataT
 		 >
-class ThFixedVecContainer<DataT,3,generic_vec_tag,AllocatorT> : public AllocatorT
+class ThFixedVecContainer<DataT,3,generic_vec_tag>
 {
 public:
 	
 	THOR_INLINE ThFixedVecContainer():mx( DataT(0.0) ),my( DataT(0.0) ),mz( DataT(0.0) )
 	{};
-	template< class _T, class _TagT, class _AllocT >
-	THOR_INLINE ThFixedVecContainer( const ThFixedVecContainer<_T,3,_TagT,_AllocT>& copy ):mx( copy.mx ),my( copy.my ),mz( copy.mz )
+	
+    template< class _T, class _TagT >
+	THOR_INLINE ThFixedVecContainer( const ThFixedVecContainer<_T,3,_TagT>& copy ):mx( copy.mx ),my( copy.my ),mz( copy.mz )
 	{};
 
 	THOR_INLINE ThFixedVecContainer( const DataT& x_, const DataT& y_, const DataT& z_ )
 		:mx(x_),my(y_),mz(z_)
 	{};
 
-	template< class _T, class _TagT, class _AllocT >
-	THOR_INLINE ThFixedVecContainer( const ThFixedVector<_T,2,_TagT,_AllocT>& vec, const DataT& z_ )
-		:mx( DataT( vec.x() ) ),my( DataT(vec.y() ) ),mz( DataT(z_) )
-	{};
+	//template< class _T, class _TagT >
+	//THOR_INLINE ThFixedVecContainer( const ThFixedVector<_T,2,_TagT>& vec, const DataT& z_ )
+	//	:mx( DataT( vec.x() ) ),my( DataT(vec.y() ) ),mz( DataT(z_) )
+	//{};
 
 	THOR_INLINE void Set( const DataT& x_, const DataT& y_, const DataT& z_ )
 	{
@@ -269,16 +268,16 @@ protected:
 //////////////////////////
 //Vec2 decl
 template <
-			class DataT,class AllocatorT
+			class DataT
 		 >
-class ThFixedVecContainer<DataT,2,generic_vec_tag,AllocatorT> : public AllocatorT
+class ThFixedVecContainer<DataT,2,generic_vec_tag>
 {
 public:
 	
 	THOR_INLINE ThFixedVecContainer():mx( DataT(0.0) ),my( DataT(0.0) )
 	{};
-	template< class _T, class _TagT, class _AllocT >
-	THOR_INLINE ThFixedVecContainer( const ThFixedVecContainer<_T,2,_TagT,_AllocT>& copy ):mx( copy.mx ),my( copy.my )
+	template< class _T, class _TagT >
+	THOR_INLINE ThFixedVecContainer( const ThFixedVecContainer<_T,2,_TagT>& copy ):mx( copy.mx ),my( copy.my )
 	{};
 
 	THOR_INLINE ThFixedVecContainer( const DataT& x_, const DataT& y_ )
@@ -339,10 +338,8 @@ protected:
 #pragma region Vec4 float with SSE support specialization
 //////////////////////////
 //Vec4 with sse decl
-template <
-			class AllocatorT
-		 >
-class ThFixedVecContainer<float,4,sse4f_vec_tag,AllocatorT> : public AllocatorT
+template <>
+class ThFixedVecContainer<float,4,sse4f_vec_tag>
 {
 public:	
 
@@ -350,8 +347,8 @@ public:
 	{
 		//memset(&Vec[0], 0, num_blocks * block_sz * sizeof(DataT) );
 	};
-	template< class _T, class _TagT, class _AllocT >
-	THOR_INLINE ThFixedVecContainer( const ThFixedVecContainer<_T,4,_TagT,_AllocT>& copy ):mx( copy.mx ),my( copy.my ),mz( copy.mz ),mw( copy.mw )
+	template< class _T, class _TagT >
+	THOR_INLINE ThFixedVecContainer( const ThFixedVecContainer<_T,4,_TagT>& copy ):mx( copy.mx ),my( copy.my ),mz( copy.mz ),mw( copy.mw )
 	{
 		//memcpy(&Vec[0], &copy.Vec[0], num_blocks * block_sz * sizeof(DataT) );
 	};
@@ -441,17 +438,17 @@ protected:
 #pragma region FixedVector definition
 /////////////////////////
 template < 
-			class DataT, unsigned int sz, //sz is the number of elements in the vector
-			class TagT,
-			class AllocatorT
+			class DataT,
+            unsigned int sz, //sz is the number of elements in the vector
+			class TagT
 		 >
-class ThFixedVector : public ThFixedVecContainer< DataT, sz, TagT, AllocatorT >
+class ThFixedVector : public ThFixedVecContainer< DataT, sz, TagT >
 {
 public:
-	typedef ThFixedVecContainer< DataT, sz, TagT, AllocatorT > container_t;
-	typedef ThFixedVector< DataT, sz, TagT, AllocatorT > self_t;
+	typedef ThFixedVecContainer< DataT, sz, TagT > container_t;
+	typedef ThFixedVector< DataT, sz, TagT > self_t;
 	typedef DataT value_type;
-	enum { size = sz };
+	//enum { size = sz };
 
 	typedef DataT* iterator;
 	typedef const DataT* const_iterator;
@@ -581,8 +578,8 @@ public:
 		:container_t(v0,v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15)
 	{};
 	
-	template< class _T, class _TagT, class _AllocT >
-	ThFixedVector( const ThFixedVector<_T,sz,_TagT,_AllocT>& copy ):container_t(copy){};	
+	template< class _T, class _TagT >
+	ThFixedVector( const ThFixedVector<_T,sz,_TagT>& copy ):container_t(copy){};
 	//assigns all elements of the vector to s
 	template < class RealT >
 	inline ThListConstructor< iterator, DataT > operator=(const RealT& s)
@@ -599,16 +596,16 @@ public:
 		return *this;
 	};
 #else
-	template< class _T, class _TagT, class _AllocT >
-	THOR_INLINE ThFixedVector operator+(const ThFixedVector<_T,sz,_TagT,_AllocT> &v) const
+	template< class _T, class _TagT >
+	THOR_INLINE ThFixedVector operator+(const ThFixedVector<_T,sz,_TagT> &v) const
 	{
 		ThFixedVector tmp;
 		VecAdd( *this, v, tmp );
 		return tmp;
 	};
 	//
-	template< class _T, class _TagT, class _AllocT >
-	THOR_INLINE ThFixedVector operator-(const ThFixedVector<_T,sz,_TagT,_AllocT> &v) const
+	template< class _T, class _TagT >
+	THOR_INLINE ThFixedVector operator-(const ThFixedVector<_T,sz,_TagT> &v) const
 	{
 		ThFixedVector tmp;
 		VecSub( *this, v, tmp );
@@ -633,8 +630,8 @@ public:
 	};
 
 	//
-	template< class _T, class _TagT, class _AllocT >
-	THOR_INLINE ThFixedVector operator^(const ThFixedVector<_T,sz,_TagT,_AllocT>& v) const
+	template< class _T, class _TagT >
+	THOR_INLINE ThFixedVector operator^(const ThFixedVector<_T,sz,_TagT>& v) const
 	{
 		ThFixedVector tmp;
 		VecXor( *this, v, tmp );
@@ -642,16 +639,16 @@ public:
 	};	
 
 	//
-	template< class _T, class _TagT, class _AllocT >
-	THOR_INLINE ThFixedVector operator%(const ThFixedVector<_T,sz,_TagT,_AllocT>& v) const
+	template< class _T, class _TagT >
+	THOR_INLINE ThFixedVector operator%(const ThFixedVector<_T,sz,_TagT>& v) const
 	{
 		ThFixedVector tmp;
 		VecModulus( *this, v, tmp );
 		return tmp;
 	};	
 	////////////////////////////////////////////////////////////////////////////////
-	template< class _T, class _TagT, class _AllocT/*, class RealT*/ >
-	friend THOR_INLINE ThFixedVector operator*(const value_type& s,const ThFixedVector<_T,sz,_TagT,_AllocT> &v)
+	template< class _T, class _TagT/*, class RealT*/ >
+	friend THOR_INLINE ThFixedVector operator*(const value_type& s,const ThFixedVector<_T,sz,_TagT> &v)
 	{
 		ThFixedVector tmp;
 		VecMulScalar( v, s, tmp );
@@ -659,8 +656,8 @@ public:
 	};
 
 	//unary minus
-	template< class _T, class _TagT, class _AllocT >
-	friend THOR_INLINE ThFixedVector operator-(const ThFixedVector<_T,sz,_TagT,_AllocT>& arg)
+	template< class _T, class _TagT >
+	friend THOR_INLINE ThFixedVector operator-(const ThFixedVector<_T,sz,_TagT>& arg)
 	{
 		ThFixedVector tmp;
 		VecUnaryMinus(arg,tmp);
@@ -668,31 +665,31 @@ public:
 	};
 #endif
 	//assign vector to vector
-	template< class _T, class _TagT, class _AllocT, unsigned int Sz >
-	THOR_INLINE ThFixedVector& operator=(const ThFixedVector<_T,Sz,_TagT,_AllocT> &v)
+	template< class _T, class _TagT, unsigned int Sz >
+	THOR_INLINE ThFixedVector& operator=(const ThFixedVector<_T,Sz,_TagT> &v)
 	{
 		VecAssign( *this, v );
 		return *this;
 	};
 	//add assign vec
-	template< class _T, class _TagT, class _AllocT >
-	THOR_INLINE ThFixedVector& operator+=(const ThFixedVector<_T,sz,_TagT,_AllocT> &v)
+	template< class _T, class _TagT >
+	THOR_INLINE ThFixedVector& operator+=(const ThFixedVector<_T,sz,_TagT> &v)
 	{
 		VecAdd( *this, v, *this );
 		return *this;
 
 	};
 	//xor assign vec
-	template< class _T, class _TagT, class _AllocT >
-	THOR_INLINE ThFixedVector& operator^=(const ThFixedVector<_T,sz,_TagT,_AllocT> &v)
+	template< class _T, class _TagT >
+	THOR_INLINE ThFixedVector& operator^=(const ThFixedVector<_T,sz,_TagT> &v)
 	{
 		VecXor( *this, v, *this );
 		return *this;
 
 	};
 	//sub assign vec
-	template< class _T, class _TagT, class _AllocT >
-	THOR_INLINE ThFixedVector& operator-=(const ThFixedVector<_T,sz,_TagT,_AllocT> &v)
+	template< class _T, class _TagT >
+	THOR_INLINE ThFixedVector& operator-=(const ThFixedVector<_T,sz,_TagT> &v)
 	{
 		VecSub( *this, v, *this );
 		return *this;
@@ -715,45 +712,45 @@ public:
 		return *this;
 	};
 	//modulus assign vec
-	template< class _T, class _TagT, class _AllocT >
-	THOR_INLINE ThFixedVector& operator%=(const ThFixedVector<_T,sz,_TagT,_AllocT> &v)
+	template< class _T, class _TagT >
+	THOR_INLINE ThFixedVector& operator%=(const ThFixedVector<_T,sz,_TagT> &v)
 	{
 		VecModulus( *this, v, *this );
 		return *this;
 
 	};
 	//modulus assign quat
-	template< class _T, class _AllocT >
-	THOR_INLINE ThFixedVector<_T,4,quaternion_tag,_AllocT>& operator%=(const ThFixedVector<_T,4,quaternion_tag,_AllocT> &v)
+	template< class _T >
+	THOR_INLINE ThFixedVector<_T,4,quaternion_tag>& operator%=(const ThFixedVector<_T,4,quaternion_tag> &v)
 	{
-		ThFixedVector<_T,4,quaternion_tag,_AllocT> tmp(*this);
+		ThFixedVector<_T,4,quaternion_tag> tmp(*this);
 		VecModulus( tmp, v, *this );
 		return *this;
 
 	};
 	//calculates dot product
-	template< class _T, class _TagT, class _AllocT >
-	THOR_INLINE DataT operator*(const ThFixedVector<_T,sz,_TagT,_AllocT> &v) const
+	template< class _T, class _TagT >
+	THOR_INLINE DataT operator*(const ThFixedVector<_T,sz,_TagT> &v) const
 	{
 		DataT dp;
 		VecDot( *this, v, dp );
 		return dp;
 	};	
 	//checks if vectors are equal within epsilon
-	template< class _T, class _TagT, class _AllocT >
-	THOR_INLINE bool  operator==( const ThFixedVector<_T,sz,_TagT,_AllocT> &v) const
+	template< class _T, class _TagT >
+	THOR_INLINE bool  operator==( const ThFixedVector<_T,sz,_TagT> &v) const
 	{
 		return AreVecEqual( *this, v ) ;
 	};
 
-	template< class _T, class _TagT, class _AllocT >
-	THOR_INLINE bool  operator!=( const ThFixedVector<_T,sz,_TagT,_AllocT> &v) const
+	template< class _T, class _TagT >
+	THOR_INLINE bool  operator!=( const ThFixedVector<_T,sz,_TagT> &v) const
 	{
 		return !AreVecEqual( *this, v ) ;
 	};
 	//checks if this vector is shorter than v
-	template< class _T, class _TagT, class _AllocT >
-	THOR_INLINE bool  operator< ( const ThFixedVector<_T,sz,_TagT,_AllocT> &v) const
+	template< class _T, class _TagT >
+	THOR_INLINE bool  operator< ( const ThFixedVector<_T,sz,_TagT> &v) const
 	{
 		return (*this)*(*this) < v*v ;
 	};
@@ -813,15 +810,15 @@ public:
 		return dp;
 	};
 	
-	template< class _T, class _TagT, class _AllocT >
-	THOR_INLINE DataT DistanceSquared( const ThFixedVector<_T,sz,_TagT,_AllocT> &v) const
+	template< class _T, class _TagT >
+	THOR_INLINE DataT DistanceSquared( const ThFixedVector<_T,sz,_TagT> &v) const
 	{
 		ThFixedVector tmp = v - (*this);
 		return tmp * tmp;
 	};
 
-	template< class _T, class _TagT, class _AllocT >
-	THOR_INLINE DataT Distance( const ThFixedVector<_T,sz,_TagT,_AllocT> &v) const
+	template< class _T, class _TagT >
+	THOR_INLINE DataT Distance( const ThFixedVector<_T,sz,_TagT> &v) const
 	{
 		ThFixedVector tmp = v - (*this);
 		return Math::Sqrt(tmp*tmp);
@@ -829,8 +826,8 @@ public:
 };
 #pragma endregion
 
-template <class DataT, class TagT, class AllocatorT>
-static void SetWeight( ThFixedVector<DataT,4,TagT,AllocatorT> & vec, const DataT& w_)
+template <class DataT, class TagT>
+static void SetWeight( ThFixedVector<DataT,4,TagT> & vec, const DataT& w_)
 {
 	DataT tmp = w_ / vec.w();
 	vec.x() *= tmp;
@@ -839,13 +836,13 @@ static void SetWeight( ThFixedVector<DataT,4,TagT,AllocatorT> & vec, const DataT
 	vec.w() = w_;
 }
 
-static const ThVec3 yAxis(0.0f,1.0f,0.0f);
-static const ThVec3 xAxis(1.0f,0.0f,0.0f);
-static const ThVec3 zAxis(0.0f,0.0f,1.0f);
+static const ThVec3f yAxis(0.0f,1.0f,0.0f);
+static const ThVec3f xAxis(1.0f,0.0f,0.0f);
+static const ThVec3f zAxis(0.0f,0.0f,1.0f);
 
-static const ThVec4 yAxis4(0.0f,1.0f,0.0f,0.0f);
-static const ThVec4 xAxis4(1.0f,0.0f,0.0f,0.0f);
-static const ThVec4 zAxis4(0.0f,0.0f,1.0f,0.0f);
+static const ThVec4f yAxis4(0.0f,1.0f,0.0f,0.0f);
+static const ThVec4f xAxis4(1.0f,0.0f,0.0f,0.0f);
+static const ThVec4f zAxis4(0.0f,0.0f,1.0f,0.0f);
 
 }//Thor
 

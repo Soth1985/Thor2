@@ -1,4 +1,5 @@
 #include <Thor/Math/Math.h>
+#include <type_traits>
 
 using namespace Thor;
 using namespace Thor::Math;
@@ -251,6 +252,11 @@ void TestSSE()
 
 int main()
 {
+    bool pod = std::is_pod<ThVec3f>::value;
+    bool trivial = std::is_trivial<ThVec3f>::value;
+    bool stl = std::is_standard_layout<ThVec3f>::value;
+    bool tvc = std::is_trivially_copyable<ThVec3f>::value;
+    bool tdc = std::is_trivially_default_constructible<ThVec3f>::value;
 	TestSSE();
 	return 0;
 }

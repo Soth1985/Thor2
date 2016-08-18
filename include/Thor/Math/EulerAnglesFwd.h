@@ -1,13 +1,12 @@
 #pragma once
 
 #include <Thor/Core/Common.h>
-#include <Thor/Math/Allocators.h>
 
 namespace Thor{
 
-template <class RealT,class AllocatorT = ThStandartAllocator>
+template <class RealT>
 struct ThEulerAngles;
 
-typedef ThEulerAngles<float> ThAngles;
+typedef ThEulerAngles<float> ThAnglesf;
 
 }//Thor

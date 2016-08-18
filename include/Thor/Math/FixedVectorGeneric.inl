@@ -30,8 +30,8 @@ THOR_INLINE void VecXor( const VecT1& lhs, const VecT2& rhs, ResT& res )
 {};
 
 //cross product of two 4dim vectors
-template< class T1, class TagT1, class AllocT1, class T2, class TagT2, class AllocT2, class ResT >
-THOR_INLINE void VecModulus( const ThFixedVector<T1,4,TagT1,AllocT1>& lhs, const ThFixedVector<T2,4,TagT2,AllocT2>& rhs, ResT& res )
+template< class T1, class TagT1, class T2, class TagT2, class ResT >
+THOR_INLINE void VecModulus( const ThFixedVector<T1,4,TagT1>& lhs, const ThFixedVector<T2,4,TagT2>& rhs, ResT& res )
 {
 	typedef typename ResT::value_type value_type;
 	res(0) = lhs.y() * rhs.z() - lhs.z() * rhs.y();
@@ -41,8 +41,8 @@ THOR_INLINE void VecModulus( const ThFixedVector<T1,4,TagT1,AllocT1>& lhs, const
 };
 
 //cross product of two 3dim vectors
-template< class T1, class TagT1, class AllocT1, class T2, class TagT2, class AllocT2, class ResT >
-THOR_INLINE void VecModulus( const ThFixedVector<T1,3,TagT1,AllocT1>& lhs, const ThFixedVector<T2,3,TagT2,AllocT2>& rhs, ResT& res )
+template< class T1, class TagT1, class T2, class TagT2, class ResT >
+THOR_INLINE void VecModulus( const ThFixedVector<T1,3,TagT1>& lhs, const ThFixedVector<T2,3,TagT2>& rhs, ResT& res )
 {
 	res(0) = lhs.y() * rhs.z() - lhs.z() * rhs.y();
 	res(1) = lhs.z() * rhs.x() - lhs.x() * rhs.z();
