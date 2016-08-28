@@ -65,6 +65,7 @@ set(Core_H
     ${THOR_INCLUDE_DIR}/Thor/Core/Filesystem/ThiFileSystem.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Filesystem/ThiMemoryStream.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThMemory.h
+    ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThMemoryUtil.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThStackAllocator.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThPoolAllocator.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThSystemAllocator.h
@@ -115,13 +116,13 @@ endif()
 list(SORT Core_SRC)
 list(SORT Core_H)
 add_library(Core ${Core_SRC} ${Core_H})
+thor_target_cpp_std(Core "c++14")
 
 if(THOR_USE_PHYSFS)
     target_compile_definitions(Core PUBLIC THOR_USE_PHYSFS)
 else()
     target_compile_definitions(Core PUBLIC THOR_USE_STLFS)
 endif()
-
 
 target_include_directories(Core PUBLIC ${THOR_INCLUDE_DIR})
 
@@ -130,13 +131,8 @@ if(THOR_USE_PHYSFS)
 endif()
 
 if(APPLE)
-    set_target_properties(Core PROPERTIES XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++14")
-    set_target_properties(Core PROPERTIES XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
     target_link_libraries(Core "-framework CoreFoundation" "-framework CoreServices" "-framework Carbon" "-framework IOKit")
     target_link_libraries(Core z)
-else()
-    #target_compile_options(Core PUBLIC -std=gnu++11 -stdlib=libc++)
-    target_compile_options(Core PRIVATE -std=c++14 -stdlib=libc++)
 endif()
 
 export(TARGETS Core FILE Core.cmake)

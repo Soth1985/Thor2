@@ -20,7 +20,7 @@ ThGrowingPoolAllocator::~ThGrowingPoolAllocator()
     ThiMemoryAllocator* allocator = m_Pools[0]->GetParentAllocator();
     for (ThSize i = 0; i < m_Pools.Size(); ++i)
     {
-        DestroyObject(allocator, m_Pools[i]);
+        FreeObject(allocator, m_Pools[i]);
     }
 }
 
@@ -120,7 +120,7 @@ void ThGrowingPoolAllocator::Init(ThSize chunkSize, ThSize numChunks, ThSize ali
     if (!parent)
         parent = ThAllocators::Instance().GetSystemMemoryAllocator();
     
-    ThPoolAllocator* pool = CreateObject<ThPoolAllocator>(parent, GetName());
+    ThPoolAllocator* pool = AllocateObject<ThPoolAllocator>(parent, GetName());
     m_Pools.PushBack(pool);
     pool->Init(chunkSize, numChunks, alignment, parent);
     m_AllocPool = pool;
@@ -151,7 +151,7 @@ void ThGrowingPoolAllocator::InitToPageSize(ThSize chunkSize, ThSize alignment, 
 
 ThPoolAllocator* ThGrowingPoolAllocator::AddPool()
 {
-    ThPoolAllocator* pool = CreateObject<ThPoolAllocator>(m_Pools[0]->GetParentAllocator(), GetName());
+    ThPoolAllocator* pool = AllocateObject<ThPoolAllocator>(m_Pools[0]->GetParentAllocator(), GetName());
     m_Pools.PushBack(pool);
     return pool;
 }
@@ -163,7 +163,7 @@ void ThGrowingPoolAllocator::Shrink()
     {
         if (m_Pools[i]->IsFree() && (m_Pools.Size() > 1))
         {
-            DestroyObject(m_Pools[0]->GetParentAllocator(), m_Pools[i]);
+            FreeObject(m_Pools[0]->GetParentAllocator(), m_Pools[i]);
             m_Pools.MoveToBackAndRemove(i);
         }
         else

@@ -601,28 +601,4 @@ ThBool operator!=(const ThVector<T>& x, const ThVector<T>& y)
 	return !(x == y);
 }
 
-/*template <class T>
-ThBool operator< (const ThVector<T>& x, const ThVector<T>& y)
-{
-
-}
-
-template <class T>
-ThBool operator> (const ThVector<T>& x, const ThVector<T>& y)
-{
-
-}
-
-template <class T>
-ThBool operator>=(const ThVector<T>& x, const ThVector<T>& y)
-{
-
-}
-	
-template <class T>
-ThBool operator<=(const ThVector<T>& x, const ThVector<T>& y)
-{
-
-}*/
-
 }//Thor

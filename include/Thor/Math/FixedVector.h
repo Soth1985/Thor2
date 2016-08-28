@@ -160,11 +160,51 @@ public:
 	{
 		return mw;
 	};
-
+    
+    THOR_INLINE DataT& r()
+    {
+        return mx;
+    };
+    
+    THOR_INLINE const DataT& r() const
+    {
+        return mx;
+    };
+    
+    THOR_INLINE DataT& g()
+    {
+        return my;
+    };
+    
+    THOR_INLINE const DataT& g() const
+    {
+        return my;
+    };
+    
+    THOR_INLINE DataT& b()
+    {
+        return mz;
+    };
+    
+    THOR_INLINE const DataT& b() const
+    {
+        return mz;
+    };
+    
+    THOR_INLINE DataT& a()
+    {
+        return mw;
+    };
+    
+    THOR_INLINE const DataT& a() const
+    {
+        return mw;
+    };
+    
 protected:
-	union
-	{
-		DataT Vec[4];
+    union
+    {
+        DataT Vec[4];
 	
 		struct
 		{
@@ -250,10 +290,40 @@ public:
 	{
 		return mz;
 	};
-	
+    
+    THOR_INLINE DataT& r()
+    {
+        return mx;
+    };
+    
+    THOR_INLINE const DataT& r() const
+    {
+        return mx;
+    };
+    
+    THOR_INLINE DataT& g()
+    {
+        return my;
+    };
+    
+    THOR_INLINE const DataT& g() const
+    {
+        return my;
+    };
+    
+    THOR_INLINE DataT& b()
+    {
+        return mz;
+    };
+    
+    THOR_INLINE const DataT& b() const
+    {
+        return mz;
+    };
+    
 protected:
-	union
-	{
+    union
+    {
 		DataT Vec[3];
 	
 		struct

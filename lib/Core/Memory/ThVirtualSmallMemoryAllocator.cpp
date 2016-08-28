@@ -21,7 +21,7 @@ ThVirtualSmallMemoryAllocator::~ThVirtualSmallMemoryAllocator()
     ThiMemoryAllocator* allocator = ThAllocators::Instance().GetSystemMemoryAllocator();
     for (ThSize i = 0;  i < m_Pools.Size(); ++i)
     {
-        DestroyObject(allocator, m_Pools[i]);
+        FreeObject(allocator, m_Pools[i]);
     }
 }
 
@@ -105,7 +105,7 @@ void ThVirtualSmallMemoryAllocator::Init(ThSize maxPoolSize, ThSize maxObjectSiz
     ThiMemoryAllocator* allocator = ThAllocators::Instance().GetSystemMemoryAllocator();
     for (ThSize i = 0; i < numPools; ++i)
     {
-        ThVirtualPoolAllocator* pool = CreateObject<ThVirtualPoolAllocator>(allocator, GetName());
+        ThVirtualPoolAllocator* pool = AllocateObject<ThVirtualPoolAllocator>(allocator, GetName());
         pool->Init(maxPoolSize, (i + 1) * alignment, alignment);
         m_Pools.PushBack(pool);
     }

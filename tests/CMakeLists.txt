@@ -1,2 +1,4 @@
 add_subdirectory(Experiments)
 add_subdirectory(MetalTriangle)
+add_subdirectory(MetalTracer)
+add_subdirectory(Practice)

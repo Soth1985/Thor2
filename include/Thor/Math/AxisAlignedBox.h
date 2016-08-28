@@ -14,12 +14,11 @@ namespace Thor{
 	 * Represents an AABB with it`s maximum and minimum extents.
 	 * 
 	 */
-	template<class RealT>
+	template<class Vec3, class Mat4x4>
 	class ThAxisAlignedBoxT:public IBoundingVolume
 	{
 	public:
-		typedef ThFixedVector<RealT, 3> Vec3;
-		typedef std::pair<Vec3,Vec3> pn_vert_t;
+        typedef typename Vec3::value_type value_type;
 		/*!
 		 * \brief
 		 * Returns center of the box.
@@ -27,7 +26,7 @@ namespace Thor{
 		 */
 		THOR_INLINE Vec3 GetCenter() const
 		{
-			return 0.5 * (pmin + pmax);
+			return value_type(0.5) * (pmin + pmax);
 		};
 
 		/*!
@@ -37,7 +36,7 @@ namespace Thor{
 		*/
 		THOR_INLINE Vec3 GetRadius() const
 		{
-			return 0.5 * (pmax - pmin);
+			return value_type(0.5) * (pmax - pmin);
 		}
 
 		/*!
@@ -85,13 +84,11 @@ namespace Thor{
 		 * Write detailed description for TransformBox here.
 		 * 
 		 */
-		THOR_INLINE void TransformBox(const Transform& tr)
+		THOR_INLINE void TransformBox(const Mat4x4& m)
 		{
 			Vec3 bmin( tr.Translate() ), bmax(bmin);
 			
-			ThMat4x4& m = tr.ToMat4x4();
-			
-			RealT a,b;
+			value_type a,b;
 			
 			int i,j;
 			
@@ -207,15 +204,13 @@ namespace Thor{
 		 * 
 		 * \param normal
 		 * Plane normal.
-		 * 
-		 * \returns
-		 * pn_vert_t.first is the n vertex, pn_vert_t.second is p vertex.
+		 *
 		 * 
 		 */
-		pn_vert_t GetPNVertices(const Vec3& normal) const
+		void GetPNVertices(const Vec3& normal, Vec3& p, Vec3& n) const
 		{
-			Vec3 p(pmin);
-			Vec3 n(pmax);
+            p = pmin;
+			n = pmax;
 
 			for(int i = 0; i < 3; ++i)
 			{
@@ -225,8 +220,6 @@ namespace Thor{
 					n(i) = pmin(i);
 				}
 			}
-
-			return pn_vert_t(n,p);
 		}
 
 		/*!
@@ -285,7 +278,7 @@ namespace Thor{
 			//:pmax( -std::numeric_limits<Real>::max(), -std::numeric_limits<Real>::max(), -std::numeric_limits<Real>::max() ),
 			//pmin( std::numeric_limits<Real>::max(), std::numeric_limits<Real>::max(), std::numeric_limits<Real>::max() )
 		{
-			RealT maxv = std::numeric_limits<RealT>::max();
+			RealT maxv = std::numeric_limits<value_type>::max();
 
 			for(int i = 0; i < 3; ++i)
 			{
@@ -312,7 +305,7 @@ namespace Thor{
 		Vec3 pmax;
 	};
 
-	typedef ThAxisAlignedBoxT<ThF32> ThAxisAlignedBox;
+	typedef ThAxisAlignedBoxT<ThVec3f, ThMat4x4f> ThAxisAlignedBoxf;
 }//Thor
 
 #endif

@@ -19,6 +19,15 @@ project(Thor VERSION ${THOR_VERSION} LANGUAGES CXX)
 
 include(ImportedTargetsNix)
 
+function (thor_target_cpp_std target std)
+    if(APPLE)
+        set_target_properties(${target} PROPERTIES XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD ${std})
+        set_target_properties(${target} PROPERTIES XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
+    else()
+        target_compile_options(${target} PRIVATE -std=${std} -stdlib=libc++)
+    endif()
+endfunction(thor_target_cpp_std)
+
 add_subdirectory(lib)
 add_subdirectory(tests)
 add_subdirectory(tools)

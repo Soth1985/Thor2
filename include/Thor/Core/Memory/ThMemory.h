@@ -109,6 +109,8 @@ public:
 	* 
 	*/
 	static void* MemoryCopy(void* destination, const void* source, ThSize numBytes);
+    
+    static void* MemoryMove(void* destination, const void* source, ThSize numBytes);
 };
 	
 }//Thor

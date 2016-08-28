@@ -136,3 +136,8 @@ void* ThMemory::MemoryCopy(void* destination, const void* source, ThSize numByte
 {
 	return memcpy(destination, source, numBytes);
 }
+//----------------------------------------------------------------------------------------
+void* ThMemory::MemoryMove(void* destination, const void* source, ThSize numBytes)
+{
+    return memmove(destination, source, numBytes);
+}

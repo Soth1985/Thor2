@@ -250,13 +250,15 @@ void TestSSE()
 	}
 }
 
+#include <simd/simd.h>
+
 int main()
 {
     bool tvc1 = std::is_trivially_copyable<ThMat4x4f>::value;
     bool tvc2 = std::is_trivially_copyable<ThMat3x3f>::value;
     bool tvc3 = std::is_trivially_copyable<ThVec4f>::value;
     bool tvc4 = std::is_trivially_copyable<ThVec3f>::value;
-    bool tvc5 = std::is_trivially_copyable<ThVec2f>::value;
+    bool tvc5 = std::is_trivially_copyable<ThQuatf>::value;
 	TestSSE();
 	return 0;
 }

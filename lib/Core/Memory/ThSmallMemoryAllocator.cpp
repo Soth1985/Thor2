@@ -21,7 +21,7 @@ ThSmallMemoryAllocator::~ThSmallMemoryAllocator()
     ThiMemoryAllocator* allocator = m_Pools[0]->GetParentAllocator();
     for (ThSize i = 0;  i < m_Pools.Size(); ++i)
     {
-        DestroyObject(allocator, m_Pools[i]);
+        FreeObject(allocator, m_Pools[i]);
     }
 }
 
@@ -107,7 +107,7 @@ void ThSmallMemoryAllocator::Init(ThSize maxObjectSize, ThSize alignment, ThiMem
     
     for (ThSize i = 0; i < numPools; ++i)
     {
-        ThGrowingPoolAllocator* pool = CreateObject<ThGrowingPoolAllocator>(parent, GetName());
+        ThGrowingPoolAllocator* pool = AllocateObject<ThGrowingPoolAllocator>(parent, GetName());
         pool->InitToPageSize((i + 1) * alignment, alignment, parent);
         m_Pools.PushBack(pool);
     }
