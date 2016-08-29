@@ -2,8 +2,19 @@
 
 #include <Thor/Math/Ray.h>
 #include <Thor/Math/Sphere.h>
+#include <Thor/Math/ThorMath.h>
 
-namespace Thor{	
+namespace Thor
+{
+    template<class Vec3>
+    struct ThRayHit
+    {
+        ValueType<Vec3> t;
+        Vec3 pos;
+        Vec3 norm;
+    };
+    
+    typedef ThRayHit<ThVec3f> ThRayHitf;
 	
 	template<class Vec3, class RealT>
 	static bool IntersectRays(const ThRay<Vec3>& r1, const ThRay<Vec3>& r2, RealT& t1, RealT& t2)
@@ -36,10 +47,50 @@ namespace Thor{
         typedef ValueType<Vec3> value_type;
         Vec3 delta = ray.GetOrigin() - sphere.GetCenter();
         value_type a = ray.GetDirection() * ray.GetDirection();
-        value_type b = 2.0 * ray.GetDirection() * delta;
+        value_type b = ray.GetDirection() * delta;
         value_type c = delta * delta - sphere.GetRadius() * sphere.GetRadius();
-        value_type d = b * b - 4.0 * a * c;
+        value_type d = b * b - a * c;
         return d >= 0.0;
+    }
+    
+    template<class Vec3>
+    bool RayIntersectSphere(const ThRay<Vec3>& ray, const ThSphere<Vec3>& sphere, ValueType<Vec3> tMin, ValueType<Vec3> tMax, ThRayHit<Vec3>& hit)
+    {
+        //dot(p(t) - c, p(t) - c) = R * R; p(t) = o + t * d
+        typedef ValueType<Vec3> value_type;
+        Vec3 delta = ray.GetOrigin() - sphere.GetCenter();
+        value_type a = ray.GetDirection() * ray.GetDirection();
+        value_type b = ray.GetDirection() * delta;
+        value_type c = delta * delta - sphere.GetRadius() * sphere.GetRadius();
+        value_type d = b * b - a * c;
+        
+        if (d >= 0.0f)
+        {
+            value_type sqrtD = Math::Sqrt(d);
+            value_type oneOverA = 1.0 / a;
+            value_type oneOverR = 1.0 / sphere.GetRadius();
+            value_type t = (-b - sqrtD) * oneOverA;
+            
+            if (t > tMin && t < tMax)
+            {
+                hit.t = t;
+                hit.pos = ray(t);
+                hit.norm = (hit.pos - sphere.GetCenter()) * oneOverR;
+                return true;
+            }
+            
+            t = (-b + sqrtD) * oneOverA;
+            
+            if (t > tMin && t < tMax)
+            {
+                hit.t = t;
+                hit.pos = ray(t);
+                hit.norm = (hit.pos - sphere.GetCenter()) * oneOverR;
+                return true;
+            }
+        }
+        
+        return false;
     }
 
 }//Thor
