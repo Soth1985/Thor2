@@ -1,7 +1,6 @@
 #pragma once
 
-#include <Thor/ThorMath/FixedVector.h>
-#include <Thor/ThorMath/IBoundingVolume.h>
+#include <Thor/Math/FixedVector.h>
 
 namespace Thor{
 	
@@ -12,9 +11,11 @@ namespace Thor{
 	 * Represents a sphere with a center and a radius.
 	 * 
 	 */
-	class Sphere:public IBoundingVolume
+    template <class Vec3>
+	class ThSphere
 	{		
 	public:
+        typedef typename Vec3::value_type value_type;
 		/*!
 		 * \brief
 		 * Returns sphere radius.
@@ -23,7 +24,7 @@ namespace Thor{
 		 * Returns sphere radius.
 		 * 
 		 */
-		THOR_INLINE const ThReal32& Radius() const
+		THOR_INLINE value_type GetRadius() const
 		{
 			return radius;
 		}
@@ -36,9 +37,9 @@ namespace Thor{
 		* Returns sphere radius.
 		* 
 		*/
-		THOR_INLINE ThReal32& Radius()
+		THOR_INLINE void SetRadius(value_type r)
 		{
-			return radius;
+			return radius = r;
 		}
 
 		/*!
@@ -49,7 +50,7 @@ namespace Thor{
 		* Returns sphere center.
 		* 
 		*/
-		THOR_INLINE const ThVec3& Center() const
+		THOR_INLINE const Vec3& GetCenter() const
 		{
 			return center;
 		}
@@ -62,9 +63,9 @@ namespace Thor{
 		* Returns sphere center.
 		* 
 		*/
-		THOR_INLINE ThVec3& Center()
+		THOR_INLINE void SetCenter(const Vec3& c)
 		{
-			return center;
+            center = c;
 		}
 
 		/*!
@@ -78,10 +79,10 @@ namespace Thor{
 		 * If the point is inside the sphere, it is considered the closest.
 		 * 
 		 */
-		ThVec3 ClosestPoint(const ThVec3& p) const
+		Vec3 ClosestPoint(const Vec3& p) const
 		{
-			ThVec3 d = center - p;
-			ThReal32 dl = d.Length();
+			Vec3 d = center - p;
+			value_type dl = d.Length();
 
 			if(dl <= radius)
 				return p;
@@ -89,21 +90,23 @@ namespace Thor{
 				return p + d * (dl - radius) / dl;
 		}
 
-		Sphere(const ThVec3& center_, ThReal32 radius_)
-			: center(center_),radius(radius_)
+		ThSphere(const Vec3& center_, value_type radius_)
+			:
+        center(center_),
+        radius(radius_)
 		{}
+        
+        ThSphere()
+            :
+        radius(value_type(0.0))
+        {
+            
+        }
 	private:
-		/*!
-		 * \brief
-		 * Sphere radius.
-		 * 
-		 */
-		ThReal32 radius;
-		/*!
-		 * \brief
-		 * Sphere center.
-		 *		 
-		 */
-		ThVec3 center;
+
+		value_type radius;
+		Vec3 center;
 	};
+    
+    typedef ThSphere<ThVec3f> ThSpheref;
 }//Thor

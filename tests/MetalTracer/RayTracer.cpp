@@ -68,9 +68,14 @@ bool RayTracer::RenderFrame()
     return false;
 }
 
-ThVec3f RayTracer::TraceRay(const ThRayf& Ray)
+ThVec3f RayTracer::TraceRay(const ThRayf& ray)
 {
-    float t = 0.5f * (Ray.GetDirection().y() + 1.0f);
+    ThSpheref sphere(ThVec3f(0.0f,0.0f,-1.0f), 0.5f);
+    
+    if (RayHitSphere(ray, sphere))
+        return ThVec3f(1.0f, 0.0f, 0.0f);
+    
+    float t = 0.5f * (ray.GetDirection().y() + 1.0f);
     ThVec3f result = t * ThVec3f(0.5f, 0.7f, 1.0f) + (1.0f - t) * ThVec3f(1.0f, 1.0f, 1.0f);
     return result;
 }

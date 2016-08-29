@@ -260,6 +260,9 @@ namespace Thor
 	{		
 		char STATIC_ASSERT_FAILURE[B] = {0};
 	}
+    
+    template <class T>
+    using ValueType = typename T::value_type;
 
 #ifdef THOR_PLATFORM_WIN
 	#if _MSC_VER >= 1600

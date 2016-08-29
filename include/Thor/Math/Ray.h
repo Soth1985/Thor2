@@ -11,7 +11,7 @@ namespace Thor{
 	 * 
 	 */
 	template<class Vec3>
-	class ThRayT
+	class ThRay
 	{
 	public:
         typedef typename Vec3::value_type value_type;
@@ -23,7 +23,7 @@ namespace Thor{
 		 * Returns ray origin.
 		 * 
 		 */
-		THOR_INLINE Vec3& Origin()
+		THOR_INLINE const Vec3& GetOrigin()const
 		{
 			return origin;
 		}
@@ -35,9 +35,9 @@ namespace Thor{
 		* Returns ray origin.
 		* 
 		*/
-		THOR_INLINE const Vec3& Origin() const
+		THOR_INLINE void SetOrigin(const Vec3& o)
 		{
-			return origin;
+            origin = o;
 		}
 
 		/*!
@@ -95,7 +95,7 @@ namespace Thor{
 			return origin + t * direction;
 		}
 
-		ThRayT(const Vec3& origin_, const Vec3& direction_)
+		ThRay(const Vec3& origin_, const Vec3& direction_)
 			:
         origin(origin_),
         direction(direction_)
@@ -103,7 +103,7 @@ namespace Thor{
 			//direction.Normalize();
 		}
         
-        ThRayT()
+        ThRay()
         {
             
         }
@@ -122,5 +122,5 @@ namespace Thor{
 		Vec3 direction;
 	};
 
-	typedef ThRayT<ThVec3f> ThRayf;
+	typedef ThRay<ThVec3f> ThRayf;
 }//Thor
