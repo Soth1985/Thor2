@@ -105,6 +105,7 @@ using namespace Thor;
     RayTracerOptions options;
     options.m_Width = _view.drawableSize.width;
     options.m_Height = _view.drawableSize.height;
+    options.m_SamplesPerRay = 10;
     Scene* scene = new Scene();
     ThSpheref sphere1(ThVec3f(0.0f,0.0f,-1.0f), 0.5f);
     ThSpheref sphere2(ThVec3f(0.0f,-100.5f,-1.0f), 100.0f);

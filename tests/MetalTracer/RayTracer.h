@@ -3,6 +3,7 @@
 #include <Thor/Math/Math.h>
 #include <Thor/Core/Containers/ThVector.h>
 #include <atomic>
+#include <random>
 
 namespace Thor
 {
@@ -50,6 +51,31 @@ namespace Thor
         void AddSphere(const ThSpheref& sphere);
         
         ThVec3f TraceRay(const ThRayf& ray);
+    };
+    
+    class Camera
+    {
+    public:
+        Camera()
+            :
+        lowerLeftCorner(-2.0f, -1.0f, -1.0f),
+        horizontal(4.0f, 0.0f, 0.0f),
+        vertical(0.0f, 2.0f, 0.0f)
+        {
+            
+        }
+        
+        ThRayf GetRay(float u, float v)
+        {
+            ThVec3f direction = lowerLeftCorner + u * horizontal + v * vertical - origin;
+            direction.Normalize();
+            return ThRayf(origin, direction);
+        }
+        
+        ThVec3f lowerLeftCorner;
+        ThVec3f horizontal;
+        ThVec3f vertical;
+        ThVec3f origin;
     };
     
     class Film
@@ -103,7 +129,8 @@ namespace Thor
             :
         m_Width(0),
         m_Height(0),
-        m_FramesToRender(1)
+        m_FramesToRender(1),
+        m_SamplesPerRay(1)
         {
             
         }
@@ -111,6 +138,7 @@ namespace Thor
         ThI32 m_Width;
         ThI32 m_Height;
         ThI32 m_FramesToRender;
+        ThI32 m_SamplesPerRay;
     };
     
     class RayTracer
@@ -126,11 +154,13 @@ namespace Thor
         void ResizeFilm(ThI32 width, ThI32 height);
         void FrameFetched();
     private:
-        ThVec3f TraceRay(const ThRayf& ray);
         std::atomic<RayTracerState> m_State;
-        Film* m_Film;
-        RayTracerOptions m_Options;
+        Film* m_Film;        
         ThI32 m_FramesRendered;
         Scene* m_Scene;
+        std::mt19937 m_Generator;
+        std::uniform_real_distribution<double> m_Rng;
+        RayTracerOptions m_Options;
+        Camera m_Camera;
     };
 }

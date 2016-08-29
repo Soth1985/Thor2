@@ -1,4 +1,5 @@
 #include "RayTracer.h"
+#include <chrono>
 #include <dispatch/dispatch.h>
 
 using namespace Thor;
@@ -23,9 +24,9 @@ ThVec3f Scene::TraceRay(const ThRayf& ray)
         {
             if (RayIntersectSphere(ray, spheres[objects[i].shape.index], 0.0, MAXFLOAT, temp))
             {
+                ++numHits;
                 if (temp.t < hitClosest.t)
-                {
-                    ++numHits;
+                {                    
                     hitClosest = temp;
                 }
             }
@@ -46,9 +47,11 @@ RayTracer::RayTracer()
 m_State(RayTracerState::Uninitialized),
 m_FramesRendered(0),
 m_Film(nullptr),
-m_Scene(nullptr)
+m_Scene(nullptr),
+m_Rng(0.0, 1.0)
 {
-    
+    unsigned int seed = std::chrono::system_clock::now().time_since_epoch().count();
+    m_Generator.seed(seed);
 }
 
 RayTracer::~RayTracer()
@@ -90,18 +93,21 @@ bool RayTracer::RenderFrame()
         dispatch_async(queue,
         ^(void)
         {
-            ThVec3f lowerLeftCorner(-2.0f, -1.0f, -1.0f);
-            ThVec3f horizontal(4.0f / m_Options.m_Width, 0.0f, 0.0f);
-            ThVec3f vertical(0.0f, 2.0f / m_Options.m_Height, 0.0f);
-            ThVec3f origin;
+            float oneOverW = 1.0 / m_Options.m_Width;
+            float oneOverH = 1.0f / m_Options.m_Height;
             for (ThI32 j = m_Options.m_Height - 1; j >= 0; --j)
             {
                 for (ThI32 i = 0; i < m_Options.m_Width; ++i)
                 {
-                    ThVec3f direction = lowerLeftCorner + i * horizontal + j * vertical;
-                    direction.Normalize();
-                    ThRayf ray(origin, direction);
-                    ThVec3f color = m_Scene->TraceRay(ray);
+                    ThVec3f color;
+                    for (ThI32 s = 0; s < m_Options.m_SamplesPerRay; ++s)
+                    {
+                        float u = (i + m_Rng(m_Generator)) * oneOverW;
+                        float v = (j + m_Rng(m_Generator)) * oneOverH;
+                        ThRayf ray = m_Camera.GetRay(u, v);
+                        color += m_Scene->TraceRay(ray);
+                    }
+                    color /= m_Options.m_SamplesPerRay;
                     this->m_Film->Pixel(i, j) = ThVec4ub(255.99f * color.r(), 255.99f * color.g(), 255.99f * color.b(), 255);
                 }
             }
@@ -112,19 +118,6 @@ bool RayTracer::RenderFrame()
     }
     
     return false;
-}
-
-ThVec3f RayTracer::TraceRay(const ThRayf& ray)
-{
-    ThSpheref sphere(ThVec3f(0.0f,0.0f,-1.0f), 0.5f);
-    ThRayHitf hit;
-    
-    if (RayIntersectSphere(ray, sphere, 0.0, MAXFLOAT, hit))
-        return 0.5f * ThVec3f(hit.norm.x() + 1.0, hit.norm.y() + 1.0, hit.norm.z() + 1.0);
-    
-    float t = 0.5f * (ray.GetDirection().y() + 1.0f);
-    ThVec3f result = t * ThVec3f(0.5f, 0.7f, 1.0f) + (1.0f - t) * ThVec3f(1.0f, 1.0f, 1.0f);
-    return result;
 }
 
 const Film* RayTracer::GetFilm()const
