@@ -67,13 +67,13 @@ using namespace Thor;
     float Vertices[] =
     {
         -1.0f, 1.0f,
-        1.0f, 0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f,
         1.0f, 1.0f,
-        0.0f, 1.0f, 0.0f, 1.0f,
+        1.0f, 0.0f,
         1.0f, -1.0f,
-        0.0f, 0.0f, 1.0f, 1.0f,
+        1.0f, 1.0f,
         -1.0f, -1.0f,
-        1.0f, 0.0f, 1.0f, 1.0f
+        0.0f, 1.0f
     };
     
     short Indices[] =
@@ -103,10 +103,10 @@ using namespace Thor;
     vertexDesc.attributes[0].format = MTLVertexFormatFloat2;
     vertexDesc.attributes[0].bufferIndex = 0;
     vertexDesc.attributes[0].offset = 0;
-    vertexDesc.attributes[1].format = MTLVertexFormatFloat4;
+    vertexDesc.attributes[1].format = MTLVertexFormatFloat2;
     vertexDesc.attributes[1].bufferIndex = 0;
     vertexDesc.attributes[1].offset = 2 * sizeof(float);
-    vertexDesc.layouts[0].stride = 6 * sizeof(float);
+    vertexDesc.layouts[0].stride = 4 * sizeof(float);
     vertexDesc.layouts[0].stepFunction = MTLVertexStepFunctionPerVertex;
     renderPipelineDesc.vertexFunction = vertexFunc;
     renderPipelineDesc.fragmentFunction = fragmentFunc;
@@ -183,6 +183,7 @@ using namespace Thor;
     
     [renderEncoder setRenderPipelineState:_pipelineState];
     [renderEncoder setVertexBuffer:_vertexBuffer offset:0 atIndex:0];
+    [renderEncoder setFragmentTexture:_frame atIndex:0];
     [renderEncoder drawIndexedPrimitives:MTLPrimitiveTypeTriangle indexCount:6 indexType:MTLIndexTypeUInt16 indexBuffer:_indexBuffer indexBufferOffset:0];
     //[renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:3];
     

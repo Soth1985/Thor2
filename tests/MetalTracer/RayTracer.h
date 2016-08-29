@@ -66,12 +66,12 @@ namespace Thor
             delete[] m_Frame;
         }
         
-        const ThVec4ub& operator()(int x, int y)const
+        const ThVec4ub& Pixel(int x, int y)const
         {
             return m_Frame[y * m_Width + x];
         }
         
-        ThVec4ub& operator()(int x, int y)
+        ThVec4ub& Pixel(int x, int y)
         {
             return m_Frame[y * m_Width + x];
         }

@@ -44,6 +44,15 @@ bool RayTracer::RenderFrame()
         dispatch_async(queue,
         ^(void)
         {
+            for (ThI32 j = 0; j < m_Options.m_Height; ++j)
+            {
+                for (ThI32 i = 0; i < m_Options.m_Width; ++i)
+                {
+                    float r = float(i) / float(m_Options.m_Width);
+                    float g = float(j) / float(m_Options.m_Height);
+                    this->m_Film->Pixel(i, j) = ThVec4ub(255.99f * r, 255.99f * g, 255.99f * 0.2f, 255);
+                }
+            }
             this->m_FramesRendered++;
             this->m_State = RayTracerState::FrameReady;
         });
