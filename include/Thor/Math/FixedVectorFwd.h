@@ -36,14 +36,14 @@ typedef ThFixedVector< ThI16,2 > ThVec2s;
 typedef ThFixedVector< ThU16,4 > ThVec4us;
 typedef ThFixedVector< ThU16,3 > ThVec3us;
 typedef ThFixedVector< ThU16,2 > ThVec2us;
+    
+typedef ThFixedVector< ThU8,4 > ThVec4ub;
+typedef ThFixedVector< ThU8,3 > ThVec3ub;
+typedef ThFixedVector< ThU8,2 > ThVec2ub;
 
 typedef ThFixedVector< ThF64,4 > ThVec4d;
 typedef ThFixedVector< ThF64,3 > ThVec3d;
 typedef ThFixedVector< ThF64,2 > ThVec2d;
 typedef ThFixedVector< ThF64,4,quaternion_tag > ThQuatd;
-
-typedef ThFixedVector< ThBool,4 > ThVec4b;
-typedef ThFixedVector< ThBool,3 > ThVec3b;
-typedef ThFixedVector< ThBool,2 > ThVec2b;
 
 }//Thor

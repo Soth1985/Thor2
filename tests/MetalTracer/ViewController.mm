@@ -8,6 +8,9 @@
 
 #import "ViewController.h"
 #import <Metal/Metal.h>
+#include "RayTracer.h"
+
+using namespace Thor;
 
 @implementation ViewController
 {
@@ -18,16 +21,20 @@
     
     id <MTLBuffer> _vertexBuffer;
     id <MTLBuffer> _indexBuffer;
+    id <MTLTexture> _frame;
     id <MTLRenderPipelineState> _pipelineState;
-    //id <MTL>
+    
+    
+    RayTracer _rayTracer;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
 
     [self setupMetal];
-    [self setupRendering];
     [self setupView];
+    [self setupRendering];
+    
 }
 
 - (void)setupView {
@@ -76,6 +83,18 @@
     
     _vertexBuffer = [_device newBufferWithBytes:Vertices length:sizeof(Vertices) options:MTLResourceStorageModeManaged];
     _indexBuffer = [_device newBufferWithBytes:Indices length:sizeof(Indices) options:MTLResourceStorageModeManaged];
+    
+    MTLTextureDescriptor *texDesc = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatRGBA8Unorm
+                                                          width:_view.drawableSize.width
+                                                          height:_view.drawableSize.height
+                                                          mipmapped:NO];
+    _frame = [_device newTextureWithDescriptor:texDesc];
+    
+    RayTracerOptions options;
+    options.m_Width = _view.drawableSize.width;
+    options.m_Height = _view.drawableSize.height;
+    _rayTracer.Init(options);
+    
     id<MTLFunction> vertexFunc = [_defaultLibrary newFunctionWithName:@"vertexFunc"];
     id<MTLFunction> fragmentFunc = [_defaultLibrary newFunctionWithName:@"fragmentFunc"];
     MTLRenderPipelineDescriptor *renderPipelineDesc = [[MTLRenderPipelineDescriptor alloc] init];
@@ -99,10 +118,16 @@
     // Create MTLRenderPipelineState from MTLRenderPipelineDescriptor
     NSError *errors = nil;
     _pipelineState = [_device newRenderPipelineStateWithDescriptor:renderPipelineDesc error:&errors];
+    
 }
 
 - (void)reshape
 {
+    MTLTextureDescriptor *texDesc = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatRGBA8Unorm
+                                                          width:_view.drawableSize.width
+                                                          height:_view.drawableSize.height
+                                                          mipmapped:NO];
+    _frame = [_device newTextureWithDescriptor:texDesc];
 }
 
 - (void)update
@@ -111,6 +136,36 @@
 
 - (void)render
 {
+    if (_rayTracer.GetState() == RayTracerState::Idle)
+    {
+        _rayTracer.RenderFrame();
+    }
+    else if (_rayTracer.GetState() == RayTracerState::FrameReady)
+    {
+        const Film* film = _rayTracer.GetFilm();
+        const RayTracerOptions& options = _rayTracer.GetOptions();
+        ThI32 width = _view.drawableSize.width;
+        ThI32 height = _view.drawableSize.height;
+        
+        if (options.m_Width == width && options.m_Height == height)
+        {
+            MTLRegion region = MTLRegionMake2D(0, 0, width, height);
+            
+            [_frame replaceRegion:region
+                    mipmapLevel:0
+                    withBytes:film->GetFrame()
+                    bytesPerRow:width * 4];
+            
+            _rayTracer.FrameFetched();
+        }
+        else
+        {
+            _rayTracer.FrameFetched();
+            _rayTracer.ResizeFilm(width, height);
+        }
+        
+    }
+    
     id <MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
     commandBuffer.label = @"Main Command Buffer";
     
@@ -124,7 +179,7 @@
     
     // Set context state.
     [renderEncoder setViewport:{0, 0, _view.drawableSize.width, _view.drawableSize.height, 0, 1}];
-    [renderEncoder pushDebugGroup:@"Render Triangle"];
+    [renderEncoder pushDebugGroup:@"Render Quad"];
     
     [renderEncoder setRenderPipelineState:_pipelineState];
     [renderEncoder setVertexBuffer:_vertexBuffer offset:0 atIndex:0];
