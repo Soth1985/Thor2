@@ -64,7 +64,7 @@ using namespace Thor;
 
 - (void)setupRendering
 {
-    float Vertices[] =
+    /*float Vertices[] =
     {
         -1.0f, 1.0f,
         0.0f, 0.0f,
@@ -74,6 +74,18 @@ using namespace Thor;
         1.0f, 1.0f,
         -1.0f, -1.0f,
         0.0f, 1.0f
+    };*/
+    
+    float Vertices[] =
+    {
+        -1.0f, 1.0f,
+        0.0f, 1.0f,
+        1.0f, 1.0f,
+        1.0f, 1.0f,
+        1.0f, -1.0f,
+        1.0f, 0.0f,
+        -1.0f, -1.0f,
+        0.0f, 0.0f
     };
     
     short Indices[] =

@@ -44,13 +44,19 @@ bool RayTracer::RenderFrame()
         dispatch_async(queue,
         ^(void)
         {
-            for (ThI32 j = 0; j < m_Options.m_Height; ++j)
+            ThVec3f lowerLeftCorner(-2.0f, -1.0f, -1.0f);
+            ThVec3f horizontal(4.0f / m_Options.m_Width, 0.0f, 0.0f);
+            ThVec3f vertical(0.0f, 2.0f / m_Options.m_Height, 0.0f);
+            ThVec3f origin;
+            for (ThI32 j = m_Options.m_Height - 1; j >= 0; --j)
             {
                 for (ThI32 i = 0; i < m_Options.m_Width; ++i)
                 {
-                    float r = float(i) / float(m_Options.m_Width);
-                    float g = float(j) / float(m_Options.m_Height);
-                    this->m_Film->Pixel(i, j) = ThVec4ub(255.99f * r, 255.99f * g, 255.99f * 0.2f, 255);
+                    ThVec3f direction = lowerLeftCorner + i * horizontal + j * vertical;
+                    direction.Normalize();
+                    ThRayf ray(origin, direction);
+                    ThVec3f color = TraceRay(ray);
+                    this->m_Film->Pixel(i, j) = ThVec4ub(255.99f * color.r(), 255.99f * color.g(), 255.99f * color.b(), 255);
                 }
             }
             this->m_FramesRendered++;
@@ -60,6 +66,13 @@ bool RayTracer::RenderFrame()
     }
     
     return false;
+}
+
+ThVec3f RayTracer::TraceRay(const ThRayf& Ray)
+{
+    float t = 0.5f * (Ray.GetDirection().y() + 1.0f);
+    ThVec3f result = t * ThVec3f(0.5f, 0.7f, 1.0f) + (1.0f - t) * ThVec3f(1.0f, 1.0f, 1.0f);
+    return result;
 }
 
 const Film* RayTracer::GetFilm()const

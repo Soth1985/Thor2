@@ -114,6 +114,7 @@ namespace Thor
         void ResizeFilm(ThI32 width, ThI32 height);
         void FrameFetched();
     private:
+        ThVec3f TraceRay(const ThRayf& Ray);
         std::atomic<RayTracerState> m_State;
         Film* m_Film;
         RayTracerOptions m_Options;

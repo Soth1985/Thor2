@@ -96,10 +96,17 @@ namespace Thor{
 		}
 
 		ThRayT(const Vec3& origin_, const Vec3& direction_)
-			:origin(origin_),direction(direction_)
+			:
+        origin(origin_),
+        direction(direction_)
 		{
-			direction.Normalize();
+			//direction.Normalize();
 		}
+        
+        ThRayT()
+        {
+            
+        }
 	private:
 		/*!
 		 * \brief
