@@ -105,7 +105,12 @@ using namespace Thor;
     RayTracerOptions options;
     options.m_Width = _view.drawableSize.width;
     options.m_Height = _view.drawableSize.height;
-    _rayTracer.Init(options);
+    Scene* scene = new Scene();
+    ThSpheref sphere1(ThVec3f(0.0f,0.0f,-1.0f), 0.5f);
+    ThSpheref sphere2(ThVec3f(0.0f,-100.5f,-1.0f), 100.0f);
+    scene->AddSphere(sphere1);
+    scene->AddSphere(sphere2);
+    _rayTracer.Init(options, scene);
     
     id<MTLFunction> vertexFunc = [_defaultLibrary newFunctionWithName:@"vertexFunc"];
     id<MTLFunction> fragmentFunc = [_defaultLibrary newFunctionWithName:@"fragmentFunc"];

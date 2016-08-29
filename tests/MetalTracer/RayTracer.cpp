@@ -3,16 +3,61 @@
 
 using namespace Thor;
 
+void Scene::AddSphere(const ThSpheref& sphere)
+{
+    spheres.PushBack(sphere);
+    objects.PushBack(Object());
+    objects.Back().shape.type = ShapeType::Sphere;
+    objects.Back().shape.index = spheres.Size() - 1;
+}
+
+ThVec3f Scene::TraceRay(const ThRayf& ray)
+{
+    ThRayHitf hitClosest;
+    hitClosest.t = MAXFLOAT;
+    ThI32 numHits = 0;
+    for (ThSize i = 0; i < objects.Size(); ++i)
+    {
+        ThRayHitf temp;
+        if (objects[i].shape.type == ShapeType::Sphere)
+        {
+            if (RayIntersectSphere(ray, spheres[objects[i].shape.index], 0.0, MAXFLOAT, temp))
+            {
+                if (temp.t < hitClosest.t)
+                {
+                    ++numHits;
+                    hitClosest = temp;
+                }
+            }
+                
+        }
+    }
+    
+    if (numHits > 0)
+        return 0.5f * ThVec3f(hitClosest.norm.x() + 1.0, hitClosest.norm.y() + 1.0, hitClosest.norm.z() + 1.0);
+    
+    float t = 0.5f * (ray.GetDirection().y() + 1.0f);
+    ThVec3f result = t * ThVec3f(0.5f, 0.7f, 1.0f) + (1.0f - t) * ThVec3f(1.0f, 1.0f, 1.0f);
+    return result;
+}
+
 RayTracer::RayTracer()
     :
 m_State(RayTracerState::Uninitialized),
 m_FramesRendered(0),
-m_Film(nullptr)
+m_Film(nullptr),
+m_Scene(nullptr)
 {
     
 }
 
-void RayTracer::Init(const RayTracerOptions& options)
+RayTracer::~RayTracer()
+{
+    if (m_Scene)
+        delete m_Scene;
+}
+
+void RayTracer::Init(const RayTracerOptions& options, Scene* scene)
 {
     if (m_State == RayTracerState::Uninitialized)
     {
@@ -20,6 +65,7 @@ void RayTracer::Init(const RayTracerOptions& options)
         m_Film = new Film();
         m_Film->Init(m_Options.m_Width, m_Options.m_Height);
         m_State = RayTracerState::Idle;
+        m_Scene = scene;
     }
 }
 
@@ -55,7 +101,7 @@ bool RayTracer::RenderFrame()
                     ThVec3f direction = lowerLeftCorner + i * horizontal + j * vertical;
                     direction.Normalize();
                     ThRayf ray(origin, direction);
-                    ThVec3f color = TraceRay(ray);
+                    ThVec3f color = m_Scene->TraceRay(ray);
                     this->m_Film->Pixel(i, j) = ThVec4ub(255.99f * color.r(), 255.99f * color.g(), 255.99f * color.b(), 255);
                 }
             }
@@ -73,7 +119,7 @@ ThVec3f RayTracer::TraceRay(const ThRayf& ray)
     ThSpheref sphere(ThVec3f(0.0f,0.0f,-1.0f), 0.5f);
     ThRayHitf hit;
     
-    if (RayIntersectSphere(ray, sphere, 0.0, 1000.0, hit))
+    if (RayIntersectSphere(ray, sphere, 0.0, MAXFLOAT, hit))
         return 0.5f * ThVec3f(hit.norm.x() + 1.0, hit.norm.y() + 1.0, hit.norm.z() + 1.0);
     
     float t = 0.5f * (ray.GetDirection().y() + 1.0f);

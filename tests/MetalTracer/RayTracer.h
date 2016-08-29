@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Thor/Math/Math.h>
+#include <Thor/Core/Containers/ThVector.h>
 #include <atomic>
 
 namespace Thor
@@ -15,31 +16,41 @@ namespace Thor
     
     enum class ShapeType : ThI32
     {
-        
+        Sphere
     };
     
     enum class MaterialType : ThI32
     {
-        
+        NormalMap
     };
     
-    /*struct Shape
+    struct Shape
     {
-        type;
-        index;
+        ShapeType type;
+        ThI32 index;
     };
     
     struct Material
     {
-        type;
-        index;
+        MaterialType type;
+        ThI32 index;
     };
     
     struct Object
     {
-        shape;
-        material;
-    };*/
+        Shape shape;
+        Material material;
+    };
+    
+    struct Scene
+    {
+        ThVector<ThSpheref> spheres;
+        ThVector<Object> objects;
+        
+        void AddSphere(const ThSpheref& sphere);
+        
+        ThVec3f TraceRay(const ThRayf& ray);
+    };
     
     class Film
     {
@@ -106,7 +117,8 @@ namespace Thor
     {
     public:
         RayTracer();
-        void Init(const RayTracerOptions& options);
+        ~RayTracer();
+        void Init(const RayTracerOptions& options, Scene* scene);
         RayTracerState GetState();
         bool RenderFrame();
         const Film* GetFilm()const;
@@ -114,10 +126,11 @@ namespace Thor
         void ResizeFilm(ThI32 width, ThI32 height);
         void FrameFetched();
     private:
-        ThVec3f TraceRay(const ThRayf& Ray);
+        ThVec3f TraceRay(const ThRayf& ray);
         std::atomic<RayTracerState> m_State;
         Film* m_Film;
         RayTracerOptions m_Options;
         ThI32 m_FramesRendered;
+        Scene* m_Scene;
     };
 }
