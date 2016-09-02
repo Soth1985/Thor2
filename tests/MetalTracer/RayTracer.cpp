@@ -4,51 +4,14 @@
 
 using namespace Thor;
 
-void Scene::AddSphere(const ThSpheref& sphere)
-{
-    spheres.PushBack(sphere);
-    objects.PushBack(Object());
-    objects.Back().shape.type = ShapeType::Sphere;
-    objects.Back().shape.index = spheres.Size() - 1;
-}
-
-ThVec3f Scene::TraceRay(const ThRayf& ray)
-{
-    ThRayHitf hitClosest;
-    hitClosest.t = MAXFLOAT;
-    ThI32 numHits = 0;
-    for (ThSize i = 0; i < objects.Size(); ++i)
-    {
-        ThRayHitf temp;
-        if (objects[i].shape.type == ShapeType::Sphere)
-        {
-            if (RayIntersectSphere(ray, spheres[objects[i].shape.index], 0.0, MAXFLOAT, temp))
-            {
-                ++numHits;
-                if (temp.t < hitClosest.t)
-                {                    
-                    hitClosest = temp;
-                }
-            }
-                
-        }
-    }
-    
-    if (numHits > 0)
-        return 0.5f * ThVec3f(hitClosest.norm.x() + 1.0, hitClosest.norm.y() + 1.0, hitClosest.norm.z() + 1.0);
-    
-    float t = 0.5f * (ray.GetDirection().y() + 1.0f);
-    ThVec3f result = t * ThVec3f(0.5f, 0.7f, 1.0f) + (1.0f - t) * ThVec3f(1.0f, 1.0f, 1.0f);
-    return result;
-}
-
 RayTracer::RayTracer()
     :
 m_State(RayTracerState::Uninitialized),
 m_FramesRendered(0),
 m_Film(nullptr),
 m_Scene(nullptr),
-m_Rng(0.0, 1.0)
+m_RngUniform(0.0, 1.0),
+m_RngNormal(0.0f, 1.0)
 {
     unsigned int seed = std::chrono::system_clock::now().time_since_epoch().count();
     m_Generator.seed(seed);
@@ -102,12 +65,15 @@ bool RayTracer::RenderFrame()
                     ThVec3f color;
                     for (ThI32 s = 0; s < m_Options.m_SamplesPerRay; ++s)
                     {
-                        float u = (i + m_Rng(m_Generator)) * oneOverW;
-                        float v = (j + m_Rng(m_Generator)) * oneOverH;
+                        float u = (i + m_RngUniform(m_Generator)) * oneOverW;
+                        float v = (j + m_RngUniform(m_Generator)) * oneOverH;
                         ThRayf ray = m_Camera.GetRay(u, v);
-                        color += m_Scene->TraceRay(ray);
+                        color += TraceScene(ray, 1);
                     }
                     color /= m_Options.m_SamplesPerRay;
+                    color.x() = Math::Sqrt(color.x());
+                    color.y() = Math::Sqrt(color.y());
+                    color.z() = Math::Sqrt(color.z());
                     this->m_Film->Pixel(i, j) = ThVec4ub(255.99f * color.r(), 255.99f * color.g(), 255.99f * color.b(), 255);
                 }
             }
@@ -147,4 +113,107 @@ void RayTracer::ResizeFilm(ThI32 width, ThI32 height)
         m_Options.m_Width = width;
         m_Options.m_Height = height;
     }
+}
+
+ThVec3f RayTracer::TraceScene(const ThRayf& ray, ThI32 depth)
+{
+    ThRayHitf hitClosest;
+    hitClosest.t = MAXFLOAT;
+    ThI32 numHits = 0;
+    ComponentRef* material = nullptr;
+    for (ThSize i = 0; i < m_Scene->spheres.Size(); ++i)
+    {
+        ThRayHitf temp;
+        
+        if (RayIntersectSphere(ray, m_Scene->spheres[i].shape, 0.001, MAXFLOAT, temp))
+        {
+            ++numHits;
+            if (temp.t < hitClosest.t)
+            {
+                material = &m_Scene->spheres[i].material;
+                hitClosest = temp;
+            }
+        }
+    }
+    
+    if (numHits > 0)
+    {
+        if (material)
+        {
+            switch (material->type)
+            {
+                case ComponentType::NormalMapMaterial:
+                    return 0.5f * ThVec3f(hitClosest.norm.x() + 1.0, hitClosest.norm.y() + 1.0, hitClosest.norm.z() + 1.0);
+                case ComponentType::LambertMaterial:
+                case ComponentType::MetalMaterial:
+                {
+                    ThRayf scattered;
+                    ThVec3f attenuation;
+                    
+                    if (depth > m_Options.m_TraceDepth)
+                        return ThVec3f(0.0, 0.0, 0.0);
+                    
+                    bool didScatter = false;
+                    
+                    if (material->type == ComponentType::LambertMaterial)
+                        didScatter = ScatterLambert(*material, ray, hitClosest, attenuation, scattered);
+                    else
+                        didScatter = ScatterMetal(*material, ray, hitClosest, attenuation, scattered);
+                    
+                    if (!didScatter)
+                        return ThVec3f(0.0, 0.0, 0.0);
+                    
+                    return attenuation ^ TraceScene(scattered, depth + 1);
+                }
+                default:
+                    return ThVec3f(0.0, 0.0, 0.0);
+            }
+        }
+    }
+    
+    float t = 0.5f * (ray.GetDirection().y() + 1.0f);
+    ThVec3f result = t * ThVec3f(0.5f, 0.7f, 1.0f) + (1.0f - t) * ThVec3f(1.0f, 1.0f, 1.0f);
+    return result;
+}
+
+bool RayTracer::ScatterLambert(const ComponentRef& mat, const ThRayf& rayIn, const ThRayHitf& hit, ThVec3f& attenuation, ThRayf& scattered)
+{
+    ThVec3f dir = hit.norm + RandomPointOnSphere();
+    scattered.SetOrigin(hit.pos);
+    scattered.SetDirection(dir);
+    attenuation = m_Scene->lamberts[mat.index].albedo;
+    return true;
+}
+
+bool RayTracer::ScatterMetal(const ComponentRef& mat, const ThRayf& rayIn, const ThRayHitf& hit, ThVec3f& attenuation, ThRayf& scattered)
+{
+    ThVec3f rayInDir = rayIn.GetDirection();
+    rayInDir.Normalize();
+    ThVec3f reflected = Reflect(rayInDir, hit.norm);
+    scattered.SetOrigin(hit.pos);
+    scattered.SetDirection(reflected);
+    attenuation = m_Scene->metals[mat.index].albedo;
+    return reflected * hit.norm > 0;
+}
+
+ThVec3f RayTracer::RandomPointOnSphere()
+{
+    ThVec3f result;
+    /*do
+    {
+        result.x() = m_RngUniform(m_Generator);
+        result.y() = m_RngUniform(m_Generator);
+        result.z() = m_RngUniform(m_Generator);
+        
+        result = 2.0 * result - ThVec3f(1.0,1.0,1.0);
+    }
+    while (result*result > 1.0);*/
+    
+    result.x() = m_RngUniform(m_Generator);
+    result.y() = m_RngUniform(m_Generator);
+    result.z() = m_RngUniform(m_Generator);
+    result = 2.0 * result - ThVec3f(1.0,1.0,1.0);
+    result.Normalize();
+    
+    return result;
 }

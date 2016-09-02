@@ -27,7 +27,10 @@ THOR_INLINE void VecModulus( const VecT1& lhs, const VecT2& rhs, ResT& res )
 
 template< class VecT1, class VecT2, class ResT >
 THOR_INLINE void VecXor( const VecT1& lhs, const VecT2& rhs, ResT& res )
-{};
+{
+    for ( unsigned int i = 0; i < lhs.Size(); ++i )
+        res(i) = lhs(i) * rhs(i);
+};
 
 //cross product of two 4dim vectors
 template< class T1, class TagT1, class T2, class TagT2, class ResT >

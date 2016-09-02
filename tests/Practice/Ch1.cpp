@@ -3,6 +3,9 @@
 #include <ctype.h>
 #include <assert.h>
 #include "Shared.h"
+#include <chrono>
+#include <random>
+#include <iostream>
 
 //check if the string contains only unique characters
 bool AllUniqueCharacters(const char* str, bool caseSensitive)
@@ -230,11 +233,82 @@ void TestCompress()
     CHECK (strcmp("a6s1g6u1n3m1", res) == 0, "aaaaaasggggggunnnm->a6s1g6u1n3m1");
 }
 
+void Digits(int num, int digits[10], int& numDigits)
+{
+    numDigits = 0;
+    digits[0] = 0;
+    while (num > 0)
+    {
+        digits[numDigits] = num % 10;
+        num = num / 10;
+        ++numDigits;
+    }
+}
+
+int SumDigits(int num)
+{
+    int numDigits = 0;
+    int sum = 0;
+    while (num > 0)
+    {
+        int digit = num % 10;
+        sum += digit;
+        num = num / 10;
+        ++numDigits;
+    }
+    
+    return sum;
+}
+
+void PrintNumbers()
+{
+    for (int i = 0; i < 10000; ++i)
+    {
+        int mod3 = i % 3;
+        
+        if (mod3 == 0)
+        {
+            int mod5 = i % 5;
+            
+            if (mod5 != 0)
+            {
+                int sumDigits = SumDigits(i);
+                
+                if (sumDigits < 10)
+                    printf("num = %d sum = %d\n", i, sumDigits);
+            }
+        }
+    }
+}
+
+double CalculatePi(int numIterations)
+{
+    int numInside = 0;
+    
+    std::uniform_real_distribution<double> distribution(-1.0, 1.0);
+    unsigned int seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::mt19937 generator;
+    generator.seed(seed);
+    
+    for (int i = 0; i < numIterations; ++i)
+    {
+        double x = distribution(generator);
+        double y = distribution(generator);
+        
+        if ( (x * x + y * y) <= 1.0f )
+            numInside++;
+    }
+    
+    return 4.0 * double(numInside) / double(numIterations);
+}
+
 int main()
 {
     TestUniqueCharacters();
     TestCircularRotation();
     TestOneEditAway();
     TestCompress();
+    
+    PrintNumbers();
     return 0;
 }

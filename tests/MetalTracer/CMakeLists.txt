@@ -5,6 +5,7 @@ set(MetalTracer_SRC
     ViewController.mm
     main.m
     RayTracer.cpp
+    Scene.cpp
 )
 
 set(MetalTracer_H
@@ -12,6 +13,7 @@ set(MetalTracer_H
     ViewController.h
     MetalShared.h
     RayTracer.h
+    Scene.h
 )
 
 set(MetalTracer_SHADERS Shaders.metal)

@@ -903,7 +903,13 @@ static void SetWeight( ThFixedVector<DataT,4,TagT> & vec, const DataT& w_)
 	vec.z() *= tmp;
 	vec.w() = w_;
 }
-
+    
+template <class DataT, unsigned int sz, class TagT>
+static ThFixedVector<DataT, sz, TagT> Reflect(const ThFixedVector<DataT, sz, TagT>& vec, const ThFixedVector<DataT, sz, TagT>& norm)
+{
+    return vec - norm * (2.0 * vec * norm);
+}
+    
 static const ThVec3f yAxis(0.0f,1.0f,0.0f);
 static const ThVec3f xAxis(1.0f,0.0f,0.0f);
 static const ThVec3f zAxis(0.0f,0.0f,1.0f);

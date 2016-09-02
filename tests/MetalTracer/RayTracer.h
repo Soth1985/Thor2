@@ -1,7 +1,6 @@
 #pragma once
 
-#include <Thor/Math/Math.h>
-#include <Thor/Core/Containers/ThVector.h>
+#include "Scene.h"
 #include <atomic>
 #include <random>
 
@@ -13,44 +12,6 @@ namespace Thor
         Idle,
         RenderingFrame,
         FrameReady
-    };
-    
-    enum class ShapeType : ThI32
-    {
-        Sphere
-    };
-    
-    enum class MaterialType : ThI32
-    {
-        NormalMap
-    };
-    
-    struct Shape
-    {
-        ShapeType type;
-        ThI32 index;
-    };
-    
-    struct Material
-    {
-        MaterialType type;
-        ThI32 index;
-    };
-    
-    struct Object
-    {
-        Shape shape;
-        Material material;
-    };
-    
-    struct Scene
-    {
-        ThVector<ThSpheref> spheres;
-        ThVector<Object> objects;
-        
-        void AddSphere(const ThSpheref& sphere);
-        
-        ThVec3f TraceRay(const ThRayf& ray);
     };
     
     class Camera
@@ -130,7 +91,8 @@ namespace Thor
         m_Width(0),
         m_Height(0),
         m_FramesToRender(1),
-        m_SamplesPerRay(1)
+        m_SamplesPerRay(1),
+        m_TraceDepth(1)
         {
             
         }
@@ -139,6 +101,7 @@ namespace Thor
         ThI32 m_Height;
         ThI32 m_FramesToRender;
         ThI32 m_SamplesPerRay;
+        ThI32 m_TraceDepth;
     };
     
     class RayTracer
@@ -154,12 +117,17 @@ namespace Thor
         void ResizeFilm(ThI32 width, ThI32 height);
         void FrameFetched();
     private:
+        ThVec3f TraceScene(const ThRayf& ray, ThI32 depth);
+        ThVec3f RandomPointOnSphere();
+        bool ScatterLambert(const ComponentRef& mat, const ThRayf& rayIn, const ThRayHitf& hit, ThVec3f& attenuation, ThRayf& scattered);
+        bool ScatterMetal(const ComponentRef& mat, const ThRayf& rayIn, const ThRayHitf& hit, ThVec3f& attenuation, ThRayf& scattered);
         std::atomic<RayTracerState> m_State;
         Film* m_Film;        
         ThI32 m_FramesRendered;
         Scene* m_Scene;
         std::mt19937 m_Generator;
-        std::uniform_real_distribution<double> m_Rng;
+        std::uniform_real_distribution<double> m_RngUniform;
+        std::normal_distribution<double> m_RngNormal;
         RayTracerOptions m_Options;
         Camera m_Camera;
     };

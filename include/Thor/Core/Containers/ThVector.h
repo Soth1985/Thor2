@@ -113,9 +113,12 @@ public:
 
 	ThVector(Pointer data, SizeType size, ThiMemoryAllocator* allocator = nullptr)
 		:
-	ThVector(allocator)
+	ThVector(allocator),
+    m_Data(data),
+    m_Size(size),
+    m_Capacity(size)
 	{
-		
+        
 	}
 
 	template <class InputIterator>
@@ -444,12 +447,20 @@ public:
 	{
 		FreeMemory();
 	}
+    
+    void SetData(Pointer data, SizeType size, ThiMemoryAllocator* allocator = nullptr)
+    {
+        FreeMemory();
+        m_Data = data;
+        m_Size = size;
+        m_Capacity = size;
+        m_Allocator = allocator;
+    }
 
 private:
 	Pointer	m_Data;
 	SizeType m_Size;
 	SizeType m_Capacity;
-	ThFlags32 m_Flags;
     ThiMemoryAllocator* m_Allocator;
     
 
@@ -573,8 +584,11 @@ private:
 
 	void SafeDelete(T* buffer)
 	{
-		ThI8* rawBuffer = (ThI8*)buffer;
-        m_Allocator->Deallocate(rawBuffer);
+        if (m_Allocator)
+        {
+            ThI8* rawBuffer = (ThI8*)buffer;
+            m_Allocator->Deallocate(rawBuffer);
+        }		
 	}
 };
 

@@ -13,7 +13,7 @@ namespace Thor
         m_TypeID(typeID)
         {}
         
-        bool operator==(const ThTypeID& other)
+        bool operator==(const ThTypeID& other)const
         {
             return m_TypeID == other.m_TypeID;
         }
@@ -28,7 +28,7 @@ namespace Thor
     class ThiComponent;
     class ThEvent;
     typedef ThTypeID<ThiSystem> ThSystemType;
-    typedef ThTypeID<ThiComponentDataManager> ThComponentManagerType;
+    typedef ThTypeID<ThiComponent> ThComponentType;
     typedef ThTypeID<ThEvent> ThEventType;
     
     class ThEvent
@@ -36,6 +36,40 @@ namespace Thor
     private:
         ThEventType m_Type;
         ThU32 m_Size;
+    };
+    
+    class ThEntity
+    {
+    public:
+        explicit ThEntity(ThU64 uid, ThI32 index)
+            :
+        m_Uid(uid),
+        m_Index(index)
+        {
+            
+        }
+        
+        ThU64 GetUid()const
+        {
+            return m_Uid;
+        }
+        
+        ThI32 GetIndex()const
+        {
+            return m_Index;
+        }
+    private:
+        ThU64 m_Uid;
+        ThI32 m_Index;
+    };
+    
+    class ThForeignKey
+    {
+    public:
+    private:
+        ThComponentType m_Type;
+        ThU64 m_Uid;
+        ThI32 m_Index;
     };
     
     class ThiEventManager
@@ -54,7 +88,15 @@ namespace Thor
     class ThiComponentManager
     {
     public:
-        virtual ThComponentManagerType GetType() = 0;
+        virtual ThComponentType GetType() = 0;
+    };
+    
+    class ThiEntityManager
+    {
+    public:
+        virtual ThEntity CreateEntity() = 0;
+        virtual bool DestroyEntity(const ThEntity& ent) = 0;
+        virtual bool IsAlive(const ThEntity& ent) = 0;
     };
     
     class ThiEngine
