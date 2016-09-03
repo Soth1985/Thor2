@@ -122,6 +122,8 @@ namespace Thor
         bool ScatterLambert(const ComponentRef& mat, const ThRayf& rayIn, const ThRayHitf& hit, ThVec3f& attenuation, ThRayf& scattered);
         bool ScatterMetal(const ComponentRef& mat, const ThRayf& rayIn, const ThRayHitf& hit, ThVec3f& attenuation, ThRayf& scattered);
         bool ScatterDielectric(const ComponentRef& mat, const ThRayf& rayIn, const ThRayHitf& hit, ThVec3f& attenuation, ThRayf& scattered);
+        float Schlick(float cosine, float n1, float n2);
+        float Schlick2(const ThVec3f& vec, const ThVec3f& norm, float n1, float n2);
         std::atomic<RayTracerState> m_State;
         Film* m_Film;        
         ThI32 m_FramesRendered;

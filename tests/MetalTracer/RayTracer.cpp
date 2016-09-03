@@ -207,30 +207,73 @@ bool RayTracer::ScatterDielectric(const ComponentRef& mat, const ThRayf& rayIn, 
     ThVec3f outwardNormal;
     ThVec3f rayInDir = rayIn.GetDirection();
     rayInDir.Normalize();
-    
+    float dirDotN = rayInDir * hit.norm;
+    float cosine = 0.0;
+    float reflectProb = 0.0f;
     attenuation = ThVec3f(1.0, 1.0, 1.0);
     
-    if (rayInDir * hit.norm > 0.0)
+    if (dirDotN > 0.0)
     {
-        outwardNormal = - hit.norm;
+        outwardNormal = -hit.norm;
         n1 = n;
         n2 = 1;
+        cosine = n * dirDotN;
     }
     else
+    {
         outwardNormal = hit.norm;
+        cosine = - dirDotN;
+    }
     
     ThVec3f refracted;
     if (Refract(rayInDir, outwardNormal, n1, n2, refracted))
     {
-        scattered = ThRayf(hit.pos, refracted);
+        reflectProb = Schlick(cosine, n1, n2);
+        //reflectProb = Schlick2(rayInDir, outwardNormal, n1, n2);
+        
+        if (m_RngUniform(m_Generator) <= reflectProb)
+        {
+            ThVec3f reflected = Reflect(rayInDir, hit.norm);
+            scattered = ThRayf(hit.pos, reflected);
+        }
+        else
+            scattered = ThRayf(hit.pos, refracted);
+            
         return true;
     }
     else
     {
         ThVec3f reflected = Reflect(rayInDir, hit.norm);
         scattered = ThRayf(hit.pos, reflected);
-        return false;
+        return true;
     }
+}
+
+float RayTracer::Schlick(float cosine, float n1, float n2)
+{
+    float refIdx = n2 / n1;
+    float r0 = (1.0 - refIdx) / (1.0 + refIdx);
+    r0 *= r0;
+    cosine = 1.0 - cosine;
+    return r0 + (1.0 - r0) * cosine * cosine * cosine * cosine * cosine;
+}
+
+float RayTracer::Schlick2(const ThVec3f& vec, const ThVec3f& norm, float n1, float n2)
+{
+    float r0 = (n1 - n2) / (n1 + n2);
+    r0 *= r0;
+    float cosine = - vec * norm;
+    
+    if (n1 > n2)
+    {
+        float n = n1 / n2;
+        float sinT2 = n * n * (1.0 - cosine * cosine);
+        if (sinT2 > 1.0)
+            return 1.0;
+        cosine = Math::Sqrt(1.0 - sinT2);
+    }
+    cosine = 1.0 - cosine;
+    return r0 + (1.0 - r0) * cosine * cosine * cosine * cosine * cosine;
 }
 
 ThVec3f RayTracer::RandomPointOnSphere()
