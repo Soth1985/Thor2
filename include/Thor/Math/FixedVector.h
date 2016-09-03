@@ -910,6 +910,21 @@ static ThFixedVector<DataT, sz, TagT> Reflect(const ThFixedVector<DataT, sz, Tag
     return vec - norm * (2.0 * vec * norm);
 }
     
+template <class DataT, unsigned int sz, class TagT>
+static bool Refract(const ThFixedVector<DataT, sz, TagT>& vec, const ThFixedVector<DataT, sz, TagT>& norm, DataT n1, DataT n2, ThFixedVector<DataT, sz, TagT>& refracted)
+{
+    DataT n = n1 / n2;
+    DataT cosI = - norm * vec;
+    DataT sinT2 = n * n * (1.0 - cosI * cosI);
+    
+    if (sinT2 > 1)
+        return false;
+    
+    DataT cosT = Math::Sqrt(1.0 - sinT2);
+    refracted = n * vec + (n * cosI - cosT) * norm;
+    return true;
+}
+    
 static const ThVec3f yAxis(0.0f,1.0f,0.0f);
 static const ThVec3f xAxis(1.0f,0.0f,0.0f);
 static const ThVec3f zAxis(0.0f,0.0f,1.0f);

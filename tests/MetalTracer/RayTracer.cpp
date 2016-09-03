@@ -63,14 +63,14 @@ bool RayTracer::RenderFrame()
                 for (ThI32 i = 0; i < m_Options.m_Width; ++i)
                 {
                     ThVec3f color;
-                    for (ThI32 s = 0; s < m_Options.m_SamplesPerRay; ++s)
+                    for (ThI32 s = 0; s < m_Options.m_SamplesPerPixel; ++s)
                     {
                         float u = (i + m_RngUniform(m_Generator)) * oneOverW;
                         float v = (j + m_RngUniform(m_Generator)) * oneOverH;
                         ThRayf ray = m_Camera.GetRay(u, v);
                         color += TraceScene(ray, 1);
                     }
-                    color /= m_Options.m_SamplesPerRay;
+                    color /= m_Options.m_SamplesPerPixel;
                     color.x() = Math::Sqrt(color.x());
                     color.y() = Math::Sqrt(color.y());
                     color.z() = Math::Sqrt(color.z());
@@ -146,6 +146,7 @@ ThVec3f RayTracer::TraceScene(const ThRayf& ray, ThI32 depth)
                     return 0.5f * ThVec3f(hitClosest.norm.x() + 1.0, hitClosest.norm.y() + 1.0, hitClosest.norm.z() + 1.0);
                 case ComponentType::LambertMaterial:
                 case ComponentType::MetalMaterial:
+                case ComponentType::DielectricMaterial:
                 {
                     ThRayf scattered;
                     ThVec3f attenuation;
@@ -157,8 +158,10 @@ ThVec3f RayTracer::TraceScene(const ThRayf& ray, ThI32 depth)
                     
                     if (material->type == ComponentType::LambertMaterial)
                         didScatter = ScatterLambert(*material, ray, hitClosest, attenuation, scattered);
-                    else
+                    else if (material->type == ComponentType::MetalMaterial)
                         didScatter = ScatterMetal(*material, ray, hitClosest, attenuation, scattered);
+                    else
+                        didScatter = ScatterDielectric(*material, ray, hitClosest, attenuation, scattered);
                     
                     if (!didScatter)
                         return ThVec3f(0.0, 0.0, 0.0);
@@ -191,9 +194,43 @@ bool RayTracer::ScatterMetal(const ComponentRef& mat, const ThRayf& rayIn, const
     rayInDir.Normalize();
     ThVec3f reflected = Reflect(rayInDir, hit.norm);
     scattered.SetOrigin(hit.pos);
-    scattered.SetDirection(reflected);
+    scattered.SetDirection(reflected + m_Scene->metals[mat.index].fuzziness * RandomPointOnSphere());
     attenuation = m_Scene->metals[mat.index].albedo;
     return reflected * hit.norm > 0;
+}
+
+bool RayTracer::ScatterDielectric(const ComponentRef& mat, const ThRayf& rayIn, const ThRayHitf& hit, ThVec3f& attenuation, ThRayf& scattered)
+{
+    float n = m_Scene->dielectrics[mat.index].n;
+    float n1 = 1;
+    float n2 = n;
+    ThVec3f outwardNormal;
+    ThVec3f rayInDir = rayIn.GetDirection();
+    rayInDir.Normalize();
+    
+    attenuation = ThVec3f(1.0, 1.0, 1.0);
+    
+    if (rayInDir * hit.norm > 0.0)
+    {
+        outwardNormal = - hit.norm;
+        n1 = n;
+        n2 = 1;
+    }
+    else
+        outwardNormal = hit.norm;
+    
+    ThVec3f refracted;
+    if (Refract(rayInDir, outwardNormal, n1, n2, refracted))
+    {
+        scattered = ThRayf(hit.pos, refracted);
+        return true;
+    }
+    else
+    {
+        ThVec3f reflected = Reflect(rayInDir, hit.norm);
+        scattered = ThRayf(hit.pos, reflected);
+        return false;
+    }
 }
 
 ThVec3f RayTracer::RandomPointOnSphere()

@@ -91,7 +91,7 @@ namespace Thor
         m_Width(0),
         m_Height(0),
         m_FramesToRender(1),
-        m_SamplesPerRay(1),
+        m_SamplesPerPixel(1),
         m_TraceDepth(1)
         {
             
@@ -100,7 +100,7 @@ namespace Thor
         ThI32 m_Width;
         ThI32 m_Height;
         ThI32 m_FramesToRender;
-        ThI32 m_SamplesPerRay;
+        ThI32 m_SamplesPerPixel;
         ThI32 m_TraceDepth;
     };
     
@@ -121,6 +121,7 @@ namespace Thor
         ThVec3f RandomPointOnSphere();
         bool ScatterLambert(const ComponentRef& mat, const ThRayf& rayIn, const ThRayHitf& hit, ThVec3f& attenuation, ThRayf& scattered);
         bool ScatterMetal(const ComponentRef& mat, const ThRayf& rayIn, const ThRayHitf& hit, ThVec3f& attenuation, ThRayf& scattered);
+        bool ScatterDielectric(const ComponentRef& mat, const ThRayf& rayIn, const ThRayHitf& hit, ThVec3f& attenuation, ThRayf& scattered);
         std::atomic<RayTracerState> m_State;
         Film* m_Film;        
         ThI32 m_FramesRendered;

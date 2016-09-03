@@ -5,7 +5,7 @@
 namespace Thor
 {
     template <class Class>
-    class ThTypeID
+    struct ThTypeID
     {
     public:
         explicit ThTypeID(ThI32 typeID)
@@ -18,7 +18,10 @@ namespace Thor
             return m_TypeID == other.m_TypeID;
         }
         
-        ThTypeID& operator=(const ThTypeID& rhs) = delete;
+        ThI32 TypeID()const
+        {
+            return m_TypeID;
+        }
         
     private:
         ThI32 m_TypeID;
@@ -49,17 +52,23 @@ namespace Thor
             
         }
         
-        ThU64 GetUid()const
+        ThU64 Uid()const
         {
             return m_Uid;
         }
         
-        ThI32 GetIndex()const
+        ThI32 Index()const
         {
             return m_Index;
         }
     private:
         ThU64 m_Uid;
+        ThI32 m_Index;
+    };
+    
+    class ThComponentRef
+    {
+        ThComponentType m_Type;
         ThI32 m_Index;
     };
     

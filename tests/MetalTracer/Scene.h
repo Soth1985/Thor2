@@ -12,6 +12,7 @@ namespace Thor
         LastStatelessMaterial,
         LambertMaterial,
         MetalMaterial,
+        DielectricMaterial,
         LastMaterial,
         SphereShape,
         LastShape
@@ -45,6 +46,12 @@ namespace Thor
     {
         ThI32 owner;
         ThVec3f albedo;
+        float fuzziness;
+    };
+    
+    struct DielectricMaterial
+    {
+        float n;
     };
     
     struct Scene
@@ -52,11 +59,13 @@ namespace Thor
         ThVector<SphereShape> spheres;
         ThVector<LambertMaterial> lamberts;
         ThVector<MetalMaterial> metals;
+        ThVector<DielectricMaterial> dielectrics;
         ThVector<Object> objects;
         
         ComponentRef AddSphereShape(const Object& obj, const ThSpheref& sphere);
         ComponentRef AddLambertMaterial(const Object& obj, const ThVec3f& albedo);
-        ComponentRef AddMetalMaterial(const Object& obj, const ThVec3f& albedo);
+        ComponentRef AddMetalMaterial(const Object& obj, const ThVec3f& albedo, float fuzziness);
+        ComponentRef AddDielectricMaterial(const Object& obj, float n);
         bool SetMaterial(const ComponentRef& shape, const ComponentRef& material);
         Object CreateObject();
     };
