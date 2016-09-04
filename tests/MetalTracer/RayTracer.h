@@ -3,9 +3,24 @@
 #include "Scene.h"
 #include <atomic>
 #include <random>
+#include <chrono>
 
 namespace Thor
 {
+    template<class T>
+    T UniformDistribution(T min, T max)
+    {
+        static /*thread_local*/ std::mt19937 generator(std::chrono::system_clock::now().time_since_epoch().count());
+        std::uniform_real_distribution<double> distribution(min, max);
+        return distribution(generator);
+    }
+    
+    enum class CameraMode
+    {
+        Normal,
+        LensDefocus
+    };
+    
     enum class RayTracerState : ThI32
     {
         Uninitialized,
@@ -21,9 +36,27 @@ namespace Thor
             :
         lowerLeftCorner(-2.0f, -1.0f, -1.0f),
         horizontal(4.0f, 0.0f, 0.0f),
-        vertical(0.0f, 2.0f, 0.0f)
+        vertical(0.0f, 2.0f, 0.0f),
+        lensRadius(1.0f)
         {
             
+        }
+        
+        void Init(const ThVec3f& origin, const ThVec3f& lookAt, const ThVec3f& up, ThF32 vFov, ThF32 aspect, ThF32 aperture, ThF32 focusDist)
+        {
+            lensRadius = 0.5 * aperture;
+            ThF32 theta = Math::DegToRad(vFov);
+            ThF32 halfHeight = Math::Tan(0.5 * theta);
+            ThF32 halfWidth = aspect * halfHeight;
+            this->origin = origin;
+            w = origin - lookAt;
+            w.Normalize();
+            u = up % w;
+            u.Normalize();
+            v = w % u;
+            lowerLeftCorner = origin - halfWidth * focusDist * u - halfHeight * focusDist * v - focusDist * w;
+            horizontal = 2.0 * halfWidth * focusDist * u;
+            vertical = 2.0 * halfHeight * focusDist * v;
         }
         
         ThRayf GetRay(float u, float v)
@@ -33,10 +66,40 @@ namespace Thor
             return ThRayf(origin, direction);
         }
         
+        ThRayf GetRayLens(float u, float v)
+        {
+            ThVec3f rd = RandomInUnitDisk();
+            ThVec3f offset;
+            offset.x() = lensRadius * u * rd.x();
+            offset.y() = lensRadius * v * rd.y();
+            ThVec3f direction = lowerLeftCorner + u * horizontal + v * vertical - origin - offset;
+            direction.Normalize();
+            return ThRayf(origin + offset, direction);
+        }
+        
+        ThVec3f RandomInUnitDisk()
+        {
+            ThVec3f result;
+            
+            do
+            {
+                result.x() = UniformDistribution(-1.0, 1.0);
+                result.y() = UniformDistribution(-1.0, 1.0);
+                result.z() = 0.0;
+            }
+            while (result * result > 1.0);
+                
+            return result;
+        }
+        
         ThVec3f lowerLeftCorner;
         ThVec3f horizontal;
         ThVec3f vertical;
         ThVec3f origin;
+        ThVec3f u;
+        ThVec3f v;
+        ThVec3f w;
+        ThF32 lensRadius;
     };
     
     class Film
@@ -92,7 +155,14 @@ namespace Thor
         m_Height(0),
         m_FramesToRender(1),
         m_SamplesPerPixel(1),
-        m_TraceDepth(1)
+        m_TraceDepth(1),
+        m_CameraOrigin(0.0, 0.0, 0.0),
+        m_CameraLookAt(0.0, 0.0, -1.0),
+        m_CameraUp(0.0, 1.0, 0.0),
+        m_CameraFov(90.0),
+        m_CameraMode(CameraMode::Normal),
+        m_CameraAperture(2.0),
+        m_CameraFocusDist(1.0)
         {
             
         }
@@ -102,6 +172,13 @@ namespace Thor
         ThI32 m_FramesToRender;
         ThI32 m_SamplesPerPixel;
         ThI32 m_TraceDepth;
+        CameraMode m_CameraMode;
+        ThF32 m_CameraFov;
+        ThF32 m_CameraAperture;
+        ThF32 m_CameraFocusDist;
+        ThVec3f m_CameraOrigin;
+        ThVec3f m_CameraLookAt;
+        ThVec3f m_CameraUp;
     };
     
     class RayTracer
@@ -130,7 +207,6 @@ namespace Thor
         Scene* m_Scene;
         std::mt19937 m_Generator;
         std::uniform_real_distribution<double> m_RngUniform;
-        std::normal_distribution<double> m_RngNormal;
         RayTracerOptions m_Options;
         Camera m_Camera;
     };

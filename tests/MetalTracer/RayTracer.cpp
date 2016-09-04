@@ -10,8 +10,7 @@ m_State(RayTracerState::Uninitialized),
 m_FramesRendered(0),
 m_Film(nullptr),
 m_Scene(nullptr),
-m_RngUniform(0.0, 1.0),
-m_RngNormal(0.0f, 1.0)
+m_RngUniform(0.0, 1.0)
 {
     unsigned int seed = std::chrono::system_clock::now().time_since_epoch().count();
     m_Generator.seed(seed);
@@ -32,6 +31,9 @@ void RayTracer::Init(const RayTracerOptions& options, Scene* scene)
         m_Film->Init(m_Options.m_Width, m_Options.m_Height);
         m_State = RayTracerState::Idle;
         m_Scene = scene;
+        ThF32 aspect = ThF32(options.m_Width) / ThF32(options.m_Height);
+        ThF32 focusDist = (options.m_CameraLookAt - options.m_CameraOrigin).Length();
+        m_Camera.Init(options.m_CameraOrigin, options.m_CameraLookAt, options.m_CameraUp, options.m_CameraFov, aspect, options.m_CameraAperture, focusDist);
     }
 }
 
@@ -67,7 +69,13 @@ bool RayTracer::RenderFrame()
                     {
                         float u = (i + m_RngUniform(m_Generator)) * oneOverW;
                         float v = (j + m_RngUniform(m_Generator)) * oneOverH;
-                        ThRayf ray = m_Camera.GetRay(u, v);
+                        ThRayf ray;
+                        
+                        if (m_Options.m_CameraMode == CameraMode::Normal)
+                            ray = m_Camera.GetRay(u, v);
+                        else
+                            ray = m_Camera.GetRayLens(u, v);
+                        
                         color += TraceScene(ray, 1);
                     }
                     color /= m_Options.m_SamplesPerPixel;
