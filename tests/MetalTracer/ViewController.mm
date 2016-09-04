@@ -62,6 +62,130 @@ using namespace Thor;
     _defaultLibrary = [_device newDefaultLibrary];
 }
 
+- (void)initSimpleScene
+{
+    RayTracerOptions options;
+    options.m_Width = _view.drawableSize.width;
+    options.m_Height = _view.drawableSize.height;
+    options.m_SamplesPerPixel = 10;
+    options.m_TraceDepth = 20;
+    options.m_CameraMode = CameraMode::LensDefocus;
+    options.m_CameraOrigin = ThVec3f(2.0, 2.0, 1.0);
+    options.m_CameraFov = 20.0;
+    options.m_CameraAperture = 4.0;
+    
+    Scene* scene = new Scene();
+    Object sphere1 = scene->CreateObject();
+    Object sphere2 = scene->CreateObject();
+    Object sphere3 = scene->CreateObject();
+    Object sphere4 = scene->CreateObject();
+    Object sphere5 = scene->CreateObject();
+    ComponentRef shape1 = scene->AddSphereShape(sphere1, ThSpheref(ThVec3f(0.0f,0.0f,-1.0f), 0.5f));
+    ComponentRef shape2 = scene->AddSphereShape(sphere2, ThSpheref(ThVec3f(0.0f,-100.5f,-1.0f), 100.0f));
+    ComponentRef shape3 = scene->AddSphereShape(sphere3, ThSpheref(ThVec3f(1.0f,0.0f,-1.0f), 0.5f));
+    ComponentRef shape4 = scene->AddSphereShape(sphere4, ThSpheref(ThVec3f(-1.0f,0.0f,-1.0f), 0.5f));
+    ComponentRef shape5 = scene->AddSphereShape(sphere4, ThSpheref(ThVec3f(-1.0f,0.0f,-1.0f), -0.45f));
+    ComponentRef material1 = scene->AddLambertMaterial(sphere1, ThVec3f(0.8,0.3,0.3));
+    ComponentRef material2 = scene->AddLambertMaterial(sphere2, ThVec3f(0.8,0.8,0.0));
+    ComponentRef material3 = scene->AddMetalMaterial(sphere3, ThVec3f(0.8,0.6,0.2), 0.3);
+    ComponentRef material4 = scene->AddDielectricMaterial(sphere4, 1.5);
+    ComponentRef material5 = scene->AddDielectricMaterial(sphere5, 1.5);
+    scene->SetMaterial(shape1, material1);
+    scene->SetMaterial(shape2, material2);
+    scene->SetMaterial(shape3, material3);
+    scene->SetMaterial(shape4, material4);
+    scene->SetMaterial(shape5, material5);
+    
+    _rayTracer.Init(options, scene);
+}
+
+- (void)initRandomScene
+{
+    RayTracerOptions options;
+    options.m_Width = _view.drawableSize.width;
+    options.m_Height = _view.drawableSize.height;
+    options.m_SamplesPerPixel = 40;
+    options.m_TraceDepth = 40;
+    //options.m_CameraMode = CameraMode::LensDefocus;
+    options.m_CameraOrigin = ThVec3f(0.0, 2.0, 7.0);
+    options.m_CameraLookAt = ThVec3f(0.0,0.0,-8.0);
+    options.m_CameraFov = 44.0;
+    //options.m_CameraAperture = 4.0;
+    
+    Scene* scene = new Scene();
+    int numObjects = 530;
+    float diffuseProb = 0.8;
+    float metalProb = 0.15;
+    float glassProb = 1.0 - diffuseProb - metalProb;
+    scene->spheres.Reserve(numObjects);
+    scene->objects.Reserve(numObjects);
+    scene->lamberts.Reserve(diffuseProb * numObjects);
+    scene->metals.Reserve(metalProb * numObjects);
+    scene->dielectrics.Reserve(glassProb * numObjects);
+    Object ground = scene->CreateObject();
+    ComponentRef groundShape = scene->AddSphereShape(ground, ThSpheref(ThVec3f(0.0f,-1000.0f,0.0f), 1000.0));
+    ComponentRef groundMaterial = scene->AddLambertMaterial(ground, ThVec3f(0.5,0.5,0.5));
+    scene->SetMaterial(groundShape, groundMaterial);
+    
+    for (int a = -11; a < 11; ++a)
+    {
+        for(int b = -11; b < 11; ++b)
+        {
+            float chooseMat = UniformDistribution(0.0, 1.0);
+            ThVec3f center(a + 0.9 * UniformDistribution(0.0, 1.0), 0.2, b + 0.9 * UniformDistribution(0.0, 1.0));
+            
+            if ( (center - ThVec3f(4.0, 0.2, 0.0)).Length() > 0.9)
+            {
+                Object sphere = scene->CreateObject();
+                ComponentRef sphereShape = scene->AddSphereShape(sphere, ThSpheref(center, 0.2));
+                
+                if (chooseMat < diffuseProb)
+                {
+                    ThVec3f color;
+                    
+                    for (int c = 0; c < 3; ++c)
+                        color(c) = UniformDistribution(0.0, 1.0) * UniformDistribution(0.0, 1.0);
+                    
+                    ComponentRef sphereMaterial = scene->AddLambertMaterial(sphere, color);
+                    scene->SetMaterial(sphereShape, sphereMaterial);
+                }
+                else if (chooseMat < (diffuseProb + metalProb))
+                {
+                    ThVec3f color;
+                    
+                    for (int c = 0; c < 3; ++c)
+                        color(c) = 0.5 * (UniformDistribution(0.0, 1.0) + 1.0);
+                    
+                    ComponentRef sphereMaterial = scene->AddMetalMaterial(sphere, color, 0.5 * UniformDistribution(0.0, 1.0));
+                    scene->SetMaterial(sphereShape, sphereMaterial);
+                }
+                else
+                {
+                    Object sphere = scene->CreateObject();
+                    ComponentRef sphereShape = scene->AddSphereShape(sphere, ThSpheref(center, 0.2));
+                    ComponentRef sphereMaterial = scene->AddDielectricMaterial(sphere, 1.5);
+                    scene->SetMaterial(sphereShape, sphereMaterial);
+                }
+            }
+        }
+    }
+    
+    Object sphere1 = scene->CreateObject();
+    Object sphere2 = scene->CreateObject();
+    Object sphere3 = scene->CreateObject();
+    ComponentRef shape1 = scene->AddSphereShape(sphere1, ThSpheref(ThVec3f(0.0,1.0,0.0), 1.0));
+    ComponentRef shape2 = scene->AddSphereShape(sphere2, ThSpheref(ThVec3f(-4.0,1.0,0.0), 1.0));
+    ComponentRef shape3 = scene->AddSphereShape(sphere3, ThSpheref(ThVec3f(4.0,1.0,0.0), 1.0));
+    ComponentRef material1 = scene->AddDielectricMaterial(sphere1, 1.5);
+    ComponentRef material2 = scene->AddLambertMaterial(sphere2, ThVec3f(0.4,0.2,0.1));
+    ComponentRef material3 = scene->AddMetalMaterial(sphere3, ThVec3f(0.7,0.6,0.5), 0.0);
+    scene->SetMaterial(shape1, material1);
+    scene->SetMaterial(shape2, material2);
+    scene->SetMaterial(shape3, material3);
+    
+    _rayTracer.Init(options, scene);
+}
+
 - (void)setupRendering
 {
     /*float Vertices[] =
@@ -102,37 +226,9 @@ using namespace Thor;
                                                           mipmapped:NO];
     _frame = [_device newTextureWithDescriptor:texDesc];
     
-    RayTracerOptions options;
-    options.m_Width = _view.drawableSize.width;
-    options.m_Height = _view.drawableSize.height;
-    options.m_SamplesPerPixel = 10;
-    options.m_TraceDepth = 20;
-    options.m_CameraMode = CameraMode::LensDefocus;
-    options.m_CameraOrigin = ThVec3f(2.0, 2.0, 1.0);
-    options.m_CameraFov = 20.0;
-    options.m_CameraAperture = 4.0;
-    Scene* scene = new Scene();
-    Object sphere1 = scene->CreateObject();
-    Object sphere2 = scene->CreateObject();
-    Object sphere3 = scene->CreateObject();
-    Object sphere4 = scene->CreateObject();
-    Object sphere5 = scene->CreateObject();
-    ComponentRef shape1 = scene->AddSphereShape(sphere1, ThSpheref(ThVec3f(0.0f,0.0f,-1.0f), 0.5f));
-    ComponentRef shape2 = scene->AddSphereShape(sphere2, ThSpheref(ThVec3f(0.0f,-100.5f,-1.0f), 100.0f));
-    ComponentRef shape3 = scene->AddSphereShape(sphere3, ThSpheref(ThVec3f(1.0f,0.0f,-1.0f), 0.5f));
-    ComponentRef shape4 = scene->AddSphereShape(sphere4, ThSpheref(ThVec3f(-1.0f,0.0f,-1.0f), 0.5f));
-    ComponentRef shape5 = scene->AddSphereShape(sphere4, ThSpheref(ThVec3f(-1.0f,0.0f,-1.0f), -0.45f));
-    ComponentRef material1 = scene->AddLambertMaterial(sphere1, ThVec3f(0.8,0.3,0.3));
-    ComponentRef material2 = scene->AddLambertMaterial(sphere2, ThVec3f(0.8,0.8,0.0));
-    ComponentRef material3 = scene->AddMetalMaterial(sphere3, ThVec3f(0.8,0.6,0.2), 0.3);
-    ComponentRef material4 = scene->AddDielectricMaterial(sphere4, 1.5);
-    ComponentRef material5 = scene->AddDielectricMaterial(sphere5, 1.5);
-    scene->SetMaterial(shape1, material1);
-    scene->SetMaterial(shape2, material2);
-    scene->SetMaterial(shape3, material3);
-    scene->SetMaterial(shape4, material4);
-    scene->SetMaterial(shape5, material5);
-    _rayTracer.Init(options, scene);
+    
+    [self initRandomScene];
+    
     
     id<MTLFunction> vertexFunc = [_defaultLibrary newFunctionWithName:@"vertexFunc"];
     id<MTLFunction> fragmentFunc = [_defaultLibrary newFunctionWithName:@"fragmentFunc"];
