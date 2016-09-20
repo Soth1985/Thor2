@@ -1,44 +1,15 @@
 #pragma once
 
-#include <Thor/Core/Common.h>
+#include <Thor/Engine/EngineForward.h>
 
 namespace Thor
 {
-    template <class Class>
-    struct ThTypeID
-    {
-    public:
-        explicit ThTypeID(ThI32 typeID)
-            :
-        m_TypeID(typeID)
-        {}
-        
-        bool operator==(const ThTypeID& other)const
-        {
-            return m_TypeID == other.m_TypeID;
-        }
-        
-        ThI32 TypeID()const
-        {
-            return m_TypeID;
-        }
-        
-    private:
-        ThI32 m_TypeID;
-    };
-    
-    class ThiSystem;
-    class ThiComponent;
-    class ThEvent;
-    typedef ThTypeID<ThiSystem> ThSystemType;
-    typedef ThTypeID<ThiComponent> ThComponentType;
-    typedef ThTypeID<ThEvent> ThEventType;
-    
     class ThEvent
     {
     private:
         ThEventType m_Type;
         ThU32 m_Size;
+        ThI8* m_Data;
     };
     
     class ThEntity
@@ -52,6 +23,11 @@ namespace Thor
             
         }
         
+        operator bool()const
+        {
+            return m_Uid != 0;
+        }
+        
         ThU64 Uid()const
         {
             return m_Uid;
@@ -62,23 +38,8 @@ namespace Thor
             return m_Index;
         }
     private:
+        ThI32 m_Index;
         ThU64 m_Uid;
-        ThI32 m_Index;
-    };
-    
-    class ThComponentRef
-    {
-        ThComponentType m_Type;
-        ThI32 m_Index;
-    };
-    
-    class ThForeignKey
-    {
-    public:
-    private:
-        ThComponentType m_Type;
-        ThU64 m_Uid;
-        ThI32 m_Index;
     };
     
     class ThiEventManager
@@ -94,7 +55,7 @@ namespace Thor
         virtual void Update() = 0;
     };
     
-    class ThiComponentManager
+    class ThiComponent
     {
     public:
         virtual ThComponentType GetType() = 0;
@@ -106,15 +67,35 @@ namespace Thor
         virtual ThEntity CreateEntity() = 0;
         virtual bool DestroyEntity(const ThEntity& ent) = 0;
         virtual bool IsAlive(const ThEntity& ent) = 0;
+        virtual void Reserve(ThI32 capacity) = 0;
+        virtual ThI32 GetNumEntities() = 0;
+        virtual ThEntity GetEntity(ThI32 index) = 0;
+    };
+    
+    class ThiResource
+    {
+    public:
+        virtual ThResourceType GetType() = 0;
     };
     
     class ThiEngine
     {
     public:
         virtual ThiSystem* GetSystem(ThSystemType type) = 0;
-        virtual ThiSystem* GetSystem(ThU32 index) = 0;
-        virtual ThU32 GetNumSystems() = 0;
+        virtual ThiSystem* GetSystem(ThI32 index) = 0;
+        virtual ThI32 GetNumSystems() = 0;
         virtual bool AddSystem(ThiSystem* system) = 0;
         virtual bool RemoveSystem(ThiSystem* system) = 0;
+        virtual ThiComponent* GetComponent(ThComponentType type) = 0;
+        virtual ThiComponent* GetComponent(ThI32 index) = 0;
+        virtual ThI32 GetNumComponents() = 0;
+        virtual bool AddComponent(ThiComponent* component) = 0;
+        virtual bool RemoveComponent(ThiComponent* component) = 0;
+        virtual ThiEventManager* GetEntityManager() = 0;
+        virtual ThiEventManager* GetEventManamer() = 0;
+        virtual ThU64 GenerateUid() = 0;
+        virtual void SetUidGeneratorConstant(ThU8 constant) = 0;
+        
+        static ThiEngine* CreateEngine(ThI32 versionMajor, ThI32 versionMinor);
     };
 }

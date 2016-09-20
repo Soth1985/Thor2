@@ -113,7 +113,7 @@ using namespace Thor;
     //options.m_CameraAperture = 4.0;
     
     Scene* scene = new Scene();
-    int numObjects = 530;
+    int numObjects = 540;
     float diffuseProb = 0.8;
     float metalProb = 0.15;
     float glassProb = 1.0 - diffuseProb - metalProb;
@@ -134,7 +134,7 @@ using namespace Thor;
             float chooseMat = UniformDistribution(0.0, 1.0);
             ThVec3f center(a + 0.9 * UniformDistribution(0.0, 1.0), 0.2, b + 0.9 * UniformDistribution(0.0, 1.0));
             
-            if ( (center - ThVec3f(4.0, 0.2, 0.0)).Length() > 0.9)
+            if ( (center - options.m_CameraOrigin).Length() > 0.9)
             {
                 Object sphere = scene->CreateObject();
                 ComponentRef sphereShape = scene->AddSphereShape(sphere, ThSpheref(center, 0.2));

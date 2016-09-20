@@ -22,6 +22,7 @@
 
 #include <assert.h>
 #include <string>
+#include <cstdint>
 
 #ifdef THOR_PLATFORM_WIN
     #define THOR_INLINE __forceinline
@@ -49,18 +50,19 @@
 
 namespace Thor
 {
-	typedef float				ThF32;
-	typedef double				ThF64;
-	typedef char				ThI8;
-	typedef unsigned char		ThU8;
-	typedef short				ThI16;
-	typedef unsigned short		ThU16;
-	typedef int					ThI32;	
-	typedef unsigned int		ThU32;
-	typedef long long			ThI64;
-	typedef unsigned long long	ThU64;
-	typedef wchar_t				ThWchar;
-	typedef size_t				ThSize;
+	typedef float	 ThF32;
+	typedef double	 ThF64;
+	typedef char	 ThI8;
+	typedef uint8_t  ThU8;
+	typedef int16_t	 ThI16;
+	typedef uint16_t ThU16;
+	typedef int32_t	 ThI32;
+	typedef uint32_t ThU32;
+	typedef int64_t	 ThI64;
+	typedef uint64_t ThU64;
+	typedef wchar_t	 ThWchar;
+	typedef size_t	 ThSize;
+    
 	typedef std::string			ThString;
 	typedef std::wstring		ThWideString;
 	typedef std::u16string		ThU16String;
