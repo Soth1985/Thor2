@@ -26,12 +26,12 @@ public:
 		return m_Key;
 	}
 
-	ThBool operator==(const ThHashSetItem& other)const
+	bool operator==(const ThHashSetItem& other)const
 	{
 		return m_Key == other.Key();
 	}
 
-	ThBool operator!=(const ThHashSetItem& other)const
+	bool operator!=(const ThHashSetItem& other)const
 	{
 		return !operator==(other);
 	}
@@ -92,7 +92,7 @@ public:
 		
 	}
 
-	ThBool Insert(const KeyT& key)
+	bool Insert(const KeyT& key)
 	{
         SizeType hash = BaseType::GetHash(key);
 		SizeType bucket = BaseType::Bucket(hash);
@@ -100,7 +100,7 @@ public:
 		if (BaseType::FindImpl(key, bucket) != BaseType::End())
 			return false;
 
-		ThBool itemsFull = BaseType::m_Items.Size() == BaseType::m_Items.Capacity();
+		bool itemsFull = BaseType::m_Items.Size() == BaseType::m_Items.Capacity();
 
 		if (itemsFull)
 			BaseType::m_Items.Reserve(BaseType::m_Items.Size() + BaseType::GrowSize());
@@ -136,7 +136,7 @@ public:
 };
 
 template <class KeyT>
-ThBool operator==(const ThHashSet<KeyT>& x, const ThHashSet<KeyT>& y)
+bool operator==(const ThHashSet<KeyT>& x, const ThHashSet<KeyT>& y)
 {
 	if (x.Size() != y.Size())
 	{
@@ -153,7 +153,7 @@ ThBool operator==(const ThHashSet<KeyT>& x, const ThHashSet<KeyT>& y)
 }
 
 template <class KeyT>
-ThBool operator!=(const ThHashSet<KeyT>& x, const ThHashSet<KeyT>& y)
+bool operator!=(const ThHashSet<KeyT>& x, const ThHashSet<KeyT>& y)
 {
 	return !(x == y);
 }

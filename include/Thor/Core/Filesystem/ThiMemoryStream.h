@@ -73,7 +73,7 @@ protected:
 	/*!
 	* \copydoc DataStream::Tell
 	*/
-	virtual ThSize		TellImpl();
+	virtual ThSize		TellImpl()const;
 
 	/*!
 	* \copydoc DataStream::Seek
@@ -83,12 +83,12 @@ protected:
 	/*!
 	* \copydoc DataStream::GetSize
 	*/
-	virtual ThSize		GetSizeImpl();
+	virtual ThSize		GetSizeImpl()const;
 
 	/*!
 	* \copydoc DataStream::Eof
 	*/
-	virtual ThBool		EofImpl();
+	virtual bool		EofImpl()const;
 
 	/*!
 	* \copydoc DataStream::ReadImpl

@@ -1,7 +1,8 @@
 #pragma once
 
 #include <Thor/Engine/Interface.h>
-#include <Thor/Core/Containers/ThVector.h>
+#include <Thor/Core/Containers/ThHashSet.h>
+#include <zlib.h>
 
 namespace Thor
 {
@@ -16,8 +17,7 @@ namespace Thor
         virtual ThI32 GetNumEntities()override;
         virtual ThEntity GetEntity(ThI32 index)override;
     private:
-        ThVector<ThEntity> m_Entities;
-        ThI32 m_FreeIndex;
+        ThHashSet<ThEntity> m_Entities;
         ThiEngine* m_Engine;
     };
 }

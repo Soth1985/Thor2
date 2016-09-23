@@ -8,10 +8,10 @@ namespace Thor
 namespace Private
 {
 	template<class T> 
-	inline size_t HashFunc(const T& val)
+	inline ThSize HashFunc(const T& val)
 	{	
 		static const ThSize hashSeed = (ThSize)0xdeadbeef;
-		return ((size_t)val ^ hashSeed);
+		return ((ThSize)val ^ hashSeed);
 	}
 
 	template <class IterT>
@@ -53,27 +53,27 @@ namespace Private
 	}
 
 	template <class T>
-	inline ThBool AreEqual(const T& a, const T& b)
+	inline bool AreEqual(const T& a, const T& b)
 	{
 		return a == b;
 	}
 
-	inline ThBool AreEqual(const char* a, const char* b)
+	inline bool AreEqual(const char* a, const char* b)
 	{
 		return strcmp(a,b) == 0;
 	}
 
-	inline ThBool AreEqual(const wchar_t* a, const wchar_t* b)
+	inline bool AreEqual(const wchar_t* a, const wchar_t* b)
 	{
 		return wcscmp(a, b) == 0;
 	}
 
-	inline ThBool AreEqual(char* a, char* b)
+	inline bool AreEqual(char* a, char* b)
 	{
 		return strcmp(a,b) == 0;
 	}
 
-	inline ThBool AreEqual(wchar_t* a, wchar_t* b)
+	inline bool AreEqual(wchar_t* a, wchar_t* b)
 	{
 		return wcscmp(a, b) == 0;
 	}
@@ -91,7 +91,7 @@ struct ThHash
 template <class T>
 struct ThKeyCompare
 {
-	static inline ThBool AreEqual(const T& a, const T& b)
+	static inline bool AreEqual(const T& a, const T& b)
 	{
 		return Private::AreEqual(a, b);
 	}
@@ -169,7 +169,7 @@ public:
 		return Hasher::HashCode(key);
 	}
 
-	ThBool AreKeysEqual(const KeyT& key1, const KeyT& key2)const
+	bool AreKeysEqual(const KeyT& key1, const KeyT& key2)const
 	{
 		return KeyCompare::AreEqual(key1, key2);
 	}
@@ -292,7 +292,7 @@ public:
 		return m_Items[index];
 	}
 
-	ThBool Erase(const KeyT& key)
+	bool Erase(const KeyT& key)
 	{
 		SizeType hash = GetHash(key);
 		SizeType bucket = Bucket(hash);
@@ -343,12 +343,12 @@ public:
 		return false;
 	}
 
-	ThBool Erase(Iterator it)
+	bool Erase(Iterator it)
 	{
 		return Erase(it->Key());
 	}
 
-	ThBool Erase(SizeType index)
+	bool Erase(SizeType index)
 	{
 		return Erase(m_Items[index].Key());
 	}

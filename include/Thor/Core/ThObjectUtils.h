@@ -39,13 +39,13 @@ template<class TypeT, template < typename> class ActionPolicyT = ThDefaultAction
 struct StaticVisitor
 {
 	template<class VisitorT>
-	static void Visit(ThiObjectPtr& obj, VisitorT& visitor, ThBool downCast = false)
+	static void Visit(ThiObjectPtr& obj, VisitorT& visitor, bool downCast = false)
 	{	
 		typedef ThRefPtr<TypeT, ActionPolicyT> ptr_t;
 		ThiType* visType = TypeOf<TypeT>();
 		ThiType* objType = obj->GetType();
 
-		ThBool visit = ( visType == objType );
+		bool visit = ( visType == objType );
 		//if not an exact match, try downcasting
 		if (!visit && downCast)
 		{
@@ -65,7 +65,7 @@ template< template < typename> class ActionPolicyT >
 struct StaticVisitor<NullType, ActionPolicyT>
 {
 	template<class VisitorT>
-	static void Visit(ThiObjectPtr& obj, VisitorT& visitor, ThBool downCast = false)
+	static void Visit(ThiObjectPtr& obj, VisitorT& visitor, bool downCast = false)
 	{
 		//no op
 	}
@@ -75,7 +75,7 @@ template<class Head, class Tail>
 struct StaticVisitor< Typelist<Head, Tail>, ThDefaultActionPolicy >
 {
 	template<class VisitorT>
-	static void Visit(ThiObjectPtr& obj, VisitorT& visitor, ThBool downCast = false)
+	static void Visit(ThiObjectPtr& obj, VisitorT& visitor, bool downCast = false)
 	{
 		StaticVisitor<Head, ThDefaultActionPolicy>::Visit(obj, visitor, downCast);
 		StaticVisitor<Tail, ThDefaultActionPolicy>::Visit(obj, visitor, downCast);
@@ -86,7 +86,7 @@ template<class Head, class Tail, template < typename> class ActionPolicyT>
 struct StaticVisitor< Typelist<Head, Tail>, ActionPolicyT >
 {
 	template<class VisitorT>
-	static void Visit(ThiObjectPtr& obj, VisitorT& visitor, ThBool downCast = false)
+	static void Visit(ThiObjectPtr& obj, VisitorT& visitor, bool downCast = false)
 	{
 		StaticVisitor<Head, ActionPolicyT>::Visit(obj, visitor, downCast);
 		StaticVisitor<Tail, ActionPolicyT>::Visit(obj, visitor, downCast);

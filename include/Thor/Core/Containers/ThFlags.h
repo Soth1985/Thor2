@@ -9,7 +9,7 @@ template <class T, bool threadSafe = false>
 class ThFlags: public ThMutexPolicy<threadSafe>
 {
 public:
-	void	SetFlag(ThBool state, T flag)
+	void	SetFlag(bool state, T flag)
 	{
 		ScopedLock lock;
 		InitScopedLock(lock);
@@ -53,7 +53,7 @@ public:
 		}
 	}
 
-	ThBool	CheckFlag(T flag)const
+	bool	CheckFlag(T flag)const
 	{
 		ScopedLock lock;
 		InitScopedLock(lock);
@@ -61,7 +61,7 @@ public:
 		return ( m_BitField & flag ) != 0;
 	}
 
-	void	SetBit(ThBool state, unsigned int bit)
+	void	SetBit(bool state, unsigned int bit)
 	{
 		ScopedLock lock;
 		InitScopedLock(lock);
@@ -74,7 +74,7 @@ public:
 			m_BitField &= ~b;		
 	}
 
-	ThBool	CheckBit(unsigned int bit)const
+	bool	CheckBit(unsigned int bit)const
 	{
 		ScopedLock lock;
 		InitScopedLock(lock);

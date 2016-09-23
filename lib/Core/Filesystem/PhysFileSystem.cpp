@@ -54,7 +54,7 @@ void ThPhysFileSystem::DismountDir(const ThString& path)
 	}
 }
 //----------------------------------------------------------------------------------------
-ThBool ThPhysFileSystem::Exists(const ThString& path)const
+bool ThPhysFileSystem::Exists(const ThString& path)const
 {
 	return ( PHYSFS_exists( path.c_str() ) > 0 );
 }
@@ -127,7 +127,7 @@ void ThPhysFileSystem::Delete(const ThString& path)
 		throw DeleteFileException( path + ' ' + PHYSFS_getLastError() );
 }
 //----------------------------------------------------------------------------------------
-ThBool ThPhysFileSystem::IsDirectory(const ThString& path)
+bool ThPhysFileSystem::IsDirectory(const ThString& path)
 {
 	return ( PHYSFS_isDirectory( path.c_str() ) > 0 );
 }

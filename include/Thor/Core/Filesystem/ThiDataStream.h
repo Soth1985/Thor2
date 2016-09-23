@@ -108,7 +108,7 @@ public:
 	* Number of bytes to move.
 	* 
 	*/
-	void Seek(ThSize pos)const;
+	void Seek(ThSize pos);
 	
 	/*!
 	* \brief
@@ -122,7 +122,7 @@ public:
 	* Returns true if current stream position has reached the end of stream.
 	*
 	*/
-	ThBool Eof()const;		
+	bool Eof()const;		
 
 	/*!
 	* \brief
@@ -131,7 +131,7 @@ public:
 	* Access mode of the stream.
 	*
 	*/
-	ThiDataStream(eStreamMode::Val mode_, ThBool isOpened_);	
+	ThiDataStream(eStreamMode::Val mode_, bool isOpened_);	
 
 	/*!
 	* \brief
@@ -163,9 +163,9 @@ protected:
 	virtual ThSize ReadImpl(void* buf, ThSize bytes)const=0;
 	virtual ThSize WriteImpl(const void* buf, ThSize bytes)=0;
 	virtual ThSize TellImpl()const=0;
-	virtual void SeekImpl(ThSize pos)const=0;
+	virtual void SeekImpl(ThSize pos)=0;
 	virtual ThSize GetSizeImpl()const=0;
-	virtual ThBool EofImpl()const=0;
+	virtual bool EofImpl()const=0;
 
 	/*!
 	 * \brief
@@ -177,7 +177,7 @@ protected:
 	* \brief
 	* Determines if the stream is opened, used for lazy initialization of the stream.
 	*/
-	mutable ThBool m_IsOpened;
+	mutable bool m_IsOpened;
 };
 
 }//Thor

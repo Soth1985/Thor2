@@ -45,14 +45,14 @@ class THOR_FRAMEWORK_DLL ThiType
 {
 public:
 	virtual const ThI8* GetName()const=0;	
-	virtual ThBool		IsBaseOf(const ThiType* c)const=0;
-	virtual ThBool		IsChildOf(const ThiType* c)const=0;
-	virtual ThBool		IsAbstract()const=0;
+	virtual bool		IsBaseOf(const ThiType* c)const=0;
+	virtual bool		IsChildOf(const ThiType* c)const=0;
+	virtual bool		IsAbstract()const=0;
 	virtual ThSize		GetNumBases()const=0;
 	virtual const ThiType*	GetBaseAt(ThSize i)const=0;
 	virtual ThSize		GetNumChildren()const=0;
 	virtual const ThiType*	GetChildAt(ThSize i)const=0;
-	virtual ThBool		IsFundamental()const=0;
+	virtual bool		IsFundamental()const=0;
 	virtual ThU32		GetSize()const=0;
 
 	template<class T>
@@ -186,19 +186,19 @@ public:
 		return ThClassName<T>::GetName();
 	}	
 
-	virtual ThBool IsBaseOf(const ThiType* c)const
+	virtual bool IsBaseOf(const ThiType* c)const
 	{
 		ClassList::ConstIterator i = m_Children.Find(c);
 		return i != m_Children.End();		
 	}
 
-	virtual ThBool IsChildOf(const ThiType* c)const
+	virtual bool IsChildOf(const ThiType* c)const
 	{
 		ClassList::ConstIterator i = m_Bases.Find(c);
 		return i != m_Bases.End();
 	}
 
-	virtual ThBool IsAbstract()const
+	virtual bool IsAbstract()const
 	{
         return std::is_abstract<T>::value;
 	}
@@ -241,7 +241,7 @@ public:
 		return 0;
 	}
 
-	virtual ThBool IsFundamental()const
+	virtual bool IsFundamental()const
 	{
 		return std::is_fundamental<T>::value;
 	}
@@ -383,7 +383,7 @@ struct RegisterType< Ty, THOR_TYPELIST_0() >
 };
 //----------------------------------------------------------------------------------------
 template<class T>
-ThBool IsOfType(ThiType* t)
+bool IsOfType(ThiType* t)
 {
 	return t == ThType<T>::Instance();
 }
@@ -394,7 +394,7 @@ ThiType* TypeOf()
 	return ThType<T>::Instance();
 }
 //----------------------------------------------------------------------------------------
-static inline ThBool IsConvertible(ThiType* from, ThiType* to)
+static inline bool IsConvertible(ThiType* from, ThiType* to)
 {
 	if( from == to || to->IsBaseOf(from) || to->IsChildOf(from) )
 	{

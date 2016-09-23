@@ -1,12 +1,16 @@
 project(Engine VERSION ${THOR_VERSION} LANGUAGES CXX)
 
 set(Engine_SRC
-    ThEntityManager.cpp)
+    ThEntityManager.cpp
+    ThEventManager.cpp)
 
 set(Engine_H
     ${THOR_INCLUDE_DIR}/Thor/Engine/EngineForward.h
     ${THOR_INCLUDE_DIR}/Thor/Engine/EngineTypeInfo.h
     ${THOR_INCLUDE_DIR}/Thor/Engine/ThEntityManager.h
+    ${THOR_INCLUDE_DIR}/Thor/Engine/ThEvent.h
+    ${THOR_INCLUDE_DIR}/Thor/Engine/ThEventManager.h
+    ${THOR_INCLUDE_DIR}/Thor/Engine/ThEntity.h
     ${THOR_INCLUDE_DIR}/Thor/Engine/Interface.h)
 
 list(SORT Engine_SRC)

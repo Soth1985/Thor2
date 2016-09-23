@@ -22,7 +22,7 @@ void ThRttiManager::UnregisterType(const ThiType* t)
 		curType->RemoveType(t);
 	}
 
-	ThBool res = m_RegisteredTypes.Erase(t->GetName());
+	bool res = m_RegisteredTypes.Erase(t->GetName());
 }
 //----------------------------------------------------------------------------------------
 void ThRttiManager::RegisterType(const ThiType* t)

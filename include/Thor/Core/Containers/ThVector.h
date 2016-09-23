@@ -228,7 +228,7 @@ public:
 		return m_Capacity;		
 	}
 
-	ThBool Empty()const
+	bool Empty()const
 	{
 		return m_Size == 0;
 	}
@@ -593,7 +593,7 @@ private:
 };
 
 template <class T>
-ThBool operator==(const ThVector<T>& x, const ThVector<T>& y)
+bool operator==(const ThVector<T>& x, const ThVector<T>& y)
 {
 	if (x.Size() != y.Size())
 	{
@@ -610,7 +610,7 @@ ThBool operator==(const ThVector<T>& x, const ThVector<T>& y)
 }
 
 template <class T>
-ThBool operator!=(const ThVector<T>& x, const ThVector<T>& y)
+bool operator!=(const ThVector<T>& x, const ThVector<T>& y)
 {
 	return !(x == y);
 }

@@ -17,7 +17,7 @@ using namespace Thor;
 //					ThAssert
 //
 //----------------------------------------------------------------------------------------
-void ThAssert::Assert(ThBool result, const ThString& expr, const ThString& msg, const ThString& file, int line)
+void ThAssert::Assert(bool result, const ThString& expr, const ThString& msg, const ThString& file, int line)
 {
 	if(!m_Ignore)
 	{

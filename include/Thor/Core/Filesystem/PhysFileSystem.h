@@ -35,7 +35,7 @@ public:
 	/*!
 	* \copydoc FileSystem::Exists
 	*/
-	virtual ThBool Exists(const ThString& path)const;
+	virtual bool Exists(const ThString& path)const;
 
 	/*!
 	* \copydoc FileSystem::Enumerate
@@ -65,7 +65,7 @@ public:
 	/*!
 	* \copydoc FileSystem::IsDirectory
 	*/
-	virtual ThBool IsDirectory(const ThString& path);
+	virtual bool IsDirectory(const ThString& path);
 
 	/*!
 	* \copydoc FileSystem::GetFullPath

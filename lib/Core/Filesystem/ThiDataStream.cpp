@@ -40,7 +40,7 @@ ThSize ThiDataStream::Tell()const
 	return TellImpl();
 }
 //----------------------------------------------------------------------------------------
-void ThiDataStream::Seek(ThSize pos)const
+void ThiDataStream::Seek(ThSize pos)
 {
 	Open();
 
@@ -54,14 +54,14 @@ ThSize ThiDataStream::GetSize()const
 	return GetSizeImpl();
 }
 //----------------------------------------------------------------------------------------
-ThBool ThiDataStream::Eof()const
+bool ThiDataStream::Eof()const
 {
 	Open();
 
 	return EofImpl();
 }
 //----------------------------------------------------------------------------------------
-ThiDataStream::ThiDataStream(eStreamMode::Val mode_, ThBool isOpened_)
+ThiDataStream::ThiDataStream(eStreamMode::Val mode_, bool isOpened_)
 	:
 m_Mode(mode_),
 m_IsOpened(isOpened_)

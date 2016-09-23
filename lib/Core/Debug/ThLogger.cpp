@@ -127,13 +127,13 @@ const ThLogger::IgnoreList& ThLogger::GetIgnoreList()const
 	return m_IgnoreList;
 }
 //----------------------------------------------------------------------------------------
-void ThLogger::SetEnabled(ThBool val)
+void ThLogger::SetEnabled(bool val)
 {
 	std::lock_guard<std::mutex> lock(m_Mutex);
 	m_Enabled = val;
 }
 //----------------------------------------------------------------------------------------
-ThBool ThLogger::GetEnabled()const
+bool ThLogger::GetEnabled()const
 {
 	return m_Enabled;
 }

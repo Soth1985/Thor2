@@ -112,7 +112,7 @@ void ThStringUtilities::ToWideString(ThU64 val, ThWchar* result, ThSize bufSize)
 }
 //
 
-ThBool ThStringUtilities::Parse(const ThI8* str, ThF32& val)
+bool ThStringUtilities::Parse(const ThI8* str, ThF32& val)
 {
 	char* end;
 	ThF64 temp = strtod(str, &end);
@@ -126,7 +126,7 @@ ThBool ThStringUtilities::Parse(const ThI8* str, ThF32& val)
 	return false;
 }
 
-ThBool ThStringUtilities::Parse(const ThI8* str, ThF64& val)
+bool ThStringUtilities::Parse(const ThI8* str, ThF64& val)
 {
 	char* end;
 	ThF64 temp = strtod(str, &end);
@@ -140,7 +140,7 @@ ThBool ThStringUtilities::Parse(const ThI8* str, ThF64& val)
 	return false;
 }
 
-ThBool ThStringUtilities::Parse(const ThI8* str, ThI8& val)
+bool ThStringUtilities::Parse(const ThI8* str, ThI8& val)
 {
 	char* end;
 	ThI32 temp = strtol(str, &end, 10);
@@ -154,7 +154,7 @@ ThBool ThStringUtilities::Parse(const ThI8* str, ThI8& val)
 	return false;
 }
 
-ThBool ThStringUtilities::Parse(const ThI8* str, ThU8& val)
+bool ThStringUtilities::Parse(const ThI8* str, ThU8& val)
 {
 	char* end;
 	ThU32 temp = strtoul(str, &end, 10);
@@ -168,7 +168,7 @@ ThBool ThStringUtilities::Parse(const ThI8* str, ThU8& val)
 	return false;
 }
 
-ThBool ThStringUtilities::Parse(const ThI8* str, ThI16& val)
+bool ThStringUtilities::Parse(const ThI8* str, ThI16& val)
 {
 	char* end;
 	ThI32 temp = strtol(str, &end, 10);
@@ -182,7 +182,7 @@ ThBool ThStringUtilities::Parse(const ThI8* str, ThI16& val)
 	return false;
 }
 
-ThBool ThStringUtilities::Parse(const ThI8* str, ThU16& val)
+bool ThStringUtilities::Parse(const ThI8* str, ThU16& val)
 {
 	char* end;
 	ThU32 temp = strtoul(str, &end, 10);
@@ -196,7 +196,7 @@ ThBool ThStringUtilities::Parse(const ThI8* str, ThU16& val)
 	return false;
 }
 
-ThBool ThStringUtilities::Parse(const ThI8* str, ThI32& val)
+bool ThStringUtilities::Parse(const ThI8* str, ThI32& val)
 {
 	char* end;
 	ThI32 temp = strtol(str, &end, 10);
@@ -210,7 +210,7 @@ ThBool ThStringUtilities::Parse(const ThI8* str, ThI32& val)
 	return false;
 }
 
-ThBool ThStringUtilities::Parse(const ThI8* str, ThU32& val)
+bool ThStringUtilities::Parse(const ThI8* str, ThU32& val)
 {
 	char* end;
 	ThU32 temp = strtoul(str, &end, 10);
@@ -224,7 +224,7 @@ ThBool ThStringUtilities::Parse(const ThI8* str, ThU32& val)
 	return false;
 }
 
-ThBool ThStringUtilities::Parse(const ThI8* str, ThI64& val)
+bool ThStringUtilities::Parse(const ThI8* str, ThI64& val)
 {
 	/*char* end;
 	ThI64 temp = _strtoi64(str, &end, 10);
@@ -238,7 +238,7 @@ ThBool ThStringUtilities::Parse(const ThI8* str, ThI64& val)
 	return false;
 }
 
-ThBool ThStringUtilities::Parse(const ThI8* str, ThU64& val)
+bool ThStringUtilities::Parse(const ThI8* str, ThU64& val)
 {
 	/*char* end;
 	ThU64 temp = _strtoui64(str, &end, 10);
@@ -252,7 +252,7 @@ ThBool ThStringUtilities::Parse(const ThI8* str, ThU64& val)
 	return false;
 }
 
-ThBool ThStringUtilities::Parse(const ThI8* str, ThBool& val)
+bool ThStringUtilities::Parse(const ThI8* str, bool& val)
 {
 	char* end;
 	ThI32 temp = strtol(str, &end, 10);

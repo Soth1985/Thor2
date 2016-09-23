@@ -96,7 +96,7 @@ public:
 	 * Path to check for existance.
 	 * 
 	 */
-	virtual ThBool Exists(const ThString& path)const=0;
+	virtual bool Exists(const ThString& path)const=0;
 
 	/*!
 	 * \brief
@@ -172,7 +172,7 @@ public:
 	 * Tested path.
 	 * 
 	 */
-	virtual ThBool IsDirectory(const ThString& path)=0;
+	virtual bool IsDirectory(const ThString& path)=0;
 
 	/*!
 	 * \brief

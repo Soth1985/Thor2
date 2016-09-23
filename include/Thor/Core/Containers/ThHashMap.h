@@ -37,12 +37,12 @@ public:
 		return m_Value;
 	}
 
-	ThBool operator==(const ThHashMapItem& other)const
+	bool operator==(const ThHashMapItem& other)const
 	{
 		return (m_Key == other.Key()) && (m_Value == other.Value());
 	}
 
-	ThBool operator!=(const ThHashMapItem& other)const
+	bool operator!=(const ThHashMapItem& other)const
 	{
 		return !operator==(other);
 	}
@@ -112,7 +112,7 @@ public:
 		
 	}
 
-	ThBool Insert(const KeyT& key, const ValueT& value)
+	bool Insert(const KeyT& key, const ValueT& value)
 	{
         SizeType hash = BaseType::GetHash(key);
         SizeType bucket = BaseType::Bucket(hash);
@@ -120,7 +120,7 @@ public:
         if (BaseType::FindImpl(key, bucket) != BaseType::End())
 			return false;
 
-        ThBool itemsFull = BaseType::m_Items.Size() == BaseType::m_Items.Capacity();
+        bool itemsFull = BaseType::m_Items.Size() == BaseType::m_Items.Capacity();
 
 		if (itemsFull)
             BaseType::m_Items.Reserve(BaseType::m_Items.Size() + BaseType::GrowSize());
@@ -178,7 +178,7 @@ public:
 };
 
 template <class KeyT, class ValueT>
-ThBool operator==(const ThHashMap<KeyT, ValueT>& x, const ThHashMap<KeyT, ValueT>& y)
+bool operator==(const ThHashMap<KeyT, ValueT>& x, const ThHashMap<KeyT, ValueT>& y)
 {
 	if (x.Size() != y.Size())
 	{
@@ -195,7 +195,7 @@ ThBool operator==(const ThHashMap<KeyT, ValueT>& x, const ThHashMap<KeyT, ValueT
 }
 
 template <class KeyT, class ValueT>
-ThBool operator!=(const ThHashMap<KeyT, ValueT>& x, const ThHashMap<KeyT, ValueT>& y)
+bool operator!=(const ThHashMap<KeyT, ValueT>& x, const ThHashMap<KeyT, ValueT>& y)
 {
 	return !(x == y);
 }

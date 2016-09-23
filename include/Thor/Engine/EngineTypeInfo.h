@@ -77,18 +77,9 @@ namespace Thor
     public:
         ThForeignKey()
             :
-        m_Type(0, 0),
-        m_Index(-1),
+        m_Type(0, KindID),
         m_Uid(0)
         {}
-        
-        template <ThU32 TypeID>
-        void Set(const ThKey<Class, TypeID, KindID>& key, ThU64 uid)
-        {
-            m_Type = ThTypeID<Class>(TypeID, KindID);
-            m_Index = key.Index();
-            m_Uid = uid;
-        }
         
         ThU32 TypeID()const
         {
@@ -100,18 +91,12 @@ namespace Thor
             return KindID;
         }
         
-        ThI32 Index()const
-        {
-            return m_Index;
-        }
-        
         ThU64 Uid()const
         {
             return m_Uid;
         }
     private:
         ThTypeID<Class> m_Type;
-        ThI32 m_Index;
         ThU64 m_Uid;
     };
 }

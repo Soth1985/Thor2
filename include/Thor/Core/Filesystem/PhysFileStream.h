@@ -44,7 +44,7 @@ protected:
 	/*!
 	* \copydoc DataStream::Seek
 	*/
-	virtual void SeekImpl(ThSize pos)const;
+	virtual void SeekImpl(ThSize pos);
 
 	/*!
 	* \copydoc DataStream::GetSize
@@ -54,7 +54,7 @@ protected:
 	/*!
 	* \copydoc DataStream::Eof
 	*/
-	virtual ThBool EofImpl()const;
+	virtual bool EofImpl()const;
 
 	/*!
 	* \copydoc DataStream::ReadImpl

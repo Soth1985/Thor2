@@ -29,17 +29,17 @@ struct THOR_FRAMEWORK_DLL ThStringUtilities
 	static void ToWideString(ThI64 val, ThWchar* result, ThSize bufSize);
 	static void ToWideString(ThU64 val, ThWchar* result, ThSize bufSize);
 
-	static ThBool Parse(const ThI8* str, ThF32& val);
-	static ThBool Parse(const ThI8* str, ThF64& val);
-	static ThBool Parse(const ThI8* str, ThBool& val);
-	static ThBool Parse(const ThI8* str, ThI8& val);
-	static ThBool Parse(const ThI8* str, ThU8& val);
-	static ThBool Parse(const ThI8* str, ThI16& val);
-	static ThBool Parse(const ThI8* str, ThU16& val);
-	static ThBool Parse(const ThI8* str, ThI32& val);
-	static ThBool Parse(const ThI8* str, ThU32& val);
-	static ThBool Parse(const ThI8* str, ThI64& val);
-	static ThBool Parse(const ThI8* str, ThU64& val);
+	static bool Parse(const ThI8* str, ThF32& val);
+	static bool Parse(const ThI8* str, ThF64& val);
+	static bool Parse(const ThI8* str, bool& val);
+	static bool Parse(const ThI8* str, ThI8& val);
+	static bool Parse(const ThI8* str, ThU8& val);
+	static bool Parse(const ThI8* str, ThI16& val);
+	static bool Parse(const ThI8* str, ThU16& val);
+	static bool Parse(const ThI8* str, ThI32& val);
+	static bool Parse(const ThI8* str, ThU32& val);
+	static bool Parse(const ThI8* str, ThI64& val);
+	static bool Parse(const ThI8* str, ThU64& val);
 
 	static ThString WideStringToUtf8(const ThWideString& str);
 	static ThWideString Utf8ToWideString(const ThString& str);

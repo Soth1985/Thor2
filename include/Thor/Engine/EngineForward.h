@@ -5,23 +5,26 @@
 namespace Thor
 {
     class ThiSystem;
-    class ThiComponent;
-    class ThiResource;
+    class ThiComponentManager;
+    class ThiResourceManager;
+    class ThiBlackboardItem;
     class ThEvent;
+    class ThEntity;
     typedef ThTypeID<ThiSystem> ThSystemType;
-    typedef ThTypeID<ThiComponent> ThComponentType;
-    typedef ThTypeID<ThiResource> ThResourceType;
+    typedef ThTypeID<ThiComponentManager> ThComponentType;
+    typedef ThTypeID<ThiResourceManager> ThResourceType;
+    typedef ThTypeID<ThiBlackboardItem> ThBlackboardType;
     typedef ThTypeID<ThEvent> ThEventType;
     
     template <ThU32 TypeID, ThU32 KindID>
-    using ThComponentKey = ThKey<ThiComponent, TypeID, KindID>;
+    using ThComponentKey = ThKey<ThiComponentManager, TypeID, KindID>;
     
     template <ThU32 TypeID, ThU32 KindID>
-    using ThResourceKey = ThKey<ThiResource, TypeID, KindID>;
+    using ThResourceKey = ThKey<ThiResourceManager, TypeID, KindID>;
     
     template <ThU32 KindID>
-    using ThComponentFKey = ThForeignKey<ThiComponent, KindID>;
+    using ThComponentFKey = ThForeignKey<ThiComponentManager, KindID>;
     
     template <ThU32 TypeID, ThU32 KindID>
-    using ThResourceFKey = ThForeignKey<ThiResource, KindID>;
+    using ThResourceFKey = ThForeignKey<ThiResourceManager, KindID>;
 }

@@ -47,7 +47,7 @@ ThiMemoryStream::~ThiMemoryStream()
 		delete[] m_Beg;
 }
 //----------------------------------------------------------------------------------------
-ThSize ThiMemoryStream::TellImpl()
+ThSize ThiMemoryStream::TellImpl()const
 {
 	return m_Cur-m_Beg;
 }
@@ -59,12 +59,12 @@ void ThiMemoryStream::SeekImpl(ThSize pos)
 	//return cur;
 }
 //----------------------------------------------------------------------------------------
-ThSize ThiMemoryStream::GetSizeImpl()
+ThSize ThiMemoryStream::GetSizeImpl()const
 {
 	return m_End-m_Beg;
 }
 //----------------------------------------------------------------------------------------
-ThBool ThiMemoryStream::EofImpl()
+bool ThiMemoryStream::EofImpl()const
 {
 	return m_Cur >= m_End;
 }

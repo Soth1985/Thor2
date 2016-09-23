@@ -76,7 +76,7 @@ ThSize ThPhysFileStream::TellImpl()const
 	return pos;
 }
 //----------------------------------------------------------------------------------------
-void ThPhysFileStream::SeekImpl(ThSize pos)const
+void ThPhysFileStream::SeekImpl(ThSize pos)
 {
 	int res=PHYSFS_seek(m_Fp, pos);
 	assert( res!=0 && ( PHYSFS_getLastError() || 1 ) );
@@ -89,7 +89,7 @@ ThSize ThPhysFileStream::GetSizeImpl()const
 	return sz;
 }
 //----------------------------------------------------------------------------------------
-ThBool ThPhysFileStream::EofImpl()const
+bool ThPhysFileStream::EofImpl()const
 {
 	//return in.tellg()==in.seekg(0,std::ios::end);
 	return ( PHYSFS_eof(m_Fp)!=0 );

@@ -12,9 +12,9 @@ namespace Thor
 class THOR_FRAMEWORK_DLL ThAssert
 {
 public:
-	void Assert(ThBool result, const ThString& expr, const ThString& msg, const ThString& file, int line);
+	void Assert(bool result, const ThString& expr, const ThString& msg, const ThString& file, int line);
 private:
-	ThBool m_Ignore;
+	bool m_Ignore;
 };
 
 #if defined THOR_DEBUG || (!defined THOR_DEBUG && defined THOR_ASSERT_IN_RELEASE)

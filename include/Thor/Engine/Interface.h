@@ -1,51 +1,17 @@
 #pragma once
 
 #include <Thor/Engine/EngineForward.h>
+#include <Thor/Engine/ThEntity.h>
+#include <Thor/Engine/ThEvent.h>
 
 namespace Thor
-{
-    class ThEvent
-    {
-    private:
-        ThEventType m_Type;
-        ThU32 m_Size;
-        ThI8* m_Data;
-    };
-    
-    class ThEntity
-    {
-    public:
-        explicit ThEntity(ThU64 uid, ThI32 index)
-            :
-        m_Uid(uid),
-        m_Index(index)
-        {
-            
-        }
-        
-        operator bool()const
-        {
-            return m_Uid != 0;
-        }
-        
-        ThU64 Uid()const
-        {
-            return m_Uid;
-        }
-        
-        ThI32 Index()const
-        {
-            return m_Index;
-        }
-    private:
-        ThI32 m_Index;
-        ThU64 m_Uid;
-    };
-    
+{   
     class ThiEventManager
     {
     public:
-        virtual void PushMessage() = 0;
+        virtual void PushEvent(const ThEvent& event) = 0;
+        virtual ThEvent GetFirstEvent() = 0;
+        virtual ThEvent GetNextEvent(const ThEvent& prevEvent) = 0;
     };
     
     class ThiSystem
@@ -55,7 +21,7 @@ namespace Thor
         virtual void Update() = 0;
     };
     
-    class ThiComponent
+    class ThiComponentManager
     {
     public:
         virtual ThComponentType GetType() = 0;
@@ -72,10 +38,26 @@ namespace Thor
         virtual ThEntity GetEntity(ThI32 index) = 0;
     };
     
-    class ThiResource
+    class ThiResourceManager
     {
     public:
         virtual ThResourceType GetType() = 0;
+    };
+    
+    class ThiBlackboardItem
+    {
+    public:
+        virtual ThBlackboardType GetType() = 0;
+    };
+    
+    class ThiBlackboard
+    {
+    public:
+        virtual ThiBlackboardItem* GetItem(ThBlackboardType type) = 0;
+        virtual ThBlackboardType* GetItem(ThI32 index) = 0;
+        virtual ThI32 GetNumItems() = 0;
+        virtual bool AddItem(ThBlackboardType* system) = 0;
+        virtual bool RemoveItem(ThBlackboardType* system) = 0;
     };
     
     class ThiEngine
@@ -86,16 +68,27 @@ namespace Thor
         virtual ThI32 GetNumSystems() = 0;
         virtual bool AddSystem(ThiSystem* system) = 0;
         virtual bool RemoveSystem(ThiSystem* system) = 0;
-        virtual ThiComponent* GetComponent(ThComponentType type) = 0;
-        virtual ThiComponent* GetComponent(ThI32 index) = 0;
-        virtual ThI32 GetNumComponents() = 0;
-        virtual bool AddComponent(ThiComponent* component) = 0;
-        virtual bool RemoveComponent(ThiComponent* component) = 0;
+        
+        virtual ThiComponentManager* GetComponentManager(ThComponentType type) = 0;
+        virtual ThiComponentManager* GetComponentManager(ThI32 index) = 0;
+        virtual ThI32 GetNumComponentManagers() = 0;
+        virtual bool AddComponentManager(ThiComponentManager* componentManager) = 0;
+        virtual bool RemoveComponentManager(ThiComponentManager* componentManager) = 0;
+        
+        virtual ThiResourceManager* GetResourceManager(ThResourceType type) = 0;
+        virtual ThiResourceManager* GetResourceManager(ThI32 index) = 0;
+        virtual ThI32 GetNumResourceManagers() = 0;
+        virtual bool AddResourceManager(ThiResourceManager* componentManager) = 0;
+        virtual bool RemoveResourceManager(ThiResourceManager* componentManager) = 0;
+        
         virtual ThiEventManager* GetEntityManager() = 0;
         virtual ThiEventManager* GetEventManamer() = 0;
+        virtual ThiBlackboard* GetBlackboard() = 0;
         virtual ThU64 GenerateUid() = 0;
         virtual void SetUidGeneratorConstant(ThU8 constant) = 0;
+        virtual void GetVersion(ThI32& major, ThI32& minor) = 0;
         
         static ThiEngine* CreateEngine(ThI32 versionMajor, ThI32 versionMinor);
+        //static ThiEngine* CloneEngine(ThiEngine* engine);
     };
 }

@@ -241,7 +241,7 @@ public:
 	* Boolean switch.
 	*
 	*/
-	void SetEnabled(ThBool val);
+	void SetEnabled(bool val);
 
 	/*!
 	* \brief
@@ -250,7 +250,7 @@ public:
 	* \returns
 	* True if logging is enabled, false otherwise.
 	*/
-	ThBool GetEnabled()const;
+	bool GetEnabled()const;
 
 	/*!
 	* \brief
@@ -363,7 +363,7 @@ private:
 	* \brief
 	* Determines if the logger is on or off.
 	*/	
-	ThBool				m_Enabled;
+	bool				m_Enabled;
 
 	/*!
 	* \brief
