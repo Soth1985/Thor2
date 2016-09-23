@@ -54,10 +54,10 @@ namespace Thor
     {
     public:
         virtual ThiBlackboardItem* GetItem(ThBlackboardType type) = 0;
-        virtual ThBlackboardType* GetItem(ThI32 index) = 0;
+        virtual ThiBlackboardItem* GetItem(ThI32 index) = 0;
         virtual ThI32 GetNumItems() = 0;
-        virtual bool AddItem(ThBlackboardType* system) = 0;
-        virtual bool RemoveItem(ThBlackboardType* system) = 0;
+        virtual bool AddItem(ThiBlackboardItem* item) = 0;
+        virtual bool RemoveItem(ThiBlackboardItem* item) = 0;
     };
     
     class ThiEngine

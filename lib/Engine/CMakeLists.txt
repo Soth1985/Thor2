@@ -2,6 +2,7 @@ project(Engine VERSION ${THOR_VERSION} LANGUAGES CXX)
 
 set(Engine_SRC
     ThEntityManager.cpp
+    ThBlackboard.cpp
     ThEventManager.cpp)
 
 set(Engine_H
@@ -10,6 +11,7 @@ set(Engine_H
     ${THOR_INCLUDE_DIR}/Thor/Engine/ThEntityManager.h
     ${THOR_INCLUDE_DIR}/Thor/Engine/ThEvent.h
     ${THOR_INCLUDE_DIR}/Thor/Engine/ThEventManager.h
+    ${THOR_INCLUDE_DIR}/Thor/Engine/ThBlackboard.h
     ${THOR_INCLUDE_DIR}/Thor/Engine/ThEntity.h
     ${THOR_INCLUDE_DIR}/Thor/Engine/Interface.h)
 

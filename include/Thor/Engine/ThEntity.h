@@ -36,11 +36,21 @@ namespace Thor
         ThU64 m_Uid;
     };
     
-    namespace Private
+    template <>
+    struct ThHash<ThEntity>
     {
-        inline ThSize HashFunc(const ThEntity& ent)
+        static inline ThSize HashCode(const ThEntity& ent)
         {
             return ent.Uid();
         }
-    }
+    };
+    
+    template <class Class>
+    struct ThHash< ThTypeID<Class> >
+    {
+        static inline ThSize HashCode(const ThTypeID<Class>& type)
+        {
+            return Private::HashFunc(type.Id());
+        }
+    };
 }

@@ -29,6 +29,11 @@ namespace Thor
             return m_Kind;
         }
         
+        ThU32 Id()const
+        {
+            return (m_Type << 10) | m_Kind;
+        }
+        
     private:
         ThU32 m_Type : 22;
         ThU32 m_Kind : 10;
