@@ -3,6 +3,7 @@
 #include <Thor/Engine/EngineForward.h>
 #include <Thor/Engine/ThEntity.h>
 #include <Thor/Engine/ThEvent.h>
+#include <Thor/Engine/ThSpaceHash.h>
 
 namespace Thor
 {   
@@ -93,6 +94,6 @@ namespace Thor
         virtual void GetVersion(ThI32& major, ThI32& minor) = 0;
         
         static ThiEngine* CreateEngine(ThI32 versionMajor, ThI32 versionMinor);
-        // entitygroup component groupId groupFlag, use to load resources and entities
+        // entitygroup component sector x:20,y:20,z:20; use to load resources and entities
     };
 }
