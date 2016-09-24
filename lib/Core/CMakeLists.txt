@@ -33,6 +33,7 @@ set(Core_SRC
     String/ThStringUtilities.cpp
     String/ThStringBuilder.cpp
     Util/ThUidGenerator.cpp
+    Concurrent/ThDispatch.cpp
     ThiObject.cpp)
 
 set(Core_H
@@ -85,6 +86,7 @@ set(Core_H
     ${THOR_INCLUDE_DIR}/Thor/Core/String/String.h
     ${THOR_INCLUDE_DIR}/Thor/Core/String/ThStringBuilder.h
     ${THOR_INCLUDE_DIR}/Thor/Core/String/ThStringUtilities.h
+    ${THOR_INCLUDE_DIR}/Thor/Core/Concurrent/ThDispatch.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Util/ThUidGenerator.h)
 
 if(THOR_USE_PHYSFS)

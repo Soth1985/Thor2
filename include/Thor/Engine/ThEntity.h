@@ -44,13 +44,4 @@ namespace Thor
             return ent.Uid();
         }
     };
-    
-    template <class Class>
-    struct ThHash< ThTypeID<Class> >
-    {
-        static inline ThSize HashCode(const ThTypeID<Class>& type)
-        {
-            return Private::HashFunc(type.Id());
-        }
-    };
 }

@@ -81,6 +81,10 @@ namespace Thor
         virtual bool AddResourceManager(ThiResourceManager* componentManager) = 0;
         virtual bool RemoveResourceManager(ThiResourceManager* componentManager) = 0;
         
+        virtual const char* GetResourceName(ThU64 resUid) = 0;
+        virtual bool RegisterResourceName(ThU64 resUid, const char* name) = 0;
+        virtual bool UnregisterResourceName(ThU64 resUid) = 0;
+        
         virtual ThiEventManager* GetEntityManager() = 0;
         virtual ThiEventManager* GetEventManamer() = 0;
         virtual ThiBlackboard* GetBlackboard() = 0;
@@ -89,6 +93,6 @@ namespace Thor
         virtual void GetVersion(ThI32& major, ThI32& minor) = 0;
         
         static ThiEngine* CreateEngine(ThI32 versionMajor, ThI32 versionMinor);
-        //static ThiEngine* CloneEngine(ThiEngine* engine);
+        // entitygroup component groupId groupFlag, use to load resources and entities
     };
 }

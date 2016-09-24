@@ -1,6 +1,6 @@
 #include "RayTracer.h"
 #include <chrono>
-#include <dispatch/dispatch.h>
+#include <Thor/Core/Concurrent/ThDispatch.h>
 
 using namespace Thor;
 
@@ -53,32 +53,31 @@ bool RayTracer::RenderFrame()
     if (m_State != RayTracerState::RenderingFrame)
     {
         m_State = RayTracerState::RenderingFrame;
-        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
+        ThDispatchQueue queue(eQueuePriority::High);
         
-        dispatch_async(queue,
-        ^(void)
+        queue.DispatchAsync([this](void)
         {
-            float oneOverW = 1.0 / m_Options.m_Width;
-            float oneOverH = 1.0f / m_Options.m_Height;
-            for (ThI32 j = m_Options.m_Height - 1; j >= 0; --j)
+            float oneOverW = 1.0 / this->m_Options.m_Width;
+            float oneOverH = 1.0f / this->m_Options.m_Height;
+            for (ThI32 j = this->m_Options.m_Height - 1; j >= 0; --j)
             {
-                for (ThI32 i = 0; i < m_Options.m_Width; ++i)
+                for (ThI32 i = 0; i < this->m_Options.m_Width; ++i)
                 {
                     ThVec3f color;
-                    for (ThI32 s = 0; s < m_Options.m_SamplesPerPixel; ++s)
+                    for (ThI32 s = 0; s < this->m_Options.m_SamplesPerPixel; ++s)
                     {
-                        float u = (i + m_RngUniform(m_Generator)) * oneOverW;
-                        float v = (j + m_RngUniform(m_Generator)) * oneOverH;
+                        float u = (i + this->m_RngUniform(m_Generator)) * oneOverW;
+                        float v = (j + this->m_RngUniform(m_Generator)) * oneOverH;
                         ThRayf ray;
                         
-                        if (m_Options.m_CameraMode == CameraMode::Normal)
-                            ray = m_Camera.GetRay(u, v);
+                        if (this->m_Options.m_CameraMode == CameraMode::Normal)
+                            ray = this->m_Camera.GetRay(u, v);
                         else
-                            ray = m_Camera.GetRayLens(u, v);
+                            ray = this->m_Camera.GetRayLens(u, v);
                         
                         color += TraceScene(ray, 1);
                     }
-                    color /= m_Options.m_SamplesPerPixel;
+                    color /= this->m_Options.m_SamplesPerPixel;
                     color.x() = Math::Sqrt(color.x());
                     color.y() = Math::Sqrt(color.y());
                     color.z() = Math::Sqrt(color.z());
@@ -88,6 +87,7 @@ bool RayTracer::RenderFrame()
             this->m_FramesRendered++;
             this->m_State = RayTracerState::FrameReady;
         });
+        
         return true;
     }
     
