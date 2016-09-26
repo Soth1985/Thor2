@@ -13,7 +13,7 @@ set(Engine_H
     ${THOR_INCLUDE_DIR}/Thor/Engine/ThEventManager.h
     ${THOR_INCLUDE_DIR}/Thor/Engine/ThBlackboard.h
     ${THOR_INCLUDE_DIR}/Thor/Engine/ThEntity.h
-    ${THOR_INCLUDE_DIR}/Thor/Engine/ThSpaceHash.h
+    ${THOR_INCLUDE_DIR}/Thor/Engine/ThClusterHash.h
     ${THOR_INCLUDE_DIR}/Thor/Engine/Interface.h)
 
 list(SORT Engine_SRC)
