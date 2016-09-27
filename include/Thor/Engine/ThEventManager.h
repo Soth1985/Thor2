@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Thor/Engine/Interface.h>
+#include <Thor/Engine/EngineInterface.h>
 #include <Thor/Core/Memory/ThiMemoryAllocator.h>
 
 namespace Thor

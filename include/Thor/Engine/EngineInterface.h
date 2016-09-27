@@ -98,6 +98,5 @@ namespace Thor
         virtual void GetVersion(ThI32& major, ThI32& minor) = 0;
         
         static ThiEngine* CreateEngine(ThI32 versionMajor, ThI32 versionMinor);
-        // entitygroup component sector x:20,y:20,z:20; use to load resources and entities
     };
 }

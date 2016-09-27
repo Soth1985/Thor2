@@ -19,11 +19,11 @@ namespace Thor
     template <ThU32 TypeID, ThU32 KindID>
     using ThComponentKey = ThKey<ThiComponentManager, TypeID, KindID>;
     
-    template <ThU32 TypeID, ThU32 KindID>
-    using ThResourceKey = ThKey<ThiResourceManager, TypeID, KindID>;
-    
     template <ThU32 KindID>
     using ThComponentFKey = ThForeignKey<ThiComponentManager, KindID>;
+    
+    template <ThU32 TypeID, ThU32 KindID>
+    using ThResourceKey = ThKey<ThiResourceManager, TypeID, KindID>;
     
     template <ThU32 TypeID, ThU32 KindID>
     using ThResourceFKey = ThForeignKey<ThiResourceManager, KindID>;

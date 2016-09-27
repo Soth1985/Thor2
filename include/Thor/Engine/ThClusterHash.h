@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Thor/Engine/EngineForward.h>
+#include <Thor/Core/Containers/ThHash.h>
 
 namespace Thor
 {
@@ -14,26 +15,24 @@ namespace Thor
             
         }
         
-        ThClusterHash(ThU32 layer, ThU32 x, bool active)
+        ThClusterHash(ThU32 layer, ThU32 x)
             :
         m_Hash(0)
         {
             SetLayer(layer);
             SetX(x);
-            SetActive(active);
         }
         
-        ThClusterHash(ThU32 layer, ThU32 x, ThU32 y, bool active)
+        ThClusterHash(ThU32 layer, ThU32 x, ThU32 y)
             :
         m_Hash(0)
         {
             SetLayer(layer);
             SetX(x);
             SetY(y);
-            SetActive(active);
         }
         
-        ThSpaceHash(ThU32 layer, ThU32 x, ThU32 y, ThU32 z, bool active)
+        ThClusterHash(ThU32 layer, ThU32 x, ThU32 y, ThU32 z)
             :
         m_Hash(0)
         {
@@ -41,7 +40,6 @@ namespace Thor
             SetX(x);
             SetY(y);
             SetZ(z);
-            SetActive(active);
         }
         
         operator bool()const
@@ -49,17 +47,9 @@ namespace Thor
             return m_Hash != UINT64_MAX;
         }
         
-        bool IsActive()const
+        bool operator==(const ThClusterHash& rhs)const
         {
-            return m_Hash >> m_ActiveOffset;
-        }
-        
-        void SetActive(bool active)
-        {
-            if (active)
-                m_Hash |= (ThU64(1) << m_ActiveOffset);
-            else
-                m_Hash &= ~(ThU64(1) << m_ActiveOffset);
+            return m_Hash == rhs.m_Hash;
         }
         
         ThU32 GetX()const
@@ -105,20 +95,33 @@ namespace Thor
             m_Hash &= ~m_LayerMask;
             m_Hash |= (ThU64(layer) << m_LayerOffset) & m_LayerMask;
         }
+        
+        ThU64 GetHash()const
+        {
+            return m_Hash;
+        }
     private:
         static const ThI32 m_XBits = 21;
-        static const ThI32 m_YBits = 10;
+        static const ThI32 m_YBits = 11;
         static const ThI32 m_ZBits = 21;
         static const ThI32 m_LayerBits = 11;
-        static const ThI32 m_ActiveOffset = 63;
         static const ThI32 m_YOffset = m_ZBits;
         static const ThI32 m_XOffset = m_YOffset + m_YBits;
         static const ThI32 m_LayerOffset = m_XOffset + m_XBits;
-        static const ThU64 m_LayerMask = ThU64(0x7FF0000000000000);
-        static const ThU64 m_XMask = ThU64(0xFFFFF80000000);
-        static const ThU64 m_YMask = ThU64(0x7FE00000);
+        static const ThU64 m_LayerMask = ThU64(0xFFE0000000000000);
+        static const ThU64 m_XMask = ThU64(0x1FFFFF00000000);
+        static const ThU64 m_YMask = ThU64(0xFFE00000);
         static const ThU64 m_ZMask = ThU64(0x1FFFFF);
         
         ThU64 m_Hash;
+    };
+    
+    template <>
+    struct ThHash<ThClusterHash>
+    {
+        static inline ThSize HashCode(const ThClusterHash& cluster)
+        {
+            return cluster.GetHash();
+        }
     };
 }

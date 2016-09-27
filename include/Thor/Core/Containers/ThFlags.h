@@ -1,19 +1,14 @@
 #pragma once
 
-#include <Thor/Framework/ThMutexPolicy.h>
-
 namespace Thor
 {
 
-template <class T, bool threadSafe = false>
-class ThFlags: public ThMutexPolicy<threadSafe>
+template <class T>
+class ThFlags
 {
 public:
 	void	SetFlag(bool state, T flag)
 	{
-		ScopedLock lock;
-		InitScopedLock(lock);
-
 		if(state)
 			m_BitField |= flag;
 		else
@@ -27,9 +22,6 @@ public:
 
 	void	Combine(T f)
 	{
-		ScopedLock lock;
-		InitScopedLock(lock);
-
 		m_BitField |= f;
 	}
 
@@ -40,9 +32,6 @@ public:
 
 	void	Substract(T f)
 	{
-		ScopedLock lock;
-		InitScopedLock(lock);
-
 		for(UINT i=0; i < NumBits(); ++i)
 		{
 			T b = 1 << i;
@@ -55,17 +44,11 @@ public:
 
 	bool	CheckFlag(T flag)const
 	{
-		ScopedLock lock;
-		InitScopedLock(lock);
-
 		return ( m_BitField & flag ) != 0;
 	}
 
 	void	SetBit(bool state, unsigned int bit)
 	{
-		ScopedLock lock;
-		InitScopedLock(lock);
-
 		T b = 1 << bit;
 
 		if(state)
@@ -76,18 +59,12 @@ public:
 
 	bool	CheckBit(unsigned int bit)const
 	{
-		ScopedLock lock;
-		InitScopedLock(lock);
-
 		T b = 1 << bit;
 		return ( m_BitField & b ) != 0;	
 	}
 
 	void	Reset()
 	{
-		ScopedLock lock;
-		InitScopedLock(lock);
-
 		m_BitField=0;
 	}
 
@@ -98,9 +75,6 @@ public:
 
 	const T& GetBitField()const
 	{
-		ScopedLock lock;
-		InitScopedLock(lock);
-
 		return m_BitField;
 	}
 
@@ -118,9 +92,7 @@ private:
 };
 
 typedef ThFlags<ThU32> ThFlags32;
-typedef ThFlags<ThU32, true> ThFlags32TS;
 
 typedef ThFlags<ThU8> ThFlags8;
-typedef ThFlags<ThU8, true> ThFlags8TS;
 
 }//Thor

@@ -15,6 +15,11 @@ namespace Thor
         m_Kind(kind)
         {}
         
+        operator bool()const
+        {
+            return Id() != 0;
+        }
+        
         bool operator==(const ThTypeID& other)const
         {
             return m_Type == other.m_Type && m_Kind == other.m_Kind;
@@ -63,6 +68,11 @@ namespace Thor
         m_Index(index)
         {}
         
+        operator bool()const
+        {
+            return m_Index >= 0;
+        }
+        
         ThU32 Type()const
         {
             return TypeID;
@@ -104,6 +114,11 @@ namespace Thor
         m_Type(0, KindID),
         m_Uid(0)
         {}
+        
+        operator bool()const
+        {
+            return m_Uid != 0;
+        }
         
         ThU32 TypeID()const
         {

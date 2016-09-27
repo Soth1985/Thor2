@@ -3,6 +3,7 @@ project(Engine VERSION ${THOR_VERSION} LANGUAGES CXX)
 set(Engine_SRC
     ThEntityManager.cpp
     ThBlackboard.cpp
+    ThSystemComponent.cpp
     ThEventManager.cpp)
 
 set(Engine_H
@@ -14,7 +15,9 @@ set(Engine_H
     ${THOR_INCLUDE_DIR}/Thor/Engine/ThBlackboard.h
     ${THOR_INCLUDE_DIR}/Thor/Engine/ThEntity.h
     ${THOR_INCLUDE_DIR}/Thor/Engine/ThClusterHash.h
-    ${THOR_INCLUDE_DIR}/Thor/Engine/Interface.h)
+    ${THOR_INCLUDE_DIR}/Thor/Engine/ThSystemComponent.h
+    ${THOR_INCLUDE_DIR}/Thor/Engine/ComponentInterfaces.h
+    ${THOR_INCLUDE_DIR}/Thor/Engine/EngineInterface.h)
 
 list(SORT Engine_SRC)
 list(SORT Engine_H)
