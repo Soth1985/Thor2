@@ -100,18 +100,34 @@ namespace Thor
         {
             return m_Hash;
         }
+        
+        ThU32 GetMaxX()const
+        {
+            return m_XMask >> m_XOffset;
+        }
+        
+        ThU32 GetMaxY()const
+        {
+            return m_YMask >> m_YOffset;
+        }
+        
+        ThU32 GetMaxZ()const
+        {
+            return m_ZMask;
+        }
     private:
-        static const ThI32 m_XBits = 21;
-        static const ThI32 m_YBits = 11;
-        static const ThI32 m_ZBits = 21;
-        static const ThI32 m_LayerBits = 11;
+        static const ThI32 m_XBits = 18;
+        static const ThI32 m_YBits = 18;
+        static const ThI32 m_ZBits = 18;
+        static const ThI32 m_LayerBits = 10;
+        static const ThU64 m_AllBits = ThU64(0xFFFFFFFFFFFFFFFF);
         static const ThI32 m_YOffset = m_ZBits;
         static const ThI32 m_XOffset = m_YOffset + m_YBits;
         static const ThI32 m_LayerOffset = m_XOffset + m_XBits;
-        static const ThU64 m_LayerMask = ThU64(0xFFE0000000000000);
-        static const ThU64 m_XMask = ThU64(0x1FFFFF00000000);
-        static const ThU64 m_YMask = ThU64(0xFFE00000);
-        static const ThU64 m_ZMask = ThU64(0x1FFFFF);
+        static const ThU64 m_LayerMask = ThU64(m_AllBits >> (64 - m_LayerBits)) << m_LayerOffset;
+        static const ThU64 m_XMask = ThU64(m_AllBits >> (64 - m_XBits)) << m_XOffset;
+        static const ThU64 m_YMask = ThU64(m_AllBits >> (64 - m_YBits)) << m_YOffset;
+        static const ThU64 m_ZMask = ThU64(m_AllBits >> (64 - m_ZBits));
         
         ThU64 m_Hash;
     };

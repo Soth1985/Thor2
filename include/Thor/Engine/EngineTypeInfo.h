@@ -106,23 +106,22 @@ namespace Thor
     };
     
     template <class Class, ThU32 KindID>
-    class ThForeignKey
+    class ThPolymorphicForeignKey
     {
     public:
-        ThForeignKey()
+        ThPolymorphicForeignKey()
             :
-        m_Type(0, KindID),
         m_Uid(0)
+        {}
+        
+        explicit ThPolymorphicForeignKey(ThU64 uid)
+            :
+        m_Uid(uid)
         {}
         
         operator bool()const
         {
             return m_Uid != 0;
-        }
-        
-        ThU32 TypeID()const
-        {
-            return m_Type.TypeID();
         }
         
         ThU32 Kind()const
@@ -135,14 +134,59 @@ namespace Thor
             return m_Uid;
         }
     private:
-        ThTypeID<Class> m_Type;
         ThU64 m_Uid;
     };
     
     template <class Class, ThU32 KindID>
-    struct ThHash< ThForeignKey<Class, KindID> >
+    struct ThHash< ThPolymorphicForeignKey<Class, KindID> >
     {
-        static inline ThSize HashCode(const ThForeignKey<Class, KindID>& key)
+        static inline ThSize HashCode(const ThPolymorphicForeignKey<Class, KindID>& key)
+        {
+            return Private::HashFunc(key.Uid());
+        }
+    };
+    
+    template <class Class, ThU32 TypeID, ThU32 KindID>
+    class ThForeignKey
+    {
+    public:
+        ThForeignKey()
+        :
+        m_Uid(0)
+        {}
+        
+        explicit ThForeignKey(ThU64 uid)
+        :
+        m_Uid(uid)
+        {}
+        
+        operator bool()const
+        {
+            return m_Uid != 0;
+        }
+        
+        ThU32 Type()const
+        {
+            return TypeID;
+        }
+        
+        ThU32 Kind()const
+        {
+            return KindID;
+        }
+        
+        ThU64 Uid()const
+        {
+            return m_Uid;
+        }
+    private:
+        ThU64 m_Uid;
+    };
+    
+    template <class Class, ThU32 TypeID, ThU32 KindID>
+    struct ThHash< ThForeignKey<Class, TypeID, KindID> >
+    {
+        static inline ThSize HashCode(const ThForeignKey<Class, TypeID, KindID>& key)
         {
             return Private::HashFunc(key.Uid());
         }

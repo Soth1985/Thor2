@@ -31,14 +31,15 @@ namespace Thor
     class ThiEntityManager
     {
     public:
-        virtual ThEntity CreateEntity(const ThClusterHash& cluster) = 0;
+        //virtual ThEntity CreateEntity(const ThClusterHash& cluster) = 0;
+        //virtual bool IsClusterActive(const ThClusterHash& cluster) = 0;
+        //virtual void SetClusterActive(const ThClusterHash& cluster, bool active) = 0;
+        
         virtual ThEntity CreateEntity() = 0;
         virtual bool DestroyEntity(const ThEntity& ent) = 0;
         virtual bool IsAlive(const ThEntity& ent) = 0;
         virtual bool IsActive(const ThEntity& ent) = 0;
-        virtual bool IsClusterActive(const ThClusterHash& cluster) = 0;
-        virtual void SetClusterActive(const ThClusterHash& cluster, bool active) = 0;
-        virtual void Reserve(ThI32 capacity) = 0;
+                virtual void Reserve(ThI32 capacity) = 0;
         virtual ThI32 GetNumEntities() = 0;
         virtual ThEntity GetEntity(ThI32 index) = 0;
     };
