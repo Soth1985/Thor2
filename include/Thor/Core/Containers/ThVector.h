@@ -4,7 +4,7 @@
 #include <Thor/Core/Debug/ThAssert.h>
 #include <Thor/Core/ThFlags.h>
 
-#include <type_traits>
+#include <initializer_list>
 
 namespace Thor {
 
@@ -91,6 +91,13 @@ public:
         copy.m_Size = 0;
         copy.m_Capacity = 0;
     }
+    
+    ThVector(std::initializer_list<T> ilist, ThiMemoryAllocator* allocator = nullptr)
+        :
+    ThVector(allocator)
+    {
+        Assign(ilist);
+    }
 
 	~ThVector()
 	{
@@ -115,7 +122,13 @@ public:
 		Free();
 		Resize(n, value);
 	}
-
+    
+    void Assign(std::initializer_list<T> ilist)
+    {
+        Free();
+        Insert(nullptr, ilist.begin(), ilist.end());
+    }
+    
 	Iterator Begin()
 	{
 		return m_Data;
@@ -283,7 +296,7 @@ public:
         Reserve(newSize);        
         SizeType toMove = m_Size - insertIndex;
         
-        MoveObjects(&m_Data[insertIndex], &m_Data[insertIndex + n], toMove);
+        MoveObjects(&m_Data[insertIndex], &m_Data[endIndex], toMove);
         
         for (SizeType idx = insertIndex; idx < endIndex; ++idx)
         {
@@ -318,8 +331,30 @@ public:
 		m_Size = newSize;
 		return m_Data + insertIndex;
 	}
-
-	Iterator Erase(ConstIterator position)
+    
+    template< class... Args >
+    void EmplaceBack(Args&&... args)
+    {
+        Emplace(End(), args...);
+    }
+    
+    template< class... Args >
+    Iterator Emplace( ConstIterator position, Args&&... args )
+    {
+        SizeType newSize = m_Size + 1;
+        SizeType insertIndex = position - m_Data;
+        ThSize endIndex = insertIndex + 1;
+        Reserve(newSize);
+        SizeType toMove = m_Size - insertIndex;
+        
+        MoveObjects(&m_Data[insertIndex], &m_Data[endIndex], toMove);
+        ConstructObject(&m_Data[insertIndex], args...);
+        
+        m_Size = newSize;
+        return m_Data + insertIndex;
+    }
+    
+    Iterator Erase(ConstIterator position)
 	{
 		return Erase(position, position + 1);
 	}

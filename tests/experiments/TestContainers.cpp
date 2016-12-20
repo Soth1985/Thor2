@@ -47,6 +47,7 @@ void TestThVectorConstructors()
     ThVector<int> iVec;
     ThVector<int> iVec1(5);
     ThVector<int> iVec2(5u, 7);
+    ThVector<int> iiVec1 = {2, 9, 8, 7, 3, 1, 0};
     ThVector<Probe> pVec;
     ThVector<Probe> pVec1(5);
     ThVector<Probe> pVec2(5u, Probe(1, 2.0f));
@@ -66,6 +67,8 @@ void TestThVectorConstructors()
     ThVector<int> iVec4(iVec3);
     ThVector<Probe> pVec3(pv, &pv[5]);
     ThVector<Probe> pVec4(pVec3);
+    
+    pVec4.EmplaceBack(88, 99);
 
     ThVector<std::string> sVec;
 
