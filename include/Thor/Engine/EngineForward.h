@@ -8,8 +8,10 @@ namespace Thor
     class ThiComponentManager;
     class ThiResourceManager;
     class ThiBlackboardItem;
+    class ThiWorld;
     class ThEvent;
     class ThEntity;
+    
     typedef ThTypeID<ThiSystem> ThSystemType;
     typedef ThTypeID<ThiComponentManager> ThComponentType;
     typedef ThTypeID<ThiResourceManager> ThResourceType;

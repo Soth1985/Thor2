@@ -136,6 +136,13 @@ namespace Thor
     }
     
     template <class T>
+    void MoveObject(const T* from, T* to)
+    {
+        auto Func = Private::MoveObjectsImpl<std::is_trivially_copyable<T>::value, T>();
+        Func(from, to, 1);
+    }
+    
+    template <class T>
     void MoveObjects(const T* from, T* to, ThSize numObjects)
     {
         auto Func = Private::MoveObjectsImpl<std::is_trivially_copyable<T>::value, T>();
@@ -143,7 +150,14 @@ namespace Thor
     }
     
     template <class T>
-    void CopyObjects(T* from, T* to, ThSize numObjects)
+    void CopyObject(const T* from, T* to, ThSize numObjects)
+    {
+        auto Func = Private::CopyObjectsImpl<std::is_trivially_copyable<T>::value, T>();
+        Func(from, to, 1);
+    }
+    
+    template <class T>
+    void CopyObjects(const T* from, T* to, ThSize numObjects)
     {
         auto Func = Private::CopyObjectsImpl<std::is_trivially_copyable<T>::value, T>();
         Func(from, to, numObjects);

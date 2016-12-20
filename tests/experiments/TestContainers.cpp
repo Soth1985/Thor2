@@ -2,8 +2,6 @@
 #include <Thor/Core/Containers/ThHashMap.h>
 #include <Thor/Core/Containers/ThHashSet.h>
 
-using namespace Thor;
-
 class Probe
 {
 public:
@@ -45,8 +43,14 @@ public:
 
 void TestThVectorConstructors()
 {
-	ThVector<int> iVec, iVec1(5), iVec2(5u, 7);
-	ThVector<Probe> pVec, pVec1(5), pVec2(5u, Probe(1, 2.0f));
+    using namespace Thor;
+    ThVector<int> iVec;
+    ThVector<int> iVec1(5);
+    ThVector<int> iVec2(5u, 7);
+    ThVector<Probe> pVec;
+    ThVector<Probe> pVec1(5);
+    ThVector<Probe> pVec2(5u, Probe(1, 2.0f));
+    ThVector<Probe> mvVec(std::move(pVec2));
 
 	int iv[5];
 	Probe pv[5];
@@ -58,10 +62,12 @@ void TestThVectorConstructors()
 		pv[i].y = i;
 	}
 
-	ThVector<int> iVec3(iv, &iv[5]), iVec4(iVec3);
-	ThVector<Probe> pVec3(pv, &pv[5]), pVec4(pVec3);
+    ThVector<int> iVec3(iv, &iv[5]);
+    ThVector<int> iVec4(iVec3);
+    ThVector<Probe> pVec3(pv, &pv[5]);
+    ThVector<Probe> pVec4(pVec3);
 
-	ThVector<ThString> sVec;
+    ThVector<std::string> sVec;
 
 	sVec.PushBack("a");
 	sVec.PushBack("b");
@@ -80,6 +86,7 @@ void TestThVector()
 
 void TestThHashMap()
 {
+    using namespace Thor;
 	ThHashMap<ThString, int> m;
 	//m.Reserve(10);
 	m.GrowSize(2);
@@ -97,6 +104,7 @@ void TestThHashMap()
 
 void TestThHashSet()
 {
+    using namespace Thor;
 	ThHashSet<ThString> s;
 
 	s.Insert("a");

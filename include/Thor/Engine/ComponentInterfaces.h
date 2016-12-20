@@ -30,16 +30,6 @@ namespace Thor
         };
     };
     
-    struct eEntityFlags
-    {
-        enum Val
-        {
-            Active = 1 << 0,
-            Dynamic = 1 << 1,
-            Prefab = 1 << 2
-        };
-    };
-    
     class ThiClusterHashComponent : public ThiComponentManager
     {
     public:

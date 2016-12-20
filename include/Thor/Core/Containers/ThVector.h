@@ -8,64 +8,7 @@
 
 namespace Thor {
 
-namespace Private
-{
-    template <bool IsClass, class SizeType, class Pointer>
-    struct DestroyRangeImpl;
-    
-    template <class SizeType, class Pointer>
-    struct DestroyRangeImpl<true, SizeType, Pointer>
-    {
-        void operator()(SizeType position, SizeType numElems, Pointer target)
-        {
-            typedef typename std::remove_pointer<Pointer>::type Type;
-            for (SizeType i = position; i < position + numElems; ++i)
-            {
-                Pointer temp = &target[i];
-                
-                temp->~Type();
-            }
-        }
-    };
-    
-    template <class SizeType, class Pointer>
-    struct DestroyRangeImpl<false, SizeType, Pointer>
-    {
-        void operator()(SizeType position, SizeType numElems, Pointer target)
-        {
-            
-        }
-    };
-    
-    template <bool IsClass, class SizeType, class Pointer>
-    struct DefaultConstructRangeImpl;
-    
-    template <class SizeType, class Pointer>
-    struct DefaultConstructRangeImpl<true, SizeType, Pointer>
-    {
-        void operator()(SizeType numElems, Pointer start)
-        {
-            for (SizeType i = 0; i < numElems; ++i)
-            {
-                new(start) typename std::remove_pointer<Pointer>::type();
-                
-                ++start;
-            }
-        }
-    };
-    
-    
-    template <class SizeType, class Pointer>
-    struct DefaultConstructRangeImpl<false, SizeType, Pointer>
-    {
-        void operator()(SizeType numElems, Pointer start)
-        {
-            
-        }
-    };
-}
-    
-    //----------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------
 //
 //					ThVector
 //
@@ -129,48 +72,50 @@ public:
 		Assign(first, last);
 	}
 
-	ThVector(const ThVector& v, ThiMemoryAllocator* allocator = nullptr)
+	ThVector(const ThVector& copy)
 		:
-    ThVector(allocator)
+    ThVector(copy.GetAllocator())
 	{
-		*this = v;
+		*this = copy;
 	}
+    
+    ThVector(ThVector&& copy)
+        :
+    ThVector(copy.GetAllocator())
+    {
+        m_Data = copy.m_Data;
+        m_Size = copy.m_Size;
+        m_Capacity = copy.m_Capacity;
+        
+        copy.m_Data = nullptr;
+        copy.m_Size = 0;
+        copy.m_Capacity = 0;
+    }
 
 	~ThVector()
 	{
-		FreeMemory();
+		Free();
 	}
 
 	ThVector& operator=(const ThVector& x)
 	{
-		if (!x.Empty())
-        {
-			Assign(x.Begin(), x.End());
-        }
-		else
-			FreeMemory();
-		
+        Assign(x.Begin(), x.End());
 		return *this;
 	}
 
 	template <class InputIterator>
 	void Assign(InputIterator first, InputIterator last)
 	{
-		FreeMemory();
-
-		SizeType size = last - first;
-		Reserve(size);
-		m_Size = size;
-
-		ConstructRange(first, last, m_Data);
+		Free();
+        Insert(nullptr, first, last);
 	}
 		
 	void Assign(SizeType n, const T& value)
 	{
-		FreeMemory();
+		Free();
 		Resize(n, value);
 	}
-	// iterators:
+
 	Iterator Begin()
 	{
 		return m_Data;
@@ -201,7 +146,6 @@ public:
 		return m_Data + m_Size;
 	}
 
-	// capacity:
 	ThSize Size()const
 	{
 		return m_Size;
@@ -235,33 +179,30 @@ public:
 
 	void Reserve(SizeType n)
 	{
-		if (n != m_Capacity)
+		if (n > m_Capacity)
 		{
-			SizeType bound = Thor::Min(n, m_Size);
-
-			T* prevBuffer = Realloc(n);
-
-			if (m_Data && prevBuffer)
-			{
-				//if (m_Flags.CheckFlag(eThVectorFlags::eCallCopyConstructorOnMove))
-				{
-					ConstructRange(&prevBuffer[0], &prevBuffer[bound], m_Data);
-					DestroyRange(0, bound, prevBuffer);
-				}
-				//else
-				//	ThMemory::MemoryCopy(m_Data, prevBuffer, bound * sizeof(T));
-
-				//if (m_Flags.CheckFlag(eThVectorFlags::eCallDestructorOnMove))
-				//	DestroyRange(0, m_Size, prevBuffer);
-			}
-
-			SafeDelete(prevBuffer);
+            Pointer newData = (Pointer)m_Allocator->Allocate(n * sizeof(T));
+            MoveObjects(m_Data, newData, m_Size);
+            m_Allocator->Deallocate(m_Data);
+            m_Data = newData;
+            m_Capacity = n;
 		}
 	}
 
 	void ShrinkToFit()
 	{
-		Reserve(m_Size);
+        if (m_Size)
+        {
+            Pointer newData = m_Allocator->Allocate(m_Size * sizeof(T));
+            MoveObjects(m_Data, newData, m_Size);
+            m_Allocator->Deallocate(m_Data);
+            m_Data = newData;
+            m_Capacity = m_Size;
+        }
+        else
+        {
+            Free();
+        }
 	}
 
 	// element access:
@@ -330,43 +271,52 @@ public:
 
 	Iterator Insert(ConstIterator position, const T& value)
 	{
-		const T* ptr = &value;
-		return Insert(position, ptr, ptr + 1);
+		return Insert(position, 1, value);
 	}
 
 	Iterator Insert(ConstIterator position, SizeType n, const T& value)
 	{
-		SizeType newSize = m_Size + n;
-		SizeType index = position - m_Data;
-
-		T* prevBuffer = InsertShared(position, n);
-		ConstructRange(index, n, value);
-
-		if (prevBuffer != m_Data)
-		{
-			SafeDelete(prevBuffer);
-		}
-
-		m_Size = newSize;
-		return m_Data + index;
-	}
+        THOR_ASSERT(position >= m_Data, "Invalid position");
+        SizeType newSize = m_Size + n;
+        SizeType insertIndex = position - m_Data;
+        ThSize endIndex = insertIndex + n;
+        Reserve(newSize);        
+        SizeType toMove = m_Size - insertIndex;
+        
+        MoveObjects(&m_Data[insertIndex], &m_Data[insertIndex + n], toMove);
+        
+        for (SizeType idx = insertIndex; idx < endIndex; ++idx)
+        {
+            CopyObject(&value, &m_Data[idx], 1);
+        }
+        
+        m_Size = newSize;
+        return m_Data + insertIndex;
+    }
 
 	template <class InputIterator>
 	Iterator Insert(ConstIterator position, InputIterator first, InputIterator last)
 	{
-		SizeType newSize = m_Size + last - first;
-		SizeType index = position - m_Data;
-
-		T* prevBuffer = InsertShared(position, last - first);
-		ConstructRange(first, last, m_Data + index);
-
-		if (prevBuffer && prevBuffer != m_Data)
-		{
-            SafeDelete(prevBuffer);
-		}
+        THOR_ASSERT(last > first, "Invalid iterators");
+        THOR_ASSERT(position >= m_Data, "Invalid position");
+        SizeType numElems = last - first;
+		SizeType newSize = m_Size + numElems;
+        SizeType insertIndex = position - m_Data;
+        SizeType toMove = m_Size - insertIndex;
+        Reserve(newSize);		
+        
+        MoveObjects(&m_Data[insertIndex], &m_Data[insertIndex + numElems], toMove);
+        
+        /*SizeType idx = insertIndex;
+        for (InputIterator i = first; i != last; ++i)
+        {
+            CopyObject(i, &m_Data[idx], 1);
+            ++idx;
+        }*/
+        CopyObjects(first, &m_Data[insertIndex], numElems);
 
 		m_Size = newSize;
-		return m_Data + index;
+		return m_Data + insertIndex;
 	}
 
 	Iterator Erase(ConstIterator position)
@@ -376,35 +326,28 @@ public:
 
 	Iterator Erase(ConstIterator first, ConstIterator last)
 	{
+        THOR_ASSERT(last > first, "Invalid iterators");
+        
+        if (Empty())
+            return m_Data;
+        
 		SizeType numElems = last - first;
-		SizeType firstIndex = first - m_Data;
-		SizeType lastIndex = last - m_Data;
+        
+        if (numElems > m_Size)
+            numElems = m_Size;
 		
-		if (numElems == m_Size)
-			Clear();
-		else
-		{
-			SizeType newSize = m_Size - numElems;		
-
-			T* prevBuffer = Realloc(newSize);
-
-			//if (m_Flags.CheckFlag(eThVectorFlags::eCallCopyConstructorOnMove))
-			{
-				ConstructRange(&prevBuffer[0], &prevBuffer[firstIndex], m_Data);
-				ConstructRange(&prevBuffer[lastIndex], &prevBuffer[m_Size], &m_Data[firstIndex]);
-			}
-			//else
-			//{
-			//	ThMemory::MemoryCopy(m_Data, prevBuffer, firstIndex * sizeof (T));
-			//	ThMemory::MemoryCopy(&m_Data[firstIndex], &prevBuffer[lastIndex], (m_Size - lastIndex) * sizeof (T));
-			//}
-
-			DestroyRange(0, m_Size, prevBuffer);
-            SafeDelete(prevBuffer);
-
-			m_Size = newSize;
-		}
-
+        SizeType firstIndex = first - m_Data;
+		SizeType lastIndex = last - m_Data;
+        SizeType newSize = m_Size - numElems;
+        SizeType toMove = 0;
+        
+        if (lastIndex < m_Size)
+            toMove = m_Size - lastIndex;
+        
+        DestroyObjects(&m_Data[firstIndex], numElems);
+        MoveObjects(&m_Data[lastIndex], &m_Data[firstIndex], toMove);
+		
+        m_Size = newSize;
 		return &m_Data[firstIndex + 1];
 	}
 		
@@ -420,21 +363,13 @@ public:
 	{
 		if (m_Size > 1)
 		{
-			DestroyRange(index, 1, m_Data);
-
-			//if (m_Flags.CheckFlag(eThVectorFlags::eCallCopyConstructorOnMove))
-				ConstructRange(&m_Data[m_Size - 1], &m_Data[m_Size], &m_Data[index]);
-			//else
-			//	ThMemory::MemoryCopy(&m_Data[index], &m_Data[m_Size - 1], sizeof (T));
-
-			DestroyRange(m_Size - 1, 1, m_Data);
-
+            DestroyObject(&m_Data[index]);
+            MoveObject(&m_Data[m_Size - 1], &m_Data[index]);
 			--m_Size;
 		}
 		else
 		{
-			DestroyRange(0, 1, m_Data);
-			m_Size = 0;
+            Clear();
 		}
 	}
 
@@ -445,16 +380,32 @@ public:
 		
 	void Clear()
 	{
-		FreeMemory();
+        DestroyObjects(m_Data, m_Size);
+        m_Size = 0;
 	}
     
-    void SetData(Pointer data, SizeType size, ThiMemoryAllocator* allocator = nullptr)
+    void Free()
     {
-        FreeMemory();
+        if (m_Size)
+            FreeObjects(m_Allocator, m_Data, m_Size);
+        
+        m_Size = 0;
+        m_Capacity = 0;
+        m_Data = nullptr;
+    }
+    
+    void SetData(Pointer data, SizeType size, ThiMemoryAllocator* allocator)
+    {
+        Free();
         m_Data = data;
         m_Size = size;
         m_Capacity = size;
         m_Allocator = allocator;
+    }
+    
+    ThiMemoryAllocator* GetAllocator()const
+    {
+        return m_Allocator;
     }
 
 private:
@@ -462,157 +413,6 @@ private:
 	SizeType m_Size;
 	SizeType m_Capacity;
     ThiMemoryAllocator* m_Allocator;
-    
-
-	void DestroyRange(SizeType position, SizeType numElems, Pointer target)
-	{
-        Private::DestroyRangeImpl< std::is_class<T>::value, SizeType, Pointer > impl;
-        impl(position, numElems, target);
-	}
-
-	void ConstructRange(SizeType position, SizeType numElems)
-	{
-		Private::DefaultConstructRangeImpl<std::is_class<T>::value, SizeType, Pointer>(numElems, &m_Data[position]);
-	}
-
-	void ConstructRange(SizeType position, SizeType numElems, const T& value)
-	{
-		Pointer start = &m_Data[position];
-
-		for (SizeType i = position; i < position + numElems; ++i)
-		{
-			new(start) T(value);
-
-			++start;
-		}
-	}
-
-	template <class InputIterator>
-	void ConstructRange(InputIterator first, InputIterator last, Pointer target)
-	{
-		Pointer memory = target;
-		InputIterator curIter = first;
-
-		for (; curIter < last; ++curIter)
-		{
-			new(memory) T(*curIter);
-
-			++memory;
-		}
-	}
-
-	T* Realloc(SizeType n)
-	{
-		T* prevBuffer = m_Data;
-
-		if (n != m_Capacity)
-		{
-			ThI8* newBuffer = 0;
-
-			if (n)
-			{
-				newBuffer = (ThI8*)m_Allocator->Allocate(n * sizeof (T));
-			}
-
-			m_Data = (T*)newBuffer;
-			m_Capacity = n;
-		}
-
-		return prevBuffer;
-	}
-
-	T* InsertShared(ConstIterator position, SizeType numElems)
-	{
-		//create a gap numElems wide at position
-		SizeType newSize = m_Size + numElems;
-		SizeType index = position - m_Data;
-
-		T* prevBuffer = m_Data;
-
-		if (newSize > m_Capacity)
-			prevBuffer = Realloc(newSize);
-
-		if (prevBuffer)
-		{
-			if (m_Data != prevBuffer)
-			{
-				SizeType gap = Min(m_Size, index);
-				
-				//if (m_Flags.CheckFlag(eThVectorFlags::eCallCopyConstructorOnMove))
-				{
-					ConstructRange(prevBuffer, prevBuffer + gap, m_Data);
-					DestroyRange(0, gap, prevBuffer);
-				}
-				//else
-				//	ThMemory::MemoryCopy(m_Data, prevBuffer, gap * sizeof (T));
-
-				if(index + numElems < m_Size)
-				{
-					//if (m_Flags.CheckFlag(eThVectorFlags::eCallCopyConstructorOnMove))
-					{
-						ConstructRange(&prevBuffer[index], &prevBuffer[index + numElems - m_Size], &m_Data[index + numElems]);
-						DestroyRange(index, index + numElems - m_Size, prevBuffer);
-					}
-					//else
-					//	ThMemory::MemoryCopy(&m_Data[index + numElems], &prevBuffer[index], (index + numElems - m_Size) * sizeof (T));
-				}
-			}
-			else
-			{
-				for (SizeType i = index; i < Min(numElems + index, m_Size); ++i)
-				{
-					m_Data[numElems + i] = m_Data[i];
-				}
-			}
-		}		
-
-		return prevBuffer;
-	}
-
-	void FreeMemory()
-	{
-		if (m_Data)
-		{
-			DestroyRange(0, m_Size, m_Data);
-			SafeDelete(m_Data);
-		}
-
-		m_Data = 0;
-		m_Capacity = 0;
-		m_Size = 0;
-	}
-
-	void SafeDelete(T* buffer)
-	{
-        if (m_Allocator)
-        {
-            ThI8* rawBuffer = (ThI8*)buffer;
-            m_Allocator->Deallocate(rawBuffer);
-        }		
-	}
 };
-
-template <class T>
-bool operator==(const ThVector<T>& x, const ThVector<T>& y)
-{
-	if (x.Size() != y.Size())
-	{
-		return false;
-	}
-
-	for (ThSize i = 0; i < x.Size(); ++i)
-	{
-		if (x[i] != y[i])
-			return false;
-	}
-
-	return true;
-}
-
-template <class T>
-bool operator!=(const ThVector<T>& x, const ThVector<T>& y)
-{
-	return !(x == y);
-}
 
 }//Thor
