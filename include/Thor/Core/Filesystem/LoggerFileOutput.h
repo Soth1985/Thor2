@@ -24,7 +24,7 @@ public:
 	/*!
 	* \copydoc ThLoggerDebuggerOuput::Print
 	*/
-	virtual void Print(ThI8* str);
+	virtual void Print(ThChar* str);
 	virtual void Print(ThWchar* str);
 	virtual ThiType* GetType()const;
 	void SetFile(ThiFileStreamPtr& file);

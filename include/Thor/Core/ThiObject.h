@@ -18,7 +18,6 @@ THOR_DECL_TYPE(Thor::ThI32);
 THOR_DECL_TYPE(Thor::ThU32);
 THOR_DECL_TYPE(Thor::ThI64);
 THOR_DECL_TYPE(Thor::ThU64);
-THOR_DECL_TYPE(Thor::ThBool);
 //THOR_DECL_TYPE(Thor::ThSize);
 THOR_DECL_TYPE(Thor::ThString);
 THOR_DECL_TYPE(Thor::ThWideString);

@@ -4,54 +4,54 @@
 namespace Thor
 {
 
-void ThStringUtilities::ToString(ThF32 val, ThI8* result, ThSize bufSize)
+void ThStringUtilities::ToString(ThF32 val, ThChar* result, ThSize bufSize)
 {
 	ToString((ThF64)val, result, bufSize);
 }
 
-void ThStringUtilities::ToString(ThF64 val, ThI8* result, ThSize bufSize)
+void ThStringUtilities::ToString(ThF64 val, ThChar* result, ThSize bufSize)
 {
 	if( sprintf(result, "%lf", val) < 0 )
 		THOR_ASSERT(0, "Buffer is too small");
 }
 
-void ThStringUtilities::ToString(ThI8 val, ThI8* result, ThSize bufSize)
+void ThStringUtilities::ToString(ThI8 val, ThChar* result, ThSize bufSize)
 {
 	ToString((ThI64)val, result, bufSize);
 }
 
-void ThStringUtilities::ToString(ThU8 val, ThI8* result, ThSize bufSize)
+void ThStringUtilities::ToString(ThU8 val, ThChar* result, ThSize bufSize)
 {
 	ToString((ThU64)val, result, bufSize);
 }
 
-void ThStringUtilities::ToString(ThI16 val, ThI8* result, ThSize bufSize)
+void ThStringUtilities::ToString(ThI16 val, ThChar* result, ThSize bufSize)
 {
 	ToString((ThI64)val, result, bufSize);
 }
 
-void ThStringUtilities::ToString(ThU16 val, ThI8* result, ThSize bufSize)
+void ThStringUtilities::ToString(ThU16 val, ThChar* result, ThSize bufSize)
 {
 	ToString((ThU64)val, result, bufSize);
 }
 
-void ThStringUtilities::ToString(ThI32 val, ThI8* result, ThSize bufSize)
+void ThStringUtilities::ToString(ThI32 val, ThChar* result, ThSize bufSize)
 {
 	ToString((ThI64)val, result, bufSize);
 }
 
-void ThStringUtilities::ToString(ThU32 val, ThI8* result, ThSize bufSize)
+void ThStringUtilities::ToString(ThU32 val, ThChar* result, ThSize bufSize)
 {
 	ToString((ThU64)val, result, bufSize);
 }
 
-void ThStringUtilities::ToString(ThI64 val, ThI8* result, ThSize bufSize)
+void ThStringUtilities::ToString(ThI64 val, ThChar* result, ThSize bufSize)
 {
 	if( sprintf(result, "%lld", val) < 0 )
 		THOR_ASSERT(0, "Buffer is too small");
 }
 
-void ThStringUtilities::ToString(ThU64 val, ThI8* result, ThSize bufSize)
+void ThStringUtilities::ToString(ThU64 val, ThChar* result, ThSize bufSize)
 {
 	if( sprintf(result, "%llu", val) < 0 )
 		THOR_ASSERT(0, "Buffer is too small");
@@ -112,7 +112,7 @@ void ThStringUtilities::ToWideString(ThU64 val, ThWchar* result, ThSize bufSize)
 }
 //
 
-bool ThStringUtilities::Parse(const ThI8* str, ThF32& val)
+bool ThStringUtilities::Parse(const ThChar* str, ThF32& val)
 {
 	char* end;
 	ThF64 temp = strtod(str, &end);
@@ -126,7 +126,7 @@ bool ThStringUtilities::Parse(const ThI8* str, ThF32& val)
 	return false;
 }
 
-bool ThStringUtilities::Parse(const ThI8* str, ThF64& val)
+bool ThStringUtilities::Parse(const ThChar* str, ThF64& val)
 {
 	char* end;
 	ThF64 temp = strtod(str, &end);
@@ -140,7 +140,7 @@ bool ThStringUtilities::Parse(const ThI8* str, ThF64& val)
 	return false;
 }
 
-bool ThStringUtilities::Parse(const ThI8* str, ThI8& val)
+bool ThStringUtilities::Parse(const ThChar* str, ThI8& val)
 {
 	char* end;
 	ThI32 temp = strtol(str, &end, 10);
@@ -154,7 +154,7 @@ bool ThStringUtilities::Parse(const ThI8* str, ThI8& val)
 	return false;
 }
 
-bool ThStringUtilities::Parse(const ThI8* str, ThU8& val)
+bool ThStringUtilities::Parse(const ThChar* str, ThU8& val)
 {
 	char* end;
 	ThU32 temp = strtoul(str, &end, 10);
@@ -168,7 +168,7 @@ bool ThStringUtilities::Parse(const ThI8* str, ThU8& val)
 	return false;
 }
 
-bool ThStringUtilities::Parse(const ThI8* str, ThI16& val)
+bool ThStringUtilities::Parse(const ThChar* str, ThI16& val)
 {
 	char* end;
 	ThI32 temp = strtol(str, &end, 10);
@@ -182,7 +182,7 @@ bool ThStringUtilities::Parse(const ThI8* str, ThI16& val)
 	return false;
 }
 
-bool ThStringUtilities::Parse(const ThI8* str, ThU16& val)
+bool ThStringUtilities::Parse(const ThChar* str, ThU16& val)
 {
 	char* end;
 	ThU32 temp = strtoul(str, &end, 10);
@@ -196,7 +196,7 @@ bool ThStringUtilities::Parse(const ThI8* str, ThU16& val)
 	return false;
 }
 
-bool ThStringUtilities::Parse(const ThI8* str, ThI32& val)
+bool ThStringUtilities::Parse(const ThChar* str, ThI32& val)
 {
 	char* end;
 	ThI32 temp = strtol(str, &end, 10);
@@ -210,7 +210,7 @@ bool ThStringUtilities::Parse(const ThI8* str, ThI32& val)
 	return false;
 }
 
-bool ThStringUtilities::Parse(const ThI8* str, ThU32& val)
+bool ThStringUtilities::Parse(const ThChar* str, ThU32& val)
 {
 	char* end;
 	ThU32 temp = strtoul(str, &end, 10);
@@ -224,7 +224,7 @@ bool ThStringUtilities::Parse(const ThI8* str, ThU32& val)
 	return false;
 }
 
-bool ThStringUtilities::Parse(const ThI8* str, ThI64& val)
+bool ThStringUtilities::Parse(const ThChar* str, ThI64& val)
 {
 	/*char* end;
 	ThI64 temp = _strtoi64(str, &end, 10);
@@ -238,7 +238,7 @@ bool ThStringUtilities::Parse(const ThI8* str, ThI64& val)
 	return false;
 }
 
-bool ThStringUtilities::Parse(const ThI8* str, ThU64& val)
+bool ThStringUtilities::Parse(const ThChar* str, ThU64& val)
 {
 	/*char* end;
 	ThU64 temp = _strtoui64(str, &end, 10);
@@ -252,7 +252,7 @@ bool ThStringUtilities::Parse(const ThI8* str, ThU64& val)
 	return false;
 }
 
-bool ThStringUtilities::Parse(const ThI8* str, bool& val)
+bool ThStringUtilities::Parse(const ThChar* str, bool& val)
 {
 	char* end;
 	ThI32 temp = strtol(str, &end, 10);
@@ -291,19 +291,19 @@ ThString ThStringUtilities::WideStringToUtf8(const ThWchar* str)
 	return converted;
 }
 
-ThWideString ThStringUtilities::Utf8ToWideString(const ThI8* str)
+ThWideString ThStringUtilities::Utf8ToWideString(const ThChar* str)
 {
 	ThWideString converted;
 	utf8::utf8to16(str, str + strlen(str), std::back_inserter(converted));
 	return converted;
 }
 
-void ThStringUtilities::WideStringToUtf8(const ThWchar* str, ThI8* buf, ThSize bufSize)
+void ThStringUtilities::WideStringToUtf8(const ThWchar* str, ThChar* buf, ThSize bufSize)
 {
 	utf8::utf16to8(str, str + wcslen(str) + 1, buf);
 }
 
-void ThStringUtilities::Utf8ToWideString(const ThI8* str, ThWchar* buf, ThSize bufSize)
+void ThStringUtilities::Utf8ToWideString(const ThChar* str, ThWchar* buf, ThSize bufSize)
 {
 	utf8::utf8to16(str, str + strlen(str) + 1, buf);
 }

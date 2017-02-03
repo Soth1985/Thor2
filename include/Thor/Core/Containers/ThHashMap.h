@@ -17,7 +17,7 @@ public:
 		:
 	m_Key(key),
 	m_Value(value),
-	m_Next(0)
+	m_Next(-1)
 	{
 
 	}
@@ -51,7 +51,7 @@ private:
 
 	KeyT m_Key;
 	ValueT m_Value;
-	ThHashMapItem* m_Next;
+	ThU64 m_Next;
 
 	friend class ThHashMap<KeyT, ValueT>;
 	friend class ThHashContainerBase< KeyT, ThHashMapItem<KeyT, ValueT> >;
@@ -64,68 +64,64 @@ public:
 
     typedef ThHashContainerBase< KeyT, ThHashMapItem<KeyT, ValueT> > BaseType;
     
-    typedef typename BaseType::Pointer			Pointer;
-    typedef typename BaseType::SizeType		SizeType;
-    typedef typename BaseType::ValueType		ValueType;
-    typedef typename BaseType::Iterator		Iterator;
-    typedef typename BaseType::ConstIterator	ConstIterator;
+    typedef typename BaseType::Pointer Pointer;
+    typedef typename BaseType::SizeType	SizeType;
+    typedef typename BaseType::ValueType ValueType;
+    typedef typename BaseType::Iterator	Iterator;
+    typedef typename BaseType::ConstIterator ConstIterator;
     
-    /*typedef typename ItemsList::Reference		Reference;
-    typedef typename ItemsList::ConstReference	ConstReference;
+    /*typedef typename ItemsList::Reference	Reference;
+    typedef typename ItemsList::ConstReference ConstReference;
     
-    typedef typename ItemsList::ConstIterator	ConstIterator;
+    typedef typename ItemsList::ConstIterator ConstIterator;
     
-    typedef typename ItemsList::DifferenceType	DifferenceType;*/
+    typedef typename ItemsList::DifferenceType DifferenceType;*/
     typedef ValueT MappedType;
 
-	explicit ThHashMap()
+	explicit ThHashMap(ThiMemoryAllocator* allocator = nullptr)
 		:
-	BaseType()
+	BaseType(allocator)
 	{
 
 	}
 
-	explicit ThHashMap(SizeType numElems, SizeType numBuckets, SizeType growSize = 1, const ThFlags32& flags = 0)
+	explicit ThHashMap(SizeType numElems, SizeType numBuckets = 16, ThiMemoryAllocator* allocator = nullptr)
 		:
-	BaseType(numElems, numBuckets, growSize, flags)
+	BaseType(numElems, numBuckets, allocator)
 	{
 	}
-
-	explicit ThHashMap(SizeType numBuckets, SizeType growSize = 1)
+    
+	explicit ThHashMap(SizeType numBuckets, ThiMemoryAllocator* allocator = nullptr)
 		:
-	BaseType(numBuckets, growSize)
-	{
-		
-	}
-
-	explicit ThHashMap(Pointer data, SizeType dataSize, SizeType numBuckets, SizeType growSize = 1, const ThFlags32& flags = 0)
-		:
-	BaseType(data, dataSize, numBuckets, growSize, flags)
-	{
-
-	}
-
-	ThHashMap(const ThHashMap& m)
-		:
-	BaseType(m)
+	BaseType(numBuckets, allocator)
 	{
 		
 	}
+    
+    ThHashMap(std::initializer_list<ThPair<KeyT, ValueT>> items, SizeType numBuckets = 16, ThiMemoryAllocator* allocator = nullptr)
+        :
+    BaseType(items.size(), numBuckets, allocator)
+    {
+        for (auto it : items)
+        {
+            Insert(it.First(), it.Second());
+        }
+    }
 
 	bool Insert(const KeyT& key, const ValueT& value)
 	{
-        SizeType hash = BaseType::GetHash(key);
+        ThU64 hash = BaseType::GetHash(key);
         SizeType bucket = BaseType::Bucket(hash);
+        ThU64 prevIndex;
 
-        if (BaseType::FindImpl(key, bucket) != BaseType::End())
+        if (BaseType::FindImpl(key, bucket, prevIndex) != BaseType::End())
 			return false;
+        
+        if (BaseType::m_Items.Size() == BaseType::m_Items.Capacity())
+            BaseType::m_Items.Reserve(BaseType::m_Items.Capacity() * 2 + 10);
 
-        bool itemsFull = BaseType::m_Items.Size() == BaseType::m_Items.Capacity();
-
-		if (itemsFull)
-            BaseType::m_Items.Reserve(BaseType::m_Items.Size() + BaseType::GrowSize());
-
-        BaseType::m_Items.PushBack(ValueType(key, value));
+        BaseType::m_Items.EmplaceBack(key, value);
+        SizeType itemIndex = BaseType::m_Items.Size() - 1;
 
 		if (BaseType::LoadFactor() > BaseType::MaxLoadFactor())
 		{
@@ -133,25 +129,14 @@ public:
 			return true;
 		}
 
-		if (itemsFull)
-		{
-            BaseType::Rehash(BaseType::BucketCount());
-			return true;
-		}
-
 		Iterator tail = BaseType::FindTail(bucket);
 
-		if ( tail == 0)
-			BaseType::m_Buckets[bucket] = &BaseType::m_Items.Back();
+        if (tail == BaseType::End())
+			BaseType::m_Buckets[bucket] = itemIndex;
 		else
-			tail->m_Next = &BaseType::m_Items.Back();
+			tail->m_Next = itemIndex;
 
 		return true;
-	}
-
-	void Swap(ThHashMap& other)
-	{
-		BaseType::Swap(other);
 	}
 
 	MappedType& operator[](const KeyT& key)
@@ -176,28 +161,5 @@ public:
 		return BaseType::m_Items.Back().Value();
 	}
 };
-
-template <class KeyT, class ValueT>
-bool operator==(const ThHashMap<KeyT, ValueT>& x, const ThHashMap<KeyT, ValueT>& y)
-{
-	if (x.Size() != y.Size())
-	{
-		return false;
-	}
-
-	for (ThSize i = 0; i < x.Size(); ++i)
-	{
-		if (x.GetItem(i) != y.GetItem(i))
-			return false;
-	}
-
-	return true;
-}
-
-template <class KeyT, class ValueT>
-bool operator!=(const ThHashMap<KeyT, ValueT>& x, const ThHashMap<KeyT, ValueT>& y)
-{
-	return !(x == y);
-}
 
 }

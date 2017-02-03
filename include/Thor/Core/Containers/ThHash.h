@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Thor/Core/Hash/ThIntHash.h>
+#include <Thor/Core/Hash/ThMurmurHash3.h>
 #include <Thor/Core/Containers/ThVector.h>
 
 namespace Thor
@@ -8,46 +10,46 @@ namespace Thor
 namespace Private
 {
 	template<class T> 
-	inline ThSize HashFunc(const T& val)
-	{	
-		static const ThSize hashSeed = (ThSize)0xdeadbeef;
-		return ((ThSize)val ^ hashSeed);
+	inline ThU64 HashFunc(const T& val)
+	{
+        return Hash::HashInt64((ThU64)val);
 	}
 
 	template <class IterT>
-	inline ThSize HashRange(IterT begin, IterT end)
+	inline ThU64 HashRange(IterT begin, IterT end)
 	{
-		ThSize result = 2166136261U;
+		/*ThU64 result = ThU64(2166136261U);
 
 		while (begin != end)
 			result = 16777619U * result ^ (size_t)*begin++;
-		return result;
+		return result;*/
+        return Thor::Hash::Murmur3((ThU8*)begin, end - begin, 0);
 	}
 
 	template<class CharT, class CharTraits,	class AllocT>
-	inline ThSize HashFunc(const std::basic_string<CharT, CharTraits, AllocT>& str)
+	inline ThU64 HashFunc(const std::basic_string<CharT, CharTraits, AllocT>& str)
 	{
 		const CharT *cstr = str.c_str();
 
 		return (HashRange(cstr, cstr + str.size()));
 	}
 
-	inline ThSize HashFunc(const char* str)
+	inline ThU64 HashFunc(const char* str)
 	{
 		return (HashRange(str, str + strlen(str)));
 	}
 
-	inline ThSize HashFunc(const wchar_t* str)
+	inline ThU64 HashFunc(const wchar_t* str)
 	{
 		return (HashRange(str, str + wcslen(str)));
 	}
 
-	inline ThSize HashFunc(char* str)
+	inline ThU64 HashFunc(char* str)
 	{
 		return (HashRange(str, str + strlen(str)));
 	}
 
-	inline ThSize HashFunc(wchar_t* str)
+	inline ThU64 HashFunc(wchar_t* str)
 	{
 		return (HashRange(str, str + wcslen(str)));
 	}
@@ -77,12 +79,17 @@ namespace Private
 	{
 		return wcscmp(a, b) == 0;
 	}
+    
+    constexpr ThU64 InvalidID()
+    {
+        return -1;
+    }
 }
 
 template <class T>
 struct ThHash
 {
-	static inline ThSize HashCode(const T& val)
+	static inline ThU64 HashCode(const T& val)
 	{
 		return Private::HashFunc(val);
 	}
@@ -104,67 +111,49 @@ public:
 
 	typedef KeyT KeyType;
 	typedef ThVector< ItemT > ItemsList;
-	typedef ThVector< ItemT* > BucketsList;
+	typedef ThVector< ThU64 > BucketsList;
 
-	typedef typename ItemsList::Pointer			Pointer;
-	typedef typename ItemsList::ConstPointer	ConstPointer;
-	typedef typename ItemsList::ValueType		ValueType;
-	typedef typename ItemsList::Reference		Reference;
-	typedef typename ItemsList::ConstReference	ConstReference;
-	typedef typename ItemsList::Iterator		Iterator; 
-	typedef typename ItemsList::ConstIterator	ConstIterator;
-	typedef typename ItemsList::SizeType		SizeType;
-	typedef typename ItemsList::DifferenceType	DifferenceType;
+	typedef typename ItemsList::Pointer	Pointer;
+	typedef typename ItemsList::ConstPointer ConstPointer;
+	typedef typename ItemsList::ValueType ValueType;
+	typedef typename ItemsList::Reference Reference;
+	typedef typename ItemsList::ConstReference ConstReference;
+	typedef typename ItemsList::Iterator Iterator;
+	typedef typename ItemsList::ConstIterator ConstIterator;
+	typedef typename ItemsList::SizeType SizeType;
+	typedef typename ItemsList::DifferenceType DifferenceType;
 
 	typedef ThHash<KeyT> Hasher;
 	typedef ThKeyCompare<KeyT> KeyCompare;
 
-	explicit ThHashContainerBase()
+	explicit ThHashContainerBase(ThiMemoryAllocator* allocator = nullptr)
 		:
-	m_Buckets(16, Pointer(0)),
-	m_MaxLoadFactor(0.75f),
-	m_GrowSize(1)
+    m_Items(allocator),
+    m_Buckets(SizeType(16), Private::InvalidID(), allocator),
+	m_MaxLoadFactor(0.75f)
 	{
 
 	}
 
-	explicit ThHashContainerBase(SizeType numElems, SizeType numBuckets, SizeType growSize = 1, const ThFlags32& flags = 0)
+	explicit ThHashContainerBase(SizeType numElems, SizeType numBuckets = 16, ThiMemoryAllocator* allocator = nullptr)
 		:
-	m_Buckets(ComputeNumBuckets(numBuckets), Pointer(0)),
-	m_MaxLoadFactor(0.75f),
-	m_GrowSize(growSize)
+    m_Items(allocator),
+	m_Buckets(ComputeNumBuckets(numBuckets), Private::InvalidID(), allocator),
+	m_MaxLoadFactor(0.75f)
 	{
 		m_Items.Reserve(numElems);
 	}
 
-	explicit ThHashContainerBase(SizeType numBuckets, SizeType growSize = 1)
+	explicit ThHashContainerBase(SizeType numBuckets, ThiMemoryAllocator* allocator = nullptr)
 		:
-	m_Buckets(ComputeNumBuckets(numBuckets), Pointer(0)),
-	m_MaxLoadFactor(0.75f),
-	m_GrowSize(growSize)
+    m_Items(allocator),
+	m_Buckets(ComputeNumBuckets(numBuckets), Private::InvalidID(), allocator),
+	m_MaxLoadFactor(0.75f)
 	{
 		
 	}
 
-	explicit ThHashContainerBase(Pointer data, SizeType dataSize, SizeType numBuckets, SizeType growSize = 1, const ThFlags32& flags = 0)
-		:
-	m_Items(data, dataSize, flags),
-	m_Buckets(ComputeNumBuckets(numBuckets), Pointer(0)),
-	m_MaxLoadFactor(0.75f),
-	m_GrowSize(growSize)
-	{
-
-	}
-
-	ThHashContainerBase(const ThHashContainerBase& m)
-	{
-		m_Items = m.m_Items;
-		m_MaxLoadFactor = m.m_MaxLoadFactor;
-		m_GrowSize = m.m_GrowSize;
-		Rehash(m.BucketCount());
-	}
-
-	SizeType GetHash(const KeyT& key)const
+	ThU64 GetHash(const KeyT& key)const
 	{
 		return Hasher::HashCode(key);
 	}
@@ -179,10 +168,10 @@ public:
 		return m_Buckets.Size();
 	}
 
-	SizeType Bucket(ThSize hash)const
+	SizeType Bucket(ThU64 hash)const
 	{
-		hash ^= (hash >> 20) ^ (hash >> 12);
-		hash = hash ^ (hash >> 7) ^ (hash >> 4);
+		/*hash ^= (hash >> 20) ^ (hash >> 12);
+		hash = hash ^ (hash >> 7) ^ (hash >> 4);*/
 
 		return hash & (m_Buckets.Size() - 1);
 	}
@@ -191,24 +180,24 @@ public:
 	{
 		numBuckets = NextPowerOf2(ThU64(numBuckets));
 
-		m_Buckets.Assign(numBuckets, Pointer(0));
+		m_Buckets.Assign(numBuckets, Private::InvalidID());
 
 		for(SizeType i = 0; i < m_Items.Size(); ++i)
 		{
-			m_Items[i].m_Next = 0;
+			m_Items[i].m_Next = Private::InvalidID();
 		}
 
 		for(SizeType i = 0; i < m_Items.Size(); ++i)
 		{
-			SizeType hash = GetHash(m_Items[i].Key());
+			ThU64 hash = GetHash(m_Items[i].Key());
 			SizeType bucket = Bucket(hash);
 
 			Iterator tail = FindTail(bucket);
 
-			if ( tail == 0)
-				m_Buckets[bucket] = &m_Items[i];
+			if (tail == End())
+				m_Buckets[bucket] = i;
 			else
-				tail->m_Next = &m_Items[i];
+				tail->m_Next = i;
 		}
 	}
 
@@ -230,21 +219,25 @@ public:
 	void Reserve(SizeType numItems)
 	{
 		m_Items.Reserve(numItems);
-		Rehash(BucketCount());
+        SizeType numBucketsEstimate = numItems / MaxLoadFactor();
+        SizeType numBuckets = ComputeNumBuckets(numBucketsEstimate);
+		Rehash(numBuckets);
 	}
 
 	Iterator Find(const KeyT& key)
 	{
-		SizeType hash = GetHash(key);
+		ThU64 hash = GetHash(key);
 		SizeType bucket = Bucket(hash);
-		return FindImpl(key, bucket);
+        ThU64 prevItem;
+		return FindImpl(key, bucket, prevItem);
 	}
 
 	ConstIterator Find(const KeyT& key)const
 	{
-		SizeType hash = GetHash(key);
+		ThU64 hash = GetHash(key);
 		SizeType bucket = Bucket(hash);
-		return FindImpl(key, bucket);
+        ThU64 prevItem;
+		return FindImpl(key, bucket, prevItem);
 	}
 
 	Iterator Begin()
@@ -294,48 +287,36 @@ public:
 
 	bool Erase(const KeyT& key)
 	{
-		SizeType hash = GetHash(key);
+		ThU64 hash = GetHash(key);
 		SizeType bucket = Bucket(hash);
 
-		Iterator item = FindImpl(key, bucket);
+        ThU64 prevItem;
+		Iterator item = FindImpl(key, bucket, prevItem);
 
 		if (item != End())
 		{
-			Iterator next = m_Buckets[bucket]->m_Next;
-
-			if (next == 0 && item == m_Buckets[bucket])
-			{
-				m_Buckets[bucket] = 0;
-				//m_Items.MoveToBackAndRemove(item);
-				m_Items.Erase(item);
-				Rehash(BucketCount());
-				return true;
-			}
-
-			Iterator left = m_Buckets[bucket];
-			next = left;
-			Iterator right = 0;
-
-			while (next != 0)
-			{
-				if (next == item)
-				{
-					right = next->m_Next;
-					break;
-				}
-				
-				left = next;
-				next = next->m_Next;
-			}
-
-			if (left == m_Buckets[bucket])
-				m_Buckets[bucket] = right;
-			else
-				left->m_Next = right;
-
-			//m_Items.MoveToBackAndRemove(item);
-			m_Items.Erase(item);
-			Rehash(BucketCount());
+            ThU64 itemIndex = item - m_Items.Data();
+            ThU64 itemIndexLast = m_Items.Size() - 1;
+            
+            if (prevItem == Private::InvalidID())
+                m_Buckets[bucket] = m_Items[itemIndex].m_Next;
+            else
+                m_Items[prevItem].m_Next = m_Items[itemIndex].m_Next;
+            
+            if (itemIndex != itemIndexLast)
+            {
+                ThU64 hashLast = GetHash(m_Items[itemIndexLast].Key());
+                SizeType bucketLast = Bucket(hashLast);
+                ThU64 prevItemLast;
+                FindImpl(m_Items[itemIndexLast].Key(), bucketLast, prevItemLast);
+                
+                if (prevItemLast == Private::InvalidID())
+                    m_Buckets[bucketLast] = itemIndex;
+                else
+                    m_Items[prevItemLast].m_Next = itemIndex;
+            }
+            
+            m_Items.MoveToBackAndRemove(itemIndex);
 
 			return true;
 		}
@@ -356,31 +337,23 @@ public:
 	void Clear()
 	{
 		m_Items.Clear();
-		m_Buckets.Assign(BucketCount(), Pointer(0));
+		m_Buckets.Assign(BucketCount(), Private::InvalidID());
 	}
 
 	void ShrinkToFit()
 	{
 		m_Items.ShrinkToFit();
-		Rehash(BucketCount());
-	}
-
-	SizeType GrowSize()const
-	{
-		return m_GrowSize;
-	}
-
-	void GrowSize(SizeType size)
-	{
-		m_GrowSize = size;
+        SizeType numBucketsEstimate = m_Items.Capacity() / MaxLoadFactor();
+        SizeType numBuckets = ComputeNumBuckets(numBucketsEstimate);
+		Rehash(numBuckets);
+        m_Buckets.ShrinkToFit();
 	}
 
 	void Swap(ThHashContainerBase& other)
 	{
 		m_Items.Swap(other.m_Items);
 		m_Buckets.Swap(other.m_Buckets);
-		Thor::Swap(m_MaxLoadFactor, other.m_MaxLoadFactor);
-		Thor::Swap(m_GrowSize, other.m_GrowSize);
+        Thor::Swap(m_MaxLoadFactor, other.m_MaxLoadFactor);
 	}
 
 protected:
@@ -397,62 +370,50 @@ protected:
 
 	Iterator FindTail(SizeType bucket)
 	{
-		Iterator result = m_Buckets[bucket];
+        ThU64 itemIndex = m_Buckets[bucket];
+        
+        if (itemIndex == Private::InvalidID())
+            return End();
+        
+		Iterator result = &m_Items[itemIndex];
+		itemIndex = result->m_Next;
 
-		if (result == 0)
-			return 0;
-
-		Iterator next = result->m_Next;
-
-		while (next != 0)
+		while (itemIndex != Private::InvalidID())
 		{
-			result = next;
-			next = next->m_Next;
+			result = &m_Items[itemIndex];
+			itemIndex = result->m_Next;
 		}
 
 		return result;
 	}
 
-	Iterator FindImpl(const KeyT& key, SizeType bucket)
+	Iterator FindImpl(const KeyT& key, SizeType bucket, ThU64& prevItem)
 	{
-		if (m_Buckets[bucket] == 0)
-			return End();
+        prevItem = Private::InvalidID();
+        ThU64 itemIndex = m_Buckets[bucket];
 
-		Iterator curItem = m_Buckets[bucket];
-
-		while(curItem != 0)
+		while(itemIndex != Private::InvalidID())
 		{
+            Iterator curItem = &m_Items[itemIndex];
 			if (AreKeysEqual(key, curItem->Key()))
 				return curItem;
 
-			curItem = curItem->m_Next;
+            prevItem = itemIndex;
+			itemIndex = curItem->m_Next;
 		}
 		
 		return End();
 	}
 
-	ConstIterator FindImpl(const KeyT& key, SizeType bucket)const
+	ConstIterator FindImpl(const KeyT& key, SizeType bucket, ThU64& prevItem)const
 	{
-		if (m_Buckets[bucket] == 0)
-			return End();
-
-		Iterator curItem = m_Buckets[bucket];
-
-		while(curItem != 0)
-		{
-			if (AreKeysEqual(key, curItem->Key()))
-				return curItem;
-
-			curItem = curItem->m_Next;
-		}
-
-		return End();
+        ThHashContainerBase* pThis = const_cast<ThHashContainerBase*>(this);
+        return pThis->FindImpl(key, bucket, prevItem);
 	}
 
 	ItemsList m_Items;
 	BucketsList m_Buckets;
 	float m_MaxLoadFactor;
-	ThSize m_GrowSize;
 };
 
 }

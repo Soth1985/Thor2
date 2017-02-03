@@ -2,7 +2,6 @@
 
 #include <Thor/Core/Memory/ThAllocators.h>
 #include <Thor/Core/Debug/ThAssert.h>
-#include <Thor/Core/ThFlags.h>
 
 #include <initializer_list>
 
@@ -54,12 +53,12 @@ public:
         Resize(n, value);
 	}
 
-	ThVector(Pointer data, SizeType size, ThiMemoryAllocator* allocator = nullptr)
+	ThVector(Pointer data, SizeType size, SizeType capacity, ThiMemoryAllocator* allocator)
 		:
 	ThVector(allocator),
     m_Data(data),
     m_Size(size),
-    m_Capacity(size)
+    m_Capacity(capacity)
 	{
         
 	}
@@ -293,8 +292,8 @@ public:
         SizeType newSize = m_Size + n;
         SizeType insertIndex = position - m_Data;
         ThSize endIndex = insertIndex + n;
-        Reserve(newSize);        
         SizeType toMove = m_Size - insertIndex;
+        Reserve(newSize);
         
         MoveObjects(&m_Data[insertIndex], &m_Data[endIndex], toMove);
         
@@ -315,17 +314,11 @@ public:
         SizeType numElems = last - first;
 		SizeType newSize = m_Size + numElems;
         SizeType insertIndex = position - m_Data;
+        ThSize endIndex = insertIndex + numElems;
         SizeType toMove = m_Size - insertIndex;
         Reserve(newSize);		
         
-        MoveObjects(&m_Data[insertIndex], &m_Data[insertIndex + numElems], toMove);
-        
-        /*SizeType idx = insertIndex;
-        for (InputIterator i = first; i != last; ++i)
-        {
-            CopyObject(i, &m_Data[idx], 1);
-            ++idx;
-        }*/
+        MoveObjects(&m_Data[insertIndex], &m_Data[endIndex], toMove);
         CopyObjects(first, &m_Data[insertIndex], numElems);
 
 		m_Size = newSize;
@@ -339,13 +332,13 @@ public:
     }
     
     template< class... Args >
-    Iterator Emplace( ConstIterator position, Args&&... args )
+    Iterator Emplace(ConstIterator position, Args&&... args)
     {
         SizeType newSize = m_Size + 1;
         SizeType insertIndex = position - m_Data;
         ThSize endIndex = insertIndex + 1;
-        Reserve(newSize);
         SizeType toMove = m_Size - insertIndex;
+        Reserve(newSize);
         
         MoveObjects(&m_Data[insertIndex], &m_Data[endIndex], toMove);
         ConstructObject(&m_Data[insertIndex], args...);
@@ -399,8 +392,11 @@ public:
 		if (m_Size > 1)
 		{
             DestroyObject(&m_Data[index]);
-            MoveObject(&m_Data[m_Size - 1], &m_Data[index]);
-			--m_Size;
+            
+            if (index != m_Size - 1)
+                MoveObject(&m_Data[m_Size - 1], &m_Data[index]);
+			
+            --m_Size;
 		}
 		else
 		{
@@ -410,6 +406,7 @@ public:
 
 	void MoveToBackAndRemove(Iterator position)
 	{
+        THOR_ASSERT(position >= m_Data, "Invalid iterator");
 		MoveToBackAndRemove(position - m_Data);
 	}
 		

@@ -6,6 +6,11 @@ set(Core_SRC
     Containers/Singleton.cpp
     Debug/ThAssert.cpp
     Debug/ThLogger.cpp
+    Hash/ThIntHash.cpp
+    Hash/ThCrc32.cpp
+    Hash/ThSipHash.cpp
+    Hash/ThMurmurHash3.cpp
+    Hash/ThSha3.cpp
     Filesystem/FSExceptions.cpp
     Filesystem/ThiFileStream.cpp
     Filesystem/LibFileSystem.cpp
@@ -54,9 +59,13 @@ set(Core_H
     ${THOR_INCLUDE_DIR}/Thor/Core/Containers/ThHashMap.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Containers/ThHashSet.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Containers/ThVector.h
-    ${THOR_INCLUDE_DIR}/Thor/Core/Containers/TheContainerException.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Debug/ThAssert.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Debug/ThLogger.h
+    ${THOR_INCLUDE_DIR}/Thor/Core/Hash/ThCrc32.h
+    ${THOR_INCLUDE_DIR}/Thor/Core/Hash/ThIntHash.h
+    ${THOR_INCLUDE_DIR}/Thor/Core/Hash/ThSipHash.h
+    ${THOR_INCLUDE_DIR}/Thor/Core/Hash/ThMurmurHash3.h
+    ${THOR_INCLUDE_DIR}/Thor/Core/Hash/ThSha3.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Filesystem/FSExceptions.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Filesystem/FSLibConfig.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Filesystem/LibFileSystem.h

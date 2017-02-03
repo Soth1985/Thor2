@@ -1,6 +1,9 @@
 #include <Thor/Core/Containers/ThVector.h>
 #include <Thor/Core/Containers/ThHashMap.h>
 #include <Thor/Core/Containers/ThHashSet.h>
+#include <Thor/Core/Hash/ThSha3.h>
+#include <Thor/Core/Hash/ThMurmurHash3.h>
+#include <Thor/Core/Hash/ThCrc32.h>
 
 class Probe
 {
@@ -69,6 +72,7 @@ void TestThVectorConstructors()
     ThVector<Probe> pVec4(pVec3);
     
     pVec4.EmplaceBack(88, 99);
+    pVec4.Reserve(10);
 
     ThVector<std::string> sVec;
 
@@ -90,30 +94,87 @@ void TestThVector()
 void TestThHashMap()
 {
     using namespace Thor;
-	ThHashMap<ThString, int> m;
+    ThHashMap<std::string, int> m;
 	//m.Reserve(10);
-	m.GrowSize(2);
 	bool r = m.Insert("boo", 0);
 	r = m.Insert("hoo", 4);
 	r = m.Insert("too", 5);
 	r = m.Insert("goo", 6);
 	r = m.Insert("foo", 7);
 
-	ThHashMap<ThString, int>::Iterator i = m.Find("hoo");
+    ThHashMap<std::string, int>::Iterator i = m.Find("hoo");
 
 	m.Rehash(100);
 	m.Erase("boo");
+    
+    Thor::ThPair<std::string, std::string> pp = {"l","o"};
+    
+    ThHashMap<std::string, int> m2 =
+    {
+        {"jiu", 9},
+        {"sdf", 88},
+    };
 }
 
 void TestThHashSet()
 {
     using namespace Thor;
-	ThHashSet<ThString> s;
+    ThHashSet<std::string> s;
 
 	s.Insert("a");
 	s.Insert("b");
 
-	ThHashSet<ThString>::Iterator i = s.Find("a");
+    ThHashSet<std::string>::Iterator i = s.Find("a");
+    
+    ThHashSet<std::string> s2 =
+    {
+        "erge",
+        "asf",
+        "dfvd"
+    };
+}
+
+void TestSha3()
+{
+    using namespace Thor;
+    using namespace Thor::Hash;
+    const ThChar* msg = "TestSha3";
+    const ThChar* msg1 = "Extra";
+    ThU8 result[32] = {};
+    
+    Sha3_Ctx ctx;
+    Sha3_256_Init(&ctx);
+    Sha3_Update(&ctx, (ThU8*)msg, strlen(msg));
+    Sha3_Update(&ctx, (ThU8*)msg1, strlen(msg1));
+    Sha3_Final(&ctx, result);
+    printf("sha3 = ");
+    for (int i = 0; i < 32; ++i)
+    {
+        printf("%02x", result[i]);
+    }
+    printf("\n");
+}
+
+void TestMurmur3()
+{
+    using namespace Thor;
+    using namespace Thor::Hash;
+    const ThChar* msg = "TestMurmur3";
+    printf("murmur3 = ");
+    ThU32 result = Murmur3((ThU8*)msg, strlen(msg), 10);
+    printf("%u", result);
+    printf("\n");
+}
+
+void TestCrc32()
+{
+    using namespace Thor;
+    using namespace Thor::Hash;
+    const ThChar* msg = "TestCrc32";
+    printf("crc32 = ");
+    ThU32 result = Crc32((ThU8*)msg, strlen(msg), 0);
+    printf("%u", result);
+    printf("\n");
 }
 
 int main()
@@ -121,5 +182,8 @@ int main()
 	TestThVector();
 	TestThHashMap();
 	TestThHashSet();
+    TestSha3();
+    TestMurmur3();
+    TestCrc32();
 	return 0;
 }

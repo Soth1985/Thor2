@@ -40,6 +40,14 @@
     #define THOR_ALIGNED(x) __attribute__ ((aligned(x)))
 #endif
 
+#if INTPTR_MAX == INT64_MAX
+    #define THOR_X64
+#elif INTPTR_MAX == INT32_MAX
+    #define THOR_X32
+#else 
+    #error "Unknown pointer size"
+#endif
+
 //////////////Configure Math Library
 //#define USE_VECTOR_EXPRESSION_TEMPLATES
 //#define USE_MATRIX_EXPRESSION_TEMPLATES
@@ -52,7 +60,8 @@ namespace Thor
 {
 	typedef float	 ThF32;
 	typedef double	 ThF64;
-	typedef char	 ThI8;
+    typedef char     ThChar;
+	typedef int8_t	 ThI8;
 	typedef uint8_t  ThU8;
 	typedef int16_t	 ThI16;
 	typedef uint16_t ThU16;
@@ -61,62 +70,10 @@ namespace Thor
 	typedef int64_t	 ThI64;
 	typedef uint64_t ThU64;
 	typedef wchar_t	 ThWchar;
-	typedef size_t	 ThSize;
+    typedef size_t   ThSize;
     
 	typedef std::string			ThString;
 	typedef std::wstring		ThWideString;
-	typedef std::u16string		ThU16String;
-	
-	class ThBool
-	{
-	public:
-		ThBool()
-			:m_Val(0)
-		{};
-
-		ThBool( bool val_ )
-			:m_Val(val_)
-		{};
-
-		operator ThI32()const
-		{
-			return ThI32(m_Val);
-		}
-
-		operator bool () const
-		{
-			return m_Val != 0;
-		}
-
-		ThU8& operator=(bool rhs)
-		{
-			m_Val = rhs;
-			return m_Val;
-		}
-
-		bool operator==(bool rhs)const
-		{
-			return m_Val == ThU8(rhs);
-		}
-
-		bool operator!=(bool rhs)const
-		{
-			return m_Val != ThU8(rhs);
-		}
-
-		bool operator==(const ThBool rhs)const
-		{
-			return m_Val == rhs.m_Val;
-		}
-
-		bool operator!=(const ThBool rhs)const
-		{
-			return m_Val != rhs.m_Val;
-		}
-
-	private:
-		ThU8 m_Val;
-	};
 
 	class NonCopyable
 	{
@@ -256,6 +213,15 @@ namespace Thor
 
 		return val;
 	}
+    
+    static inline ThSize NextPowerOf2(ThSize val)
+    {
+#ifdef THOR_X64
+        return NextPowerOf2((ThU64)val);
+#else
+        return NextPowerOf2((ThU32)val);
+#endif
+    }
 
 	template <bool B>
 	inline void STATIC_ASSERT_IMPL()

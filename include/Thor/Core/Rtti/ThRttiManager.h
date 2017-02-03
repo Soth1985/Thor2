@@ -21,11 +21,11 @@ public:
 
 	~ThRttiManager();
 
-	void UnregisterType(const ThiType* t);
+	bool UnregisterType(const ThiType* t);
 
 	void RegisterType(const ThiType* t);	
 
-	ThiType* GetType(const ThI8* name)const;
+	ThiType* GetType(const ThChar* name)const;
 
 	static ThRttiManager& Instance();
 
@@ -33,7 +33,7 @@ private:
 
 	typedef SingletonWithLongevity<ThRttiManager, eSingletonsLongevity::RttiManager> SingletonT;
 	friend SingletonT;
-	typedef ThHashMap<const ThI8*, ThiType*> TypeMap;	
+	typedef ThHashMap<const ThChar*, ThiType*> TypeMap;	
 
 	TypeMap m_RegisteredTypes;	
 };

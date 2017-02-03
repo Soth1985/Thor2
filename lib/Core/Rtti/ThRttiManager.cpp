@@ -14,7 +14,7 @@ ThRttiManager::~ThRttiManager()
 
 }
 //----------------------------------------------------------------------------------------
-void ThRttiManager::UnregisterType(const ThiType* t)
+bool ThRttiManager::UnregisterType(const ThiType* t)
 {
 	for (TypeMap::Iterator i = m_RegisteredTypes.Begin(); i < m_RegisteredTypes.End(); ++i)
 	{
@@ -22,7 +22,7 @@ void ThRttiManager::UnregisterType(const ThiType* t)
 		curType->RemoveType(t);
 	}
 
-	bool res = m_RegisteredTypes.Erase(t->GetName());
+	return m_RegisteredTypes.Erase(t->GetName());
 }
 //----------------------------------------------------------------------------------------
 void ThRttiManager::RegisterType(const ThiType* t)
@@ -35,7 +35,7 @@ void ThRttiManager::RegisterType(const ThiType* t)
 	}
 }
 //----------------------------------------------------------------------------------------
-ThiType* ThRttiManager::GetType(const ThI8* name)const
+ThiType* ThRttiManager::GetType(const ThChar* name)const
 {
 	TypeMap::ConstIterator t = m_RegisteredTypes.Find(name);
 

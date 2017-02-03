@@ -91,7 +91,7 @@ public:
 	* Message null-terminated string.
 	*
 	*/
-	virtual void Print(ThI8* str) = 0;
+	virtual void Print(ThChar* str) = 0;
 
 	virtual void Print(ThWchar* str) = 0;
 };
@@ -111,7 +111,7 @@ public:
 	/*!
 	* \copydoc ThLoggerDebuggerOuput::Print
 	*/
-	virtual void Print(ThI8* str);
+	virtual void Print(ThChar* str);
 
 	virtual void Print(ThWchar* str);
 
@@ -133,7 +133,7 @@ public:
 	/*!
 	* \copydoc ThLoggerDebuggerOuput::Print
 	*/
-	virtual void Print(ThI8* str);
+	virtual void Print(ThChar* str);
 
 	virtual void Print(ThWchar* str);
 
@@ -158,7 +158,7 @@ public:
 class THOR_FRAMEWORK_DLL ThLogger:public NonCopyable
 {
 public:
-	typedef const ThI8* MessageId;
+	typedef const ThChar* MessageId;
 	typedef ThHashSet<MessageId> IgnoreList;
 
 	~ThLogger();
@@ -183,9 +183,9 @@ public:
 	* Format string of the message.
 	*
 	*/
-    void LogExtended(eMessageSeverity::Val severity, const ThI8* func, const ThI8* file, ThI32 line, const ThI8* formatString, MessageId id, ...);
+    void LogExtended(eMessageSeverity::Val severity, const ThChar* func, const ThChar* file, ThI32 line, const ThChar* formatString, MessageId id, ...);
     
-    void LogExtended(eMessageSeverity::Val severity, const ThI8* func, const ThI8* file, ThI32 line, const ThWchar* formatString, MessageId id, ...);
+    void LogExtended(eMessageSeverity::Val severity, const ThChar* func, const ThChar* file, ThI32 line, const ThWchar* formatString, MessageId id, ...);
 
 	/*!
 	* \brief
@@ -281,7 +281,7 @@ public:
 	* Message format string.
 	*
 	*/
-	void Log(MessageId id, const ThI8* formatString, ...);
+	void Log(MessageId id, const ThChar* formatString, ...);
 
 	void Log(MessageId id, const ThWchar* formatString, ...);
 
@@ -312,7 +312,7 @@ private:
 
 	ThLogger();
 
-	void Log(MessageId id, const ThI8* formatString, va_list args);
+	void Log(MessageId id, const ThChar* formatString, va_list args);
 
 	void Log(MessageId id, const ThWchar* formatString, va_list args);
     
@@ -339,7 +339,7 @@ private:
 	* \brief
 	* Internal buffer to print messages to.
 	*/	
-	ThI8*				m_Buffer;
+	ThChar*				m_Buffer;
 
 	ThWchar*			m_WideBuffer;
 

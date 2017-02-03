@@ -18,7 +18,7 @@ struct ThClassName;
 #define THOR_DECL_TYPE(t) \
 	template<> struct Thor::ThClassName<t>\
 	{\
-	static const ThI8* GetName()\
+	static const ThChar* GetName()\
 	{\
 		return #t;\
 	}\
@@ -44,7 +44,7 @@ namespace Private
 class THOR_FRAMEWORK_DLL ThiType
 {
 public:
-	virtual const ThI8* GetName()const=0;	
+	virtual const ThChar* GetName()const=0;
 	virtual bool		IsBaseOf(const ThiType* c)const=0;
 	virtual bool		IsChildOf(const ThiType* c)const=0;
 	virtual bool		IsAbstract()const=0;
@@ -181,7 +181,7 @@ class ThType:public ThiType, public NonCopyable
 {
 public:	
 
-	virtual const ThI8* GetName()const
+	virtual const ThChar* GetName()const
 	{
 		return ThClassName<T>::GetName();
 	}	

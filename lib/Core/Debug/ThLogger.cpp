@@ -12,13 +12,13 @@ THOR_REG_TYPE(ThiLoggerOutputTarget, THOR_TYPELIST_1(ThiObject));
 THOR_REG_TYPE(ThLoggerDebuggerOutput, THOR_TYPELIST_1(ThiLoggerOutputTarget));
 THOR_REG_TYPE(ThLoggerConsoleOutput, THOR_TYPELIST_1(ThiLoggerOutputTarget));
     
-const ThI8* coreSysLogTag = "Core";
+const ThChar* coreSysLogTag = "Core";
 //----------------------------------------------------------------------------------------
 //
 //					ThLoggerDebuggerOutput
 //
 //----------------------------------------------------------------------------------------
-void ThLoggerDebuggerOutput::Print(ThI8* str)
+void ThLoggerDebuggerOutput::Print(ThChar* str)
 {
 	//output into the debugger console	
 #ifdef THOR_PLATFORM_WIN
@@ -46,7 +46,7 @@ ThiType* ThLoggerDebuggerOutput::GetType()const
 //					ThLoggerConsoleOutput
 //
 //----------------------------------------------------------------------------------------
-void ThLoggerConsoleOutput::Print(ThI8* str)
+void ThLoggerConsoleOutput::Print(ThChar* str)
 {
 	//output to the console
 	printf("%s", str);
@@ -69,7 +69,7 @@ ThiType* ThLoggerConsoleOutput::GetType()const
 ThLogger::ThLogger()
 {			
 	m_BufferSize = 256;
-	m_Buffer = new ThI8[m_BufferSize];
+	m_Buffer = new ThChar[m_BufferSize];
 	m_WideBufferSize = 256;
 	m_WideBuffer = new ThWchar[m_WideBufferSize];
 	m_Enabled = true;
@@ -138,7 +138,7 @@ bool ThLogger::GetEnabled()const
 	return m_Enabled;
 }
 //----------------------------------------------------------------------------------------
-void ThLogger::Log(MessageId id, const ThI8* formatString, ...)
+void ThLogger::Log(MessageId id, const ThChar* formatString, ...)
 {
     if (!IsEnabled(id))
         return;
@@ -181,9 +181,9 @@ bool ThLogger::IsEnabled(MessageId id)
     return true;
 }
     //----------------------------------------------------------------------------------------
-void ThLogger::Log(MessageId id, const ThI8* formatString, va_list args)
+void ThLogger::Log(MessageId id, const ThChar* formatString, va_list args)
 {
-    ThI8* buffer = m_Buffer + m_BufferOffset;
+    ThChar* buffer = m_Buffer + m_BufferOffset;
     ThI32 bufferSize = m_BufferSize - m_BufferOffset;// * sizeof(ThI8);
     va_list temp;
     va_copy(temp, args);
@@ -215,7 +215,7 @@ void ThLogger::Log(MessageId id, const ThI8* formatString, va_list args)
         if (formatString >= m_Buffer && formatString < (m_Buffer + m_BufferSize))
             formatAliases = true;
         
-        ThI8* newBuffer = new ThI8[m_BufferSize];
+        ThChar* newBuffer = new ThChar[m_BufferSize];
         strcpy(newBuffer, m_Buffer);
 		delete[] m_Buffer;
 		m_Buffer = newBuffer;
@@ -308,7 +308,7 @@ void ThLogger::Log(MessageId id, const ThWchar* formatString, va_list args)
 	}
 }
 //----------------------------------------------------------------------------------------
-void ThLogger::LogExtended(eMessageSeverity::Val severity, const ThI8* func, const ThI8* file, ThI32 line, const ThI8* formatString, MessageId id, ...)
+void ThLogger::LogExtended(eMessageSeverity::Val severity, const ThChar* func, const ThChar* file, ThI32 line, const ThChar* formatString, MessageId id, ...)
 {
     if (!IsEnabled(id))
         return;
@@ -338,7 +338,7 @@ void ThLogger::LogExtended(eMessageSeverity::Val severity, const ThI8* func, con
     {
         m_BufferSize = sz;
         delete[] m_Buffer;
-        m_Buffer = new ThI8[m_BufferSize];
+        m_Buffer = new ThChar[m_BufferSize];
     }
     
     m_Buffer[0] = 0;
@@ -369,7 +369,7 @@ void ThLogger::LogExtended(eMessageSeverity::Val severity, const ThI8* func, con
     if( m_PrefixFlags.CheckFlag(ePrefix::Line) )
     {
         strcat(m_Buffer, "Ln: ");
-        ThI8 buf[16];
+        ThChar buf[16];
         ThStringUtilities::ToString(line, buf, 16);
         strcat(m_Buffer, buf);
         strcat(m_Buffer, " ");
@@ -396,7 +396,7 @@ void ThLogger::LogExtended(eMessageSeverity::Val severity, const ThI8* func, con
     va_end(args);
 }
     //----------------------------------------------------------------------------------------
-void ThLogger::LogExtended(eMessageSeverity::Val severity, const ThI8* func, const ThI8* file, ThI32 line, const ThWchar* formatString, MessageId id, ...)
+void ThLogger::LogExtended(eMessageSeverity::Val severity, const ThChar* func, const ThChar* file, ThI32 line, const ThWchar* formatString, MessageId id, ...)
 {
     if (!IsEnabled(id))
         return;

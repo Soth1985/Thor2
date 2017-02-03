@@ -22,11 +22,11 @@ m_File(file)
 	//
 }
 //----------------------------------------------------------------------------------------
-void ThLoggerFileOutput::Print(ThI8* str)
+void ThLoggerFileOutput::Print(ThChar* str)
 {
 	if(m_File)
 	{
-		m_File->Write(str, strlen(str) * sizeof(ThI8) );
+		m_File->Write(str, strlen(str) * sizeof(ThChar) );
 		m_File->Flush();
 	}
 }
