@@ -24,6 +24,7 @@ set(Engine_H
 list(SORT Engine_SRC)
 list(SORT Engine_H)
 add_library(Engine ${Engine_SRC} ${Engine_H})
+set_target_properties (Engine PROPERTIES FOLDER Lib)
 thor_add_precompiled_header(Engine "${CMAKE_CURRENT_SOURCE_DIR}/stdafx.h" "${CMAKE_CURRENT_SOURCE_DIR}/stdafx.cpp")
 thor_macos_target_setup_library(Engine)
 thor_ios_target_setup_library(Engine)

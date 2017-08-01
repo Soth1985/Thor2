@@ -52,6 +52,7 @@ add_subdirectory(lib)
 add_subdirectory(tests)
 add_subdirectory(tools)
 add_subdirectory(templates)
+add_subdirectory(applications)
 
 #build external libs
 add_subdirectory(submodules)

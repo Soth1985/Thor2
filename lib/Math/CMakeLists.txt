@@ -51,6 +51,7 @@ set(Math_H
 list(SORT Math_SRC)
 list(SORT Math_H)
 add_library(Math ${Math_SRC} ${Math_H})
+set_target_properties (Math PROPERTIES FOLDER Lib)
 thor_add_precompiled_header(Math "${CMAKE_CURRENT_SOURCE_DIR}/stdafx.h" "${CMAKE_CURRENT_SOURCE_DIR}/stdafx.cpp")
 thor_macos_target_setup_library(Math)
 thor_ios_target_setup_library(Math)

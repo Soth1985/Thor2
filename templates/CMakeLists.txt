@@ -1,2 +1,1 @@
-add_subdirectory(macOS)
 add_subdirectory(universal)
