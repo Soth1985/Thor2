@@ -20,11 +20,14 @@ function(thor_add_precompiled_header target_name pch_header pch_source)
 endfunction()
 
 function (thor_target_install target_name)
+	target_include_directories(${target_name} PUBLIC ${THOR_INCLUDE_DIR})
+	target_include_directories(${target_name} PUBLIC ${THOR_SUBMODULE_DIR})
 	export(TARGETS ${target_name} FILE "${target_name}.cmake")
 	install(TARGETS ${target_name}
     		ARCHIVE  DESTINATION lib/Thor
     		LIBRARY  DESTINATION lib/Thor
-    		RUNTIME  DESTINATION bin/Thor)
+			RUNTIME  DESTINATION bin/Thor
+			BUNDLE DESTINATION bundle/Thor)
 endfunction()
 
 macro (thor_add_configuration config_in parent_in)

@@ -3,7 +3,7 @@
 #include <Thor/Core/Memory/ThStackAllocator.h>
 
 using namespace Thor;
-static const ThI8* logTag = "TestAllocators";
+static const ThChar* logTag = "TestAllocators";
 
 void TouchMemory(ThU8* ptr, ThSize allocSize)
 {

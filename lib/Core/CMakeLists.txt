@@ -142,5 +142,6 @@ endif()
 target_include_directories(Core PUBLIC ${THOR_INCLUDE_DIR})
 
 if(THOR_USE_PHYSFS)
-    target_link_libraries(Core PhysFS)
+    target_link_libraries(Core physfs)
+    
 endif()
