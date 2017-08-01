@@ -24,18 +24,9 @@ set(Engine_H
 list(SORT Engine_SRC)
 list(SORT Engine_H)
 add_library(Engine ${Engine_SRC} ${Engine_H})
-thor_target_cpp_std(Engine "c++14")
+thor_add_precompiled_header(Engine "${CMAKE_CURRENT_SOURCE_DIR}/stdafx.h" "${CMAKE_CURRENT_SOURCE_DIR}/stdafx.cpp")
+thor_macos_target_setup_library(Engine)
+thor_ios_target_setup_library(Engine)
 
 target_include_directories(Engine PUBLIC ${THOR_INCLUDE_DIR})
 target_link_libraries(Engine Core)
-
-if(APPLE)
-    target_link_libraries(Engine "-framework CoreFoundation" "-framework CoreServices" "-framework Carbon" "-framework IOKit")
-endif()
-
-export(TARGETS Engine FILE Engine.cmake)
-
-install(TARGETS Engine
-    		ARCHIVE  DESTINATION lib/Thor
-    		LIBRARY  DESTINATION lib/Thor
-    		RUNTIME  DESTINATION bin/Thor)

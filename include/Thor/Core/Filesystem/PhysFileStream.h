@@ -3,7 +3,7 @@
 
 #include <Thor/Core/Filesystem/FSLibConfig.h>
 #include <Thor/Core/Filesystem/ThiFileStream.h>
-#include <PhysFS/physfs.h>
+#include <physfs/physfs.h>
 
 namespace Thor
 {

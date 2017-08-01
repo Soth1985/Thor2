@@ -1,0 +1,10 @@
+add_library(PVRTexLib SHARED IMPORTED)
+set_property(TARGET PVRTexLib PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_SOURCE_DIR}/submodules/pvrtexlib/Include)
+
+if(CMAKE_CL_64)
+	set_property(TARGET PVRTexLib PROPERTY IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/submodules/PVRTexLib/Windows_x86_64/PVRTexLib.dll)
+	set_property(TARGET PVRTexLib PROPERTY IMPORTED_IMPLIB ${CMAKE_SOURCE_DIR}/submodules/PVRTexLib/Windows_x86_64/PVRTexLib.lib)
+else ()
+	set_property(TARGET PVRTexLib PROPERTY IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/submodules/PVRTexLib/Windows_x86_32/PVRTexLib.dll)
+	set_property(TARGET PVRTexLib PROPERTY IMPORTED_IMPLIB ${CMAKE_SOURCE_DIR}/submodules/PVRTexLib/Windows_x86_32/PVRTexLib.lib)
+endif ()

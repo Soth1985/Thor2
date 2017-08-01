@@ -51,19 +51,11 @@ set(Math_H
 list(SORT Math_SRC)
 list(SORT Math_H)
 add_library(Math ${Math_SRC} ${Math_H})
+thor_add_precompiled_header(Math "${CMAKE_CURRENT_SOURCE_DIR}/stdafx.h" "${CMAKE_CURRENT_SOURCE_DIR}/stdafx.cpp")
+thor_macos_target_setup_library(Math)
+thor_ios_target_setup_library(Math)
 
 target_compile_options(Math PUBLIC -msse4.2)
 
-if(APPLE)
-    set_target_properties(Math PROPERTIES XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++14")
-    set_target_properties(Math PROPERTIES XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
-endif()
-
 target_include_directories(Math PUBLIC {$THOR_INCLUDE_DIR})
 target_link_libraries(Math Core)
-export(TARGETS Math FILE Math.cmake)
-
-install(TARGETS Math
-    		ARCHIVE  DESTINATION lib/Thor
-    		LIBRARY  DESTINATION lib/Thor
-    		RUNTIME  DESTINATION bin/Thor)

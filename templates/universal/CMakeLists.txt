@@ -1,0 +1,43 @@
+project(template_universal VERSION ${THOR_VERSION})
+
+set(${PROJECT_NAME}_SRC)
+
+set(${PROJECT_NAME}_H)
+
+set(${PROJECT_NAME}_RESOURCE_FILES)
+
+if(MACOS)
+    list(APPEND ${PROJECT_NAME}_SRC
+        macos/AppDelegate.mm
+        macos/ViewController.mm
+        macos/main.m)
+
+    list(APPEND ${PROJECT_NAME}_H
+        macos/AppDelegate.h
+        macos/ViewController.h)
+
+    list(APPEND ${PROJECT_NAME}_RESOURCE_FILES
+	        macos/Assets.xcassets
+            macos/platform_data
+            macos/Main.storyboard)
+
+	set_source_files_properties(${${PROJECT_NAME}_RESOURCE_FILES} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+endif()
+
+if(IOS)    
+    list(APPEND ${PROJECT_NAME}_RESOURCE_FILES
+	        ios/Assets.xcassets
+            ios/platform_data
+ #           ios/Main.storyboard
+	)	
+	set_source_files_properties(${${PROJECT_NAME}_RESOURCE_FILES} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+endif()
+
+list(SORT ${PROJECT_NAME}_SRC)
+list(SORT ${PROJECT_NAME}_H)
+list(SORT ${PROJECT_NAME}_RESOURCE_FILES)
+add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SRC} ${${PROJECT_NAME}_H} ${${PROJECT_NAME}_RESOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} Core)
+thor_add_precompiled_header(Core "${CMAKE_CURRENT_SOURCE_DIR}/stdafx.h" "${CMAKE_CURRENT_SOURCE_DIR}/stdafx.cpp")
+thor_macos_target_setup_executable(${PROJECT_NAME} "com.rv.macos.apptemplate" "AppTemplate" "macos/info.plist")
+thor_ios_target_setup_executable(${PROJECT_NAME} "com.rv.ios.apptemplate" "AppTemplate" "ios/info.plist")

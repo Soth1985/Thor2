@@ -12,25 +12,48 @@ set(THOR_VERSION "${THOR_VERSION_MAJOR}.${THOR_VERSION_MINOR}.${THOR_VERSION_PAT
 
 set(THOR_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
 set(THOR_INSTALL_DIR ${CMAKE_INSTALL_PREFIX})
-set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/Modules)
-set(CMAKE_SCRIPT_PATH ${CMAKE_SOURCE_DIR}/cmake/Scripts)
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
+set(CMAKE_SCRIPT_PATH ${CMAKE_SOURCE_DIR}/cmake/scripts)
 
 project(Thor VERSION ${THOR_VERSION} LANGUAGES CXX)
 
-include(ImportedTargetsNix)
-
-function (thor_target_cpp_std target std)
-    if(APPLE)
-        set_target_properties(${target} PROPERTIES XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD ${std})
-        set_target_properties(${target} PROPERTIES XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
-    else()
-        target_compile_options(${target} PRIVATE -std=${std} -stdlib=libc++)
+if (APPLE)
+    if (NOT IOS)
+    message(WARNING "macos defined")
+        set(MACOS TRUE)
     endif()
-endfunction(thor_target_cpp_std)
+endif()
 
+if (MSVC)
+	option(THOR_MSVC_STATIC_RUNTIME "Link c runtime statically." TRUE)
+endif()
+
+if (IOS)
+    set(THOR_IOS_CODE_SIGN_IDENTITY "iPhone Developer" CACHE STRING "iOS signing identity." )
+    set(THOR_IOS_DEVELOPMENT_TEAM "2PKXU69355" CACHE STRING "iOS development team.")
+endif()
+
+if (MACOS)
+    set(THOR_MACOS_CODE_SIGN_IDENTITY "Mac Developer" CACHE STRING "macOS signing identity.")
+    set(THOR_MACOS_DEVELOPMENT_TEAM "2PKXU69355" CACHE STRING "macOS development team.")
+endif()
+
+#extra cmake scripts
+include(thor_utils)
+include(msvc_scripts)
+include(xcode_ios_scripts)
+include(xcode_macos_scripts)
+
+#imported/prebuilt libraries
+include(import_bass)
+
+#project modules
 add_subdirectory(lib)
 add_subdirectory(tests)
 add_subdirectory(tools)
 add_subdirectory(templates)
+
+#build external libs
+add_subdirectory(submodules)
 
 install(DIRECTORY ${THOR_INCLUDE_DIR}/Thor DESTINATION include)

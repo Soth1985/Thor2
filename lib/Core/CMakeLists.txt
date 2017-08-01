@@ -129,7 +129,9 @@ endif()
 list(SORT Core_SRC)
 list(SORT Core_H)
 add_library(Core ${Core_SRC} ${Core_H})
-thor_target_cpp_std(Core "c++14")
+thor_add_precompiled_header(Core "${CMAKE_CURRENT_SOURCE_DIR}/stdafx.h" "${CMAKE_CURRENT_SOURCE_DIR}/stdafx.cpp")
+thor_macos_target_setup_library(Core)
+thor_ios_target_setup_library(Core)
 
 if(THOR_USE_PHYSFS)
     target_compile_definitions(Core PUBLIC THOR_USE_PHYSFS)
@@ -142,15 +144,3 @@ target_include_directories(Core PUBLIC ${THOR_INCLUDE_DIR})
 if(THOR_USE_PHYSFS)
     target_link_libraries(Core PhysFS)
 endif()
-
-if(APPLE)
-    target_link_libraries(Core "-framework CoreFoundation" "-framework CoreServices" "-framework Carbon" "-framework IOKit")
-    target_link_libraries(Core z)
-endif()
-
-export(TARGETS Core FILE Core.cmake)
-
-install(TARGETS Core
-    		ARCHIVE  DESTINATION lib/Thor
-    		LIBRARY  DESTINATION lib/Thor
-    		RUNTIME  DESTINATION bin/Thor)

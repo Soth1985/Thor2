@@ -13,11 +13,8 @@ namespace Thor{
 //----------------------------------------------------------------------------------------
 /*!
 * \brief
-* Defines memory allocation functions, used by the framework.
+* Defines memory allocation functions, used by the engine.
 *
-* These functions are used to overload c++ operator new functions when THOR_OVERLOAD_GLOBAL_NEW
-* is defined, via inserting trampolines to them from the crt library, see DllMain.cpp for details. If THOR_OVERLOAD_GLOBAL_NEW
-* is not defined, all framework objects derived from ThiObject are still allocated through this interface.
 * 
 */
 class THOR_FRAMEWORK_DLL ThMemory
