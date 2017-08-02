@@ -1,49 +1,51 @@
 project(MetalTriangle VERSION ${THOR_VERSION})
 
-set(MetalTriangle_SRC
-    AppDelegate.mm
-    ViewController.mm
-    main.m
-)
+set(${PROJECT_NAME}_SRC)
 
-set(MetalTriangle_H
-    AppDelegate.h
-    ViewController.h
-    MetalShared.h
-)
+set(${PROJECT_NAME}_H
+    MetalShared.h)
 
-set(MetalTriangle_SHADERS Shaders.metal)
-#set_source_files_properties(${MetalTriangle_SHADERS} PROPERTIES XCODE_EXPLICIT_FILE_TYPE ".metal")
-#set_source_files_properties(${MetalTriangle_SHADERS} PROPERTIES COMPILE_FLAGS "-fno-fast-math")
-set_source_files_properties(${MetalTriangle_SHADERS} PROPERTIES LANGUAGE METAL)
+set(${PROJECT_NAME}_RESOURCE_FILES)
 
-set(MetalTriangle_STORYBOARDS
-    MetalTriangle.storyboard
-)
+set(${PROJECT_NAME}_SHADERS
+    Shaders.metal)
 
-set(MetalTriangle_ICONS "")
+if(MACOS)
+    list(APPEND ${PROJECT_NAME}_SRC
+        macos/AppDelegate.mm
+        macos/ViewController.mm
+        macos/main.m)
 
-add_executable(MetalTriangle MACOSX_BUNDLE ${MetalTriangle_SRC} ${MetalTriangle_H} ${MetalTriangle_SHADERS} ${MetalTriangle_STORYBOARDS})
-target_link_libraries(MetalTriangle Core)
+    list(APPEND ${PROJECT_NAME}_H
+        macos/AppDelegate.h
+        macos/ViewController.h)
 
-#link framework
-target_link_libraries(MetalTriangle "-framework Cocoa" "-framework Metal" "-framework MetalKit" "-framework QuartzCore")
+    list(APPEND ${PROJECT_NAME}_RESOURCE_FILES
+	        macos/Assets.xcassets
+            macos/platform_data
+            macos/Main.storyboard)
 
-#plist
-set_target_properties(MetalTriangle PROPERTIES
-    XCODE_ATTRIBUTE_CLANG_ENABLE_OBJC_ARC YES
-    XCODE_ATTRIBUTE_DEBUG_INFORMATION_FORMAT[variant=Debug] "dwarf"
-    XCODE_ATTRIBUTE_DEBUG_INFORMATION_FORMAT "dwarf-with-dsym"
-    XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++14"
-    XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++"
-    MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_LIST_DIR}/Info.plist.in"
-    MACOSX_BUNDLE_INFO_STRING "Description"
-    MACOSX_BUNDLE_ICON_FILE ""
-    MACOSX_BUNDLE_GUI_IDENTIFIER "com.test.MetalTriangle"
-    MACOSX_BUNDLE_BUNDLE_NAME "AppName"
-    MACOSX_BUNDLE_SHORT_VERSION_STRING "1.0"
-    MACOSX_BUNDLE_BUNDLE_VERSION "1"
-    MACOSX_BUNDLE_MAIN_STORYBOARD "Main"
-    MACOSX_BUNDLE_COPYRIGHT "Victor Rykov"
-    RESOURCE "${MetalTriangle_ICONS};${MetalTriangle_STORYBOARDS}"
-)
+    set_source_files_properties(${${PROJECT_NAME}_RESOURCE_FILES} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+    set_source_files_properties(${${PROJECT_NAME}_SHADERS} PROPERTIES LANGUAGE METAL)
+endif()
+
+if(IOS)    
+    list(APPEND ${PROJECT_NAME}_RESOURCE_FILES
+	        ios/Assets.xcassets
+            ios/platform_data
+ #           ios/Main.storyboard
+	)	
+    set_source_files_properties(${${PROJECT_NAME}_RESOURCE_FILES} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+    set_source_files_properties(${${PROJECT_NAME}_SHADERS} PROPERTIES LANGUAGE METAL)
+endif()
+
+list(SORT ${PROJECT_NAME}_SRC)
+list(SORT ${PROJECT_NAME}_H)
+list(SORT ${PROJECT_NAME}_RESOURCE_FILES)
+add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SRC} ${${PROJECT_NAME}_H} ${${PROJECT_NAME}_SHADERS} ${${PROJECT_NAME}_RESOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} Core)
+source_group ("Resources" FILES ${PROJECT_NAME}_RESOURCE_FILES)
+set_target_properties (${PROJECT_NAME} PROPERTIES FOLDER Applications)
+thor_add_precompiled_header(Core "${CMAKE_CURRENT_SOURCE_DIR}/stdafx.h" "${CMAKE_CURRENT_SOURCE_DIR}/stdafx.cpp")
+thor_macos_target_setup_executable(${PROJECT_NAME} "com.rv.macos.metal_triangle" "MetalTriangle" "info.plist")
+thor_ios_target_setup_executable(${PROJECT_NAME} "com.rv.ios.metal_triangle" "MetalTriangle" "info.plist")

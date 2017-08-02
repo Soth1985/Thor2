@@ -8,7 +8,7 @@
 
 #import "ViewController.h"
 #import <Metal/Metal.h>
-#include "RayTracer.h"
+#include <MetalTracer/RayTracer.h>
 
 using namespace Thor;
 
@@ -104,8 +104,8 @@ using namespace Thor;
     RayTracerOptions options;
     options.m_Width = _view.drawableSize.width;
     options.m_Height = _view.drawableSize.height;
-    options.m_SamplesPerPixel = 40;
-    options.m_TraceDepth = 40;
+    options.m_SamplesPerPixel = 20;
+    options.m_TraceDepth = 10;
     //options.m_CameraMode = CameraMode::LensDefocus;
     options.m_CameraOrigin = ThVec3f(0.0, 2.0, 7.0);
     options.m_CameraLookAt = ThVec3f(0.0,0.0,-8.0);
@@ -113,7 +113,7 @@ using namespace Thor;
     //options.m_CameraAperture = 4.0;
     
     Scene* scene = new Scene();
-    int numObjects = 540;
+    int numObjects = 10;
     float diffuseProb = 0.8;
     float metalProb = 0.15;
     float glassProb = 1.0 - diffuseProb - metalProb;
@@ -228,7 +228,7 @@ using namespace Thor;
     
     
     [self initRandomScene];
-    
+    //[self initSimpleScene];
     
     id<MTLFunction> vertexFunc = [_defaultLibrary newFunctionWithName:@"vertexFunc"];
     id<MTLFunction> fragmentFunc = [_defaultLibrary newFunctionWithName:@"fragmentFunc"];

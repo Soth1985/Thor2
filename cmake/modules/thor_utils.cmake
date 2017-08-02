@@ -22,6 +22,7 @@ endfunction()
 function (thor_target_install target_name)
 	target_include_directories(${target_name} PUBLIC ${THOR_INCLUDE_DIR})
 	target_include_directories(${target_name} PUBLIC ${THOR_SUBMODULE_DIR})
+	target_include_directories(${target_name} PUBLIC ${THOR_APPLICATION_DIR})
 	export(TARGETS ${target_name} FILE "${target_name}.cmake")
 	install(TARGETS ${target_name}
     		ARCHIVE  DESTINATION lib/Thor

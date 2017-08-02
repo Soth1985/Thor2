@@ -1,6 +1,6 @@
 function (thor_macos_target_setup_compiler_shared target)
 if (MACOS)
-	thor_set_xcode_property(${target} ARCHS "i386 x86_64")
+	thor_set_xcode_property(${target} ARCHS "x86_64")
 	thor_set_xcode_property(${target} DEBUG_INFORMATION_FORMAT dwarf-with-dsym)
 	thor_set_xcode_property(${target} DEBUG_INFORMATION_FORMAT[variant=Debug] dwarf)
 	thor_set_xcode_property(${target} ONLY_ACTIVE_ARCH NO)
