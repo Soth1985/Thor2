@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Scene.h"
+#include <Thor/Core/Concurrent/ThDispatch.h>
 #include <atomic>
 #include <random>
 #include <chrono>
@@ -209,5 +210,7 @@ namespace Thor
         std::uniform_real_distribution<double> m_RngUniform;
         RayTracerOptions m_Options;
         Camera m_Camera;
+        ThDispatchQueue m_Queue;
+        ThDispatchGroup m_Group;
     };
 }

@@ -28,6 +28,16 @@ void ThDispatchGroup::Wait(ThI64 timeoutNanoseconds)
         dispatch_group_wait(m_Group, DISPATCH_TIME_FOREVER);
 }
 
+void ThDispatchGroup::Enter()const
+{
+    dispatch_group_enter(m_Group);
+}
+
+void ThDispatchGroup::Leave()const
+{
+    dispatch_group_leave(m_Group);
+}
+
 ThDispatchQueue::~ThDispatchQueue()
 {
     dispatch_release(m_Queue);
@@ -67,6 +77,25 @@ void ThDispatchQueue::DispatchAsync(std::function<void()> func)
 void ThDispatchQueue::DispatchGroupAsync(const ThDispatchGroup& group, std::function<void()> func)
 {
     dispatch_group_async(group.Id(), m_Queue, ^(void) {
+        func();
+    });
+}
+
+void ThDispatchQueue::DispatchGroupAsyncManual(const ThDispatchGroup& group, std::function<void()> func)
+{
+    dispatch_group_t groupId = group.Id();
+    //dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        dispatch_group_enter(groupId);
+        dispatch_group_async(groupId, m_Queue, ^(void) {
+            func();
+            dispatch_group_leave(groupId);
+        });
+    //});
+}
+
+void ThDispatchQueue::DispatchGroupNotify(const ThDispatchGroup& group, std::function<void()> func)
+{
+    dispatch_group_notify(group.Id(), m_Queue, ^(void) {
         func();
     });
 }

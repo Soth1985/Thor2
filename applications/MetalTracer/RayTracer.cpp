@@ -1,6 +1,5 @@
 #include "RayTracer.h"
 #include <chrono>
-#include <Thor/Core/Concurrent/ThDispatch.h>
 
 using namespace Thor;
 
@@ -10,7 +9,8 @@ m_State(RayTracerState::Uninitialized),
 m_FramesRendered(0),
 m_Film(nullptr),
 m_Scene(nullptr),
-m_RngUniform(0.0, 1.0)
+m_RngUniform(0.0, 1.0),
+m_Queue(eQueuePriority::High)
 {
     unsigned int seed = std::chrono::system_clock::now().time_since_epoch().count();
     m_Generator.seed(seed);
@@ -53,37 +53,40 @@ bool RayTracer::RenderFrame()
     if (m_State != RayTracerState::RenderingFrame)
     {
         m_State = RayTracerState::RenderingFrame;
-        ThDispatchQueue queue(eQueuePriority::High);
         
-        queue.DispatchAsync([this](void)
+        float oneOverW = 1.0 / this->m_Options.m_Width;
+        float oneOverH = 1.0f / this->m_Options.m_Height;
+        for (ThI32 j = this->m_Options.m_Height - 1; j >= 0; --j)
         {
-            float oneOverW = 1.0 / this->m_Options.m_Width;
-            float oneOverH = 1.0f / this->m_Options.m_Height;
-            for (ThI32 j = this->m_Options.m_Height - 1; j >= 0; --j)
+            m_Queue.DispatchGroupAsyncManual(m_Group, [=](void)
             {
-                for (ThI32 i = 0; i < this->m_Options.m_Width; ++i)
-                {
-                    ThVec3f color;
-                    for (ThI32 s = 0; s < this->m_Options.m_SamplesPerPixel; ++s)
-                    {
-                        float u = (i + this->m_RngUniform(m_Generator)) * oneOverW;
-                        float v = (j + this->m_RngUniform(m_Generator)) * oneOverH;
-                        ThRayf ray;
-                        
-                        if (this->m_Options.m_CameraMode == CameraMode::Normal)
-                            ray = this->m_Camera.GetRay(u, v);
-                        else
-                            ray = this->m_Camera.GetRayLens(u, v);
-                        
-                        color += TraceScene(ray, 1);
-                    }
-                    color /= this->m_Options.m_SamplesPerPixel;
-                    color.x() = Math::Sqrt(color.x());
-                    color.y() = Math::Sqrt(color.y());
-                    color.z() = Math::Sqrt(color.z());
-                    this->m_Film->Pixel(i, j) = ThVec4ub(255.99f * color.r(), 255.99f * color.g(), 255.99f * color.b(), 255);
-                }
-            }
+                 for (ThI32 i = 0; i < this->m_Options.m_Width; ++i)
+                 {
+                     ThVec3f color;
+                     for (ThI32 s = 0; s < this->m_Options.m_SamplesPerPixel; ++s)
+                     {
+                         float u = (i + this->m_RngUniform(m_Generator)) * oneOverW;
+                         float v = (j + this->m_RngUniform(m_Generator)) * oneOverH;
+                         ThRayf ray;
+                         
+                         if (this->m_Options.m_CameraMode == CameraMode::Normal)
+                             ray = this->m_Camera.GetRay(u, v);
+                         else
+                             ray = this->m_Camera.GetRayLens(u, v);
+                         
+                         color += TraceScene(ray, 1);
+                     }
+                     color /= this->m_Options.m_SamplesPerPixel;
+                     color.x() = Math::Sqrt(color.x());
+                     color.y() = Math::Sqrt(color.y());
+                     color.z() = Math::Sqrt(color.z());
+                     this->m_Film->Pixel(i, j) = ThVec4ub(255.99f * color.r(), 255.99f * color.g(), 255.99f * color.b(), 255);
+                 }
+             });
+        }
+        
+        m_Queue.DispatchGroupNotify(m_Group, [=](void)
+        {
             this->m_FramesRendered++;
             this->m_State = RayTracerState::FrameReady;
         });

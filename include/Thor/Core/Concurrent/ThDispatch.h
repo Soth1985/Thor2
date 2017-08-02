@@ -30,6 +30,8 @@ namespace Thor
         ThDispatchGroup();
         ~ThDispatchGroup();
         void Wait(ThI64 timeoutNanoseconds);
+        void Enter()const;
+        void Leave()const;
         const dispatch_group_t& Id()const;
     private:
         ThDispatchGroup(const ThDispatchGroup& copy) = delete;
@@ -49,6 +51,8 @@ namespace Thor
         
         void DispatchAsync(std::function<void()> func);
         void DispatchGroupAsync(const ThDispatchGroup& group, std::function<void()> func);
+        void DispatchGroupAsyncManual(const ThDispatchGroup& group, std::function<void()> func);
+        void DispatchGroupNotify(const ThDispatchGroup& group, std::function<void()> func);
         void DispatchSync(std::function<void()> func);
         void DispatchApply(ThSize count, std::function<void(ThSize)> func);
         

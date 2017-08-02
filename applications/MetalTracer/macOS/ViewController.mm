@@ -104,7 +104,7 @@ using namespace Thor;
     RayTracerOptions options;
     options.m_Width = _view.drawableSize.width;
     options.m_Height = _view.drawableSize.height;
-    options.m_SamplesPerPixel = 20;
+    options.m_SamplesPerPixel = 40;
     options.m_TraceDepth = 10;
     //options.m_CameraMode = CameraMode::LensDefocus;
     options.m_CameraOrigin = ThVec3f(0.0, 2.0, 7.0);
@@ -306,6 +306,9 @@ using namespace Thor;
     
     // Obtain a renderPassDescriptor generated from the view's drawable textures.
     MTLRenderPassDescriptor* renderPassDescriptor = _view.currentRenderPassDescriptor;
+    
+    if (renderPassDescriptor == nil)
+        return;
     
     // Create a render command encoder so we can render into something.
     id <MTLRenderCommandEncoder> renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
