@@ -10,6 +10,7 @@
 
 #ifdef __APPLE__
     #include "TargetConditionals.h"
+    #define THOR_PLATFORM_APPLE
     #if TARGET_IPHONE_SIMULATOR
         #define THOR_PLATFORM_IOS
         #define THOR_PLATFORM_IOS_SIMULATOR
@@ -52,7 +53,9 @@
 //#define USE_VECTOR_EXPRESSION_TEMPLATES
 //#define USE_MATRIX_EXPRESSION_TEMPLATES
 
-#define THOR_ENABLE_SSE_MATH
+#if !defined(THOR_PLATFORM_IOS)
+    #define THOR_ENABLE_SSE_MATH
+#endif
 
 #define THOR_CONCAT(x, y) x ## y
 

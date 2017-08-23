@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <malloc/malloc.h>
 
-#ifdef THOR_PLATFORM_OSX
+#ifdef THOR_PLATFORM_APPLE
     #include <unistd.h>
     #include <sys/mman.h>
 #endif
@@ -40,7 +40,7 @@ void ThMemory::Free(void* ptr)
 //----------------------------------------------------------------------------------------
 void* ThMemory::AlignedMalloc(ThSize size, ThSize alignment)
 {	
-#ifdef THOR_PLATFORM_OSX
+#ifdef THOR_PLATFORM_APPLE
     void* result = 0;
     
     if (alignment == 4)
@@ -57,78 +57,94 @@ void* ThMemory::AlignedMalloc(ThSize size, ThSize alignment)
     return result;
 #elif defined THOR_PLATFORM_WIN
     return _aligned_malloc(size, alignment);
+#else
+    static_assert(0, "AlignedMalloc must be implemented");
 #endif
 }
 //----------------------------------------------------------------------------------------
 void ThMemory::AlignedFree(void* ptr)
 {
-#ifdef THOR_PLATFORM_OSX
+#ifdef THOR_PLATFORM_APPLE
     free(ptr);
 #elif defined THOR_PLATFORM_WIN
     _aligned_free(ptr);
+#else
+    static_assert(0, "AlignedFree must be implemented");
 #endif
 }
 //----------------------------------------------------------------------------------------
 ThSize ThMemory::MallocSize(void* ptr)
 {
-#ifdef THOR_PLATFORM_OSX
+#ifdef THOR_PLATFORM_APPLE
     ThSize sz = malloc_size(ptr);
     return malloc_good_size(sz);
 #elif defined THOR_PLATFORM_WIN
     msize(ptr);
+#else
+    static_assert(0, "MallocSize must be implemented");
 #endif
 }
 //----------------------------------------------------------------------------------------
 ThSize ThMemory::GetPageSize()
 {
-#ifdef THOR_PLATFORM_OSX
+#ifdef THOR_PLATFORM_APPLE
     return getpagesize();
 #elif defined THOR_PLATFORM_WIN
     SYSTEM_INFO sysInfo;
     GetSystemInfo(&sysInfo);
     return sysInfo.dwPageSize;
+#else
+    static_assert(0, "GetPageSize must be implemented");
 #endif
 }
 //----------------------------------------------------------------------------------------
 void* ThMemory::VmReserveMemory(ThSize size)
 {
-#ifdef THOR_PLATFORM_OSX
+#ifdef THOR_PLATFORM_APPLE
     void* ptr = mmap((void*)0, size, PROT_NONE, MAP_PRIVATE | MAP_ANON, -1, 0);
     msync(ptr, size, MS_SYNC | MS_INVALIDATE);
     return ptr;
 #elif defined THOR_PLATFORM_WIN
     return VirtualAlloc(NULL, size, MEM_RESERVE , PAGE_NOACCESS);
+#else
+    static_assert(0, "VmReserveMemory must be implemented");
 #endif
 }
 //----------------------------------------------------------------------------------------
 void* ThMemory::VmCommitMemory(void* ptr, ThSize size)
 {
-#ifdef THOR_PLATFORM_OSX
+#ifdef THOR_PLATFORM_APPLE
     void* result = mmap(ptr, size, PROT_READ | PROT_WRITE, MAP_FIXED | MAP_SHARED | MAP_ANON, -1, 0);
     msync(ptr, size, MS_SYNC|MS_INVALIDATE);
     return result;
 #elif defined THOR_PLATFORM_WIN
     return VirtualAlloc(addr, size, MEM_COMMIT, PAGE_READWRITE);
+#else
+    static_assert(0, "VmCommitMemory must be implemented");
 #endif
 }
 //----------------------------------------------------------------------------------------
 void ThMemory::VmDecommitMemory(void* ptr, ThSize size)
 {
-#ifdef THOR_PLATFORM_OSX
+#ifdef THOR_PLATFORM_APPLE
     mmap(ptr, size, PROT_NONE, MAP_FIXED | MAP_PRIVATE | MAP_ANON, -1, 0);
     msync(ptr, size, MS_SYNC | MS_INVALIDATE);
 #elif defined THOR_PLATFORM_WIN
     VirtualFree((void*)addr, size, MEM_DECOMMIT);
+#else
+    static_assert(0, "VmDecommitMemory must be implemented");
 #endif
 }
 //----------------------------------------------------------------------------------------
 void ThMemory::VmFreeMemory(void* ptr, ThSize size)
 {
-#ifdef THOR_PLATFORM_OSX
+#ifdef THOR_PLATFORM_APPLE
     msync(ptr, size, MS_SYNC);
     munmap(ptr, size);
 #elif defined THOR_PLATFORM_WIN
     VirtualFree((void*)addr, 0, MEM_RELEASE);
+#else
+    static_assert(0, "VmFreeMemory must be implemented");
 #endif
 }
 //----------------------------------------------------------------------------------------

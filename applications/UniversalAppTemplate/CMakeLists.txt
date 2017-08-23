@@ -1,19 +1,15 @@
-project(MetalTracer VERSION ${THOR_VERSION})
+project(UniversalAppTemplate VERSION ${THOR_VERSION})
 
 set(${PROJECT_NAME}_SRC
-    MetalRenderer.mm
-    RayTracer.cpp
-    Scene.cpp)
+    MetalRenderer.mm)
 
 set(${PROJECT_NAME}_H
-    MetalRenderer.h
-    MetalShared.h
-    RayTracer.h
-    Scene.h)
+    MetalRenderer.h)
 
 set(${PROJECT_NAME}_RESOURCE_FILES)
 
-set(${PROJECT_NAME}_SHADERS Shaders.metal)
+set(${PROJECT_NAME}_SHADERS
+    Shaders.metal)
 
 if(MACOS)
     list(APPEND ${PROJECT_NAME}_SRC
@@ -34,7 +30,7 @@ if(MACOS)
     set_source_files_properties(${${PROJECT_NAME}_SHADERS} PROPERTIES LANGUAGE METAL)
 endif()
 
-if(IOS)    
+if(IOS)
     list(APPEND ${PROJECT_NAME}_SRC
         ios/AppDelegate.mm
         ios/ViewController.mm
@@ -45,11 +41,11 @@ if(IOS)
         ios/ViewController.h)
 
     list(APPEND ${PROJECT_NAME}_RESOURCE_FILES
-        ios/Assets.xcassets
+	    ios/Assets.xcassets
         ios/platform_data
         ios/Main.storyboard
         ios/LaunchScreen.storyboard)
-        
+        	
     set_source_files_properties(${${PROJECT_NAME}_RESOURCE_FILES} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
     set_source_files_properties(${${PROJECT_NAME}_SHADERS} PROPERTIES LANGUAGE METAL)
 endif()
@@ -62,5 +58,5 @@ target_link_libraries(${PROJECT_NAME} Core)
 source_group ("Resources" FILES ${PROJECT_NAME}_RESOURCE_FILES)
 set_target_properties (${PROJECT_NAME} PROPERTIES FOLDER Applications)
 thor_add_precompiled_header(Core "${CMAKE_CURRENT_SOURCE_DIR}/stdafx.h" "${CMAKE_CURRENT_SOURCE_DIR}/stdafx.cpp")
-thor_macos_target_setup_executable(${PROJECT_NAME} "com.rv.macos.metal_tracer" "MetalTracer" "info.plist")
-thor_ios_target_setup_executable(${PROJECT_NAME} "com.rv.ios.metaltracer" "MetalTracer" "info.plist")
+thor_macos_target_setup_executable(${PROJECT_NAME} "com.rv.macos.apptemplate" "UniversalAppTemplate" "info.plist")
+thor_ios_target_setup_executable(${PROJECT_NAME} "com.rv.ios.apptemplate" "UniversalAppTemplate" "info.plist")

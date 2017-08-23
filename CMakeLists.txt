@@ -50,9 +50,12 @@ include(import_bass)
 
 #project modules
 add_subdirectory(lib)
-add_subdirectory(tests)
-add_subdirectory(tools)
-add_subdirectory(templates)
+
+if (NOT IOS)
+    add_subdirectory(tests)
+    add_subdirectory(tools)
+endif()
+
 add_subdirectory(applications)
 
 #build external libs
