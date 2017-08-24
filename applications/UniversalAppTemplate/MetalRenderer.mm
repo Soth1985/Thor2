@@ -75,7 +75,7 @@
     
     MTLResourceOptions resourceOptions;
 #ifdef THOR_PLATFORM_IOS
-    resourceOptions = MTLResourceStorageModePrivate;
+    resourceOptions = MTLResourceStorageModeShared;
 #else
     resourceOptions = MTLResourceStorageModeManaged;
 #endif
