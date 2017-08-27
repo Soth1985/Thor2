@@ -92,6 +92,7 @@ namespace Thor
         {
             return ThTypeID<Class>(TypeID, KindID);
         }
+        
     private:
         ThI32 m_Index;
     };
