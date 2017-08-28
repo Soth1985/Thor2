@@ -2,7 +2,7 @@
 #include <Thor/Core/Containers/ThHashMap.h>
 #include <Thor/Core/Containers/ThHashSet.h>
 #include <Thor/Core/Hash/ThSha3.h>
-#include <Thor/Core/Hash/ThMurmurHash3.h>
+#include <Thor/Core/Hash/ThMurmurHash.h>
 #include <Thor/Core/Hash/ThCrc32.h>
 
 class Probe
@@ -159,11 +159,16 @@ void TestMurmur3()
 {
     using namespace Thor;
     using namespace Thor::Hash;
-    const ThChar* msg = "TestMurmur3";
+    const ThChar* msg = "TestMurmurH";
     printf("murmur3 = ");
     ThU32 result = Murmur3((ThU8*)msg, strlen(msg), 10);
-    printf("%u", result);
-    printf("\n");
+    printf("%u\n", result);
+    printf("murmur2 = ");
+    result = Murmur2((ThU8*)msg, strlen(msg), 10);
+    printf("%u\n", result);
+    printf("murmur2_64 = ");
+    ThU64 result_64 = Murmur2_64((ThU8*)msg, strlen(msg), 10);
+    printf("%llu\n", result_64);
 }
 
 void TestCrc32()

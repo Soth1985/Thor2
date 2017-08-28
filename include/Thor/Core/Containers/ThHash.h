@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Thor/Core/Hash/ThIntHash.h>
-#include <Thor/Core/Hash/ThMurmurHash3.h>
+#include <Thor/Core/Hash/ThMurmurHash.h>
 #include <Thor/Core/Containers/ThVector.h>
 
 namespace Thor
@@ -18,12 +18,8 @@ namespace Private
 	template <class IterT>
 	inline ThU64 HashRange(IterT begin, IterT end)
 	{
-		/*ThU64 result = ThU64(2166136261U);
-
-		while (begin != end)
-			result = 16777619U * result ^ (size_t)*begin++;
-		return result;*/
-        return Thor::Hash::Murmur3((ThU8*)begin, end - begin, 0);
+		//return Thor::Hash::Murmur3((ThU8*)begin, end - begin, 0);
+		return Thor::Hash::Murmur2_64((ThU8*)begin, end - begin, 0);
 	}
 
 	template<class CharT, class CharTraits,	class AllocT>

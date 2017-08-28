@@ -19,20 +19,14 @@ namespace Thor
     typedef ThTypeID<ThEvent> ThEventType;
     
     template <ThU32 TypeID, ThU32 KindID>
-    using ThComponentKey = ThKey<ThiComponentManager, TypeID, KindID>;
-    
-    template <ThU32 KindID>
-    using ThComponentFPKey = ThPolymorphicForeignKey<ThiComponentManager, KindID>;
+    using ThComponentInstance = ThInstance<ThiComponentManager, TypeID, KindID>;
     
     template <ThU32 TypeID, ThU32 KindID>
-    using ThComponentFKey = ThForeignKey<ThiComponentManager, TypeID, KindID>;
+    using ThComponentKey = ThKey<ThiComponentManager, TypeID, KindID>;
+    
+    template <ThU32 TypeID, ThU32 KindID>
+    using ThResourceInstance = ThInstance<ThiResourceManager, TypeID, KindID>;
     
     template <ThU32 TypeID, ThU32 KindID>
     using ThResourceKey = ThKey<ThiResourceManager, TypeID, KindID>;
-    
-    template <ThU32 KindID>
-    using ThResourceFPKey = ThPolymorphicForeignKey<ThiResourceManager, KindID>;
-    
-    template <ThU32 TypeID, ThU32 KindID>
-    using ThResourceFKey = ThForeignKey<ThiResourceManager, TypeID, KindID>;
 }

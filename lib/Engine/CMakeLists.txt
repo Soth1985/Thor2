@@ -3,23 +3,22 @@ project(Engine VERSION ${THOR_VERSION} LANGUAGES CXX)
 set(Engine_SRC
     ThEntityManager.cpp
     ThBlackboard.cpp
-    ThClusterHashComponent.cpp
-    ThClusterGridComponent.cpp
     ThEventManager.cpp)
 
 set(Engine_H
-    ${THOR_INCLUDE_DIR}/Thor/Engine/EngineForward.h
-    ${THOR_INCLUDE_DIR}/Thor/Engine/EngineTypeInfo.h
+    ${THOR_INCLUDE_DIR}/Thor/Engine/ThEngineForward.h
+    ${THOR_INCLUDE_DIR}/Thor/Engine/ThEngineTypeInfo.h
     ${THOR_INCLUDE_DIR}/Thor/Engine/ThEntityManager.h
     ${THOR_INCLUDE_DIR}/Thor/Engine/ThEvent.h
     ${THOR_INCLUDE_DIR}/Thor/Engine/ThEventManager.h
     ${THOR_INCLUDE_DIR}/Thor/Engine/ThBlackboard.h
     ${THOR_INCLUDE_DIR}/Thor/Engine/ThEntity.h
     ${THOR_INCLUDE_DIR}/Thor/Engine/ThClusterHash.h
-    ${THOR_INCLUDE_DIR}/Thor/Engine/ThClusterHashComponent.h
-    ${THOR_INCLUDE_DIR}/Thor/Engine/ThClusterGridComponent.h
-    ${THOR_INCLUDE_DIR}/Thor/Engine/ComponentInterfaces.h
-    ${THOR_INCLUDE_DIR}/Thor/Engine/EngineInterface.h)
+    ${THOR_INCLUDE_DIR}/Thor/Engine/ThComponentTypes.h
+    ${THOR_INCLUDE_DIR}/Thor/Engine/ThResourceTypes.h
+    ${THOR_INCLUDE_DIR}/Thor/Engine/ThEngineInterface.h
+    ${THOR_INCLUDE_DIR}/Thor/Engine/ThSimdMatrixUtil.h
+    ${THOR_INCLUDE_DIR}/Thor/Engine/ThTransform.h)
 
 list(SORT Engine_SRC)
 list(SORT Engine_H)

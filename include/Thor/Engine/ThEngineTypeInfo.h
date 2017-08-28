@@ -55,15 +55,15 @@ namespace Thor
     };
     
     template <class Class, ThU32 TypeID, ThU32 KindID>
-    class ThKey
+    class ThInstance
     {
     public:
-        ThKey()
+        ThInstance()
             :
         m_Index(-1)
         {}
         
-        explicit ThKey(ThI32 index)
+        explicit ThInstance(ThI32 index)
             :
         m_Index(index)
         {}
@@ -98,65 +98,24 @@ namespace Thor
     };
     
     template <class Class, ThU32 TypeID, ThU32 KindID>
-    struct ThHash< ThKey<Class, TypeID, KindID> >
+    struct ThHash< ThInstance<Class, TypeID, KindID> >
     {
-        static inline ThSize HashCode(const ThKey<Class, TypeID, KindID>& key)
+        static inline ThSize HashCode(const ThInstance<Class, TypeID, KindID>& key)
         {
             return Private::HashFunc(key.Index());
         }
     };
     
-    template <class Class, ThU32 KindID>
-    class ThPolymorphicForeignKey
-    {
-    public:
-        ThPolymorphicForeignKey()
-            :
-        m_Uid(0)
-        {}
-        
-        explicit ThPolymorphicForeignKey(ThU64 uid)
-            :
-        m_Uid(uid)
-        {}
-        
-        operator bool()const
-        {
-            return m_Uid != 0;
-        }
-        
-        ThU32 Kind()const
-        {
-            return KindID;
-        }
-        
-        ThU64 Uid()const
-        {
-            return m_Uid;
-        }
-    private:
-        ThU64 m_Uid;
-    };
-    
-    template <class Class, ThU32 KindID>
-    struct ThHash< ThPolymorphicForeignKey<Class, KindID> >
-    {
-        static inline ThSize HashCode(const ThPolymorphicForeignKey<Class, KindID>& key)
-        {
-            return Private::HashFunc(key.Uid());
-        }
-    };
-    
     template <class Class, ThU32 TypeID, ThU32 KindID>
-    class ThForeignKey
+    class ThKey
     {
     public:
-        ThForeignKey()
+        ThKey()
         :
         m_Uid(0)
         {}
         
-        explicit ThForeignKey(ThU64 uid)
+        explicit ThKey(ThU64 uid)
         :
         m_Uid(uid)
         {}
@@ -185,9 +144,9 @@ namespace Thor
     };
     
     template <class Class, ThU32 TypeID, ThU32 KindID>
-    struct ThHash< ThForeignKey<Class, TypeID, KindID> >
+    struct ThHash< ThKey<Class, TypeID, KindID> >
     {
-        static inline ThSize HashCode(const ThForeignKey<Class, TypeID, KindID>& key)
+        static inline ThSize HashCode(const ThKey<Class, TypeID, KindID>& key)
         {
             return Private::HashFunc(key.Uid());
         }

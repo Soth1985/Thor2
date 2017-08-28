@@ -9,7 +9,7 @@ set(Core_SRC
     Hash/ThIntHash.cpp
     Hash/ThCrc32.cpp
     Hash/ThSipHash.cpp
-    Hash/ThMurmurHash3.cpp
+    Hash/ThMurmurHash.cpp
     Hash/ThSha3.cpp
     Filesystem/FSExceptions.cpp
     Filesystem/ThiFileStream.cpp
@@ -64,7 +64,7 @@ set(Core_H
     ${THOR_INCLUDE_DIR}/Thor/Core/Hash/ThCrc32.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Hash/ThIntHash.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Hash/ThSipHash.h
-    ${THOR_INCLUDE_DIR}/Thor/Core/Hash/ThMurmurHash3.h
+    ${THOR_INCLUDE_DIR}/Thor/Core/Hash/ThMurmurHash.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Hash/ThSha3.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Filesystem/FSExceptions.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Filesystem/FSLibConfig.h
