@@ -3,6 +3,7 @@
 #include <Thor/Engine/EngineForward.h>
 #include <Thor/Engine/ThEntity.h>
 #include <Thor/Engine/ThEvent.h>
+#include <Thor/Containers/ThDelegate.h>
 
 namespace Thor
 {   
@@ -39,6 +40,12 @@ namespace Thor
         virtual void Reserve(ThI32 capacity) = 0;
         virtual ThI32 GetNumEntities() = 0;
         virtual ThEntity GetEntity(ThI32 index) = 0;
+        
+        typedef ThDelegate<const ThEntity& entity, bool success> OnEntityCreatedDel;
+        typedef ThDelegate<const ThEntity& entity, bool success> OnEntityDestroyedDel;
+        
+        OnEntityCreatedDel md_OnEntityCreated;
+        OnEntityDestroyedDel md_OnEntityDestroyed;
     };
     
     class ThiResourceManager

@@ -46,7 +46,6 @@ set(Core_H
     ${THOR_INCLUDE_DIR}/Thor/Core/CoreExport.h
     ${THOR_INCLUDE_DIR}/Thor/Core/CoreFwd.h
     ${THOR_INCLUDE_DIR}/Thor/Core/CoreFwdInternal.h
-    ${THOR_INCLUDE_DIR}/Thor/Core/ThDelegate.h
     ${THOR_INCLUDE_DIR}/Thor/Core/ThException.h
     ${THOR_INCLUDE_DIR}/Thor/Core/ThFlags.h
     ${THOR_INCLUDE_DIR}/Thor/Core/ThObjectUtils.h

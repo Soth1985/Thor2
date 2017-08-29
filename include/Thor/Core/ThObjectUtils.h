@@ -3,7 +3,6 @@
 #include <Thor/Core/Common.h>
 #include <Thor/Core/SmartPointers/RefPtr.h>
 #include <Thor/Core/TypeLists.h>
-#include <Thor/Core/ThDelegate.h>
 
 namespace Thor
 {
@@ -91,37 +90,6 @@ struct StaticVisitor< Typelist<Head, Tail>, ActionPolicyT >
 		StaticVisitor<Head, ActionPolicyT>::Visit(obj, visitor, downCast);
 		StaticVisitor<Tail, ActionPolicyT>::Visit(obj, visitor, downCast);
 	}	
-};
-//----------------------------------------------------------------------------------------
-//
-//					ThDelegateHolder
-//
-//----------------------------------------------------------------------------------------
-class ThDelegateHolder
-{
-public:
-	
-	virtual ~ThDelegateHolder()
-	{
-		//
-	}	
-
-	template <class Type, class DelegateT, class MethodPtrT>
-	typename DelegateT::connection_t ConnectMethod(DelegateT& del, MethodPtrT method)
-	{
-		typedef typename DelegateT::connection_t connection_t;
-		connection_t connection;
-
-		connection = del.ConnectMethod(method, static_cast<Type*>(this) );
-		m_DelegateConnectionList.push_back(connection);		
-
-		return connection;
-	}	
-
-private:
-	typedef std::vector< ThDelegateConnectionPtr >	connection_list_t;
-
-	connection_list_t   m_DelegateConnectionList;
 };
 
 }

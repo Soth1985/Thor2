@@ -16,12 +16,15 @@ ThEntity ThEntityManager::CreateEntity()
     ThEntity result(uid);
     bool inserted = m_Entities.Insert(result);
     THOR_ASSERT(inserted, "Duplicate uid detected");
+    md_OnEntityCreated.Invoke(result, inserted);
     return result;
 }
 
 bool ThEntityManager::DestroyEntity(const ThEntity& ent)
 {
-    return m_Entities.Erase(ent);
+    bool deleted = m_Entities.Erase(ent);
+    md_OnEntityDestroyed.Invoke(ent, deleted);
+    return deleted;
 }
 
 bool ThEntityManager::IsAlive(const ThEntity& ent)

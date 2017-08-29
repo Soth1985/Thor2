@@ -37,7 +37,6 @@ namespace Thor
 	THOR_DECLARE_CLASS_NS(ThiArchiveWriter, Thor);
 	//Core classes that don`t use reference counting
 	//Typedefs
-	typedef ThDelegate<ThiAsyncResultPtr>	ThiAsyncResultCallback;
 	typedef std::vector<ThiField*>			ThiFieldList;
 	
 }//Thor
