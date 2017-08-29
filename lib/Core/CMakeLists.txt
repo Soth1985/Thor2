@@ -96,6 +96,7 @@ set(Core_H
     ${THOR_INCLUDE_DIR}/Thor/Core/String/ThStringBuilder.h
     ${THOR_INCLUDE_DIR}/Thor/Core/String/ThStringUtilities.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Concurrent/ThDispatch.h
+    ${THOR_INCLUDE_DIR}/Thor/Core/Concurrent/ThSpinMutex.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Util/ThUidGenerator.h)
 
 if(THOR_USE_PHYSFS)

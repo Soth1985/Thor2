@@ -1,140 +1,218 @@
 #pragma once
 
-#include <Thor/Framework/Common.h>
-#include <Thor/Framework/RefPtr.h>
+#include <memory>
 #include <functional>
-#include <type_traits>
-#include <vector>
-
+#include <list>
 
 namespace Thor
 {
+	template <class ... ArgsT>
+	class ThDelegate;
 
-THOR_FORWARD_CLASS(ThDelegateConnection);
-
-class ThDelegateConnection:public ThRefCounted
-{
-public:
-	typedef ThRefPtr<ThDelegateConnection>		pointer_t;
-	typedef ThWeakPtr<ThDelegateConnection>		weak_pointer_t;
-
-    virtual ~ThDelegateConnection()
-    {
-        //
-    }
-
-	virtual void Disconnect()=0;
-};
-
-namespace Private
-{
-	template <class FuncT>
-	class ThDelegateBase;
-
-	template <class FuncT>
-	class ThDelegateConnectionImpl: public ThDelegateConnection
+	namespace Private
 	{
-	public:		
-		typedef ThDelegateBase<FuncT>				delegate_t;
-		typedef typename delegate_t::Connection		connection_t;
-
-		virtual void Disconnect()
+		class ThDelegateConnectionBase
 		{
-			if(m_Del)
+		public:
+			typedef std::shared_ptr<ThDelegateConnectionBase>	Pointer;
+			typedef std::weak_ptr<ThDelegateConnectionBase>		WeakPointer;
+
+			virtual ~ThDelegateConnectionBase()
 			{
-				m_Del->Disconnect( m_Con );
-				m_Del=0;
+				//
 			}
+
+			virtual void Disconnect() = 0;
+			virtual void Reset() = 0;
+		};
+
+		template <class ... ArgsT>
+		class ThDelegateConnectionImpl : public ThDelegateConnectionBase
+		{
+		public:
+			typedef ThDelegate<ArgsT...> Delegate;
+			typedef typename Delegate::SlotIterator SlotIterator;
+
+			virtual void Disconnect()override
+			{
+				if (m_Del)
+				{
+					m_Del->Disconnect(m_Slot);
+					m_Del = nullptr;
+				}
+			}
+
+			ThDelegateConnectionImpl(Delegate* del, SlotIterator slot)
+				:
+			m_Del(del),
+			m_Slot(slot)
+			{
+				//
+			}
+
+			~ThDelegateConnectionImpl()
+			{
+				Disconnect();
+			}
+
+			virtual void Reset()override
+			{
+				m_Del = nullptr;
+			}
+		private:
+			Delegate* m_Del;
+			SlotIterator m_Slot;
+		};		
+	}//Private
+
+	class ThDelegateConnection
+	{
+	public:
+		typedef typename Private::ThDelegateConnectionBase::Pointer Connection;
+
+		ThDelegateConnection()
+		{
+
 		}
 
-		ThDelegateConnectionImpl(delegate_t* del, connection_t* con)
-			:
-		m_Del(del),
-		m_Con(con)
-		{
-			//
-		}	
-
-		~ThDelegateConnectionImpl()
+		~ThDelegateConnection()
 		{
 			Disconnect();
 		}
-	private:
-		delegate_t*		m_Del;
-		connection_t*	m_Con;
-	};
 
-	template <class FuncT>
-	class ThDelegateBase
-	{
-	public:
-		//typedef typename std::tr1::result_of<FuncT>::type		result_t;
-		typedef std::tr1::function< FuncT >								function_t;
-		typedef typename ThDelegateConnection::pointer_t				connection_t;
-		typedef typename ThDelegateConnection::weak_pointer_t			weak_connection_t;
-		typedef ThDelegateConnectionImpl<FuncT>							connection_value_type_t;
-
-		ThDelegateBase(const ThDelegateBase& copy)
+		ThDelegateConnection(const Connection& connection)
 			:
-		m_Connections(copy.m_Connections)
+		m_Connection(connection)
 		{
-			//
+
 		}
 
-		ThDelegateBase& operator=(const ThDelegateBase& rhs)
+		ThDelegateConnection(const ThDelegateConnection& copy)
 		{
-			m_Connections=rhs.m_Connections;
+			//no-op, dont point to other object method
+		}
+
+		ThDelegateConnection& operator=(const ThDelegateConnection& copy)
+		{
+			m_Connection = copy.m_Connection;
 			return *this;
 		}
 
-		~ThDelegateBase()
+		ThDelegateConnection& operator=(ThDelegateConnection&& move)
 		{
-			//remove all connections
-			while( m_Connections.size() )
+			Disconnect();
+			m_Connection = move.m_Connection;
+			move.m_Connection = nullptr;
+			return *this;
+		}
+
+		ThDelegateConnection(const ThDelegateConnection&& move)
+		{
+			//no-op, dont point to other object method
+		}
+
+		void Disconnect()
+		{
+			if (m_Connection)
 			{
-				connection_t con = m_Connections.back().m_Conn.Lock();
-				//if connection exists->disconnect, if not just remove from the function list
-				if(con)
-					con->Disconnect();
+				m_Connection->Disconnect();
+				m_Connection.reset();
+			}
+		}
+
+	private:
+		Connection m_Connection;
+	};
+
+	template <class ... ArgsT>
+	class ThDelegate
+	{
+	public:
+
+		typedef std::function<void(ArgsT...)> Function;
+		typedef typename Private::ThDelegateConnectionBase::Pointer Connection;
+		typedef typename Private::ThDelegateConnectionBase::WeakPointer WeakConnection;
+		typedef Private::ThDelegateConnectionImpl<ArgsT...> ConnectionImpl;
+
+		ThDelegate()
+		{
+
+		}
+
+		ThDelegate(const ThDelegate& copy)
+		{
+			//noop
+		}
+
+		ThDelegate& operator=(const ThDelegate& rhs)
+		{
+			//noop
+			return *this;
+		}
+
+		ThDelegate(const ThDelegate&& move)
+		{
+			//noop
+		}
+
+		ThDelegate& operator=(const ThDelegate&& rhs)
+		{
+			//noop
+			return *this;
+		}
+
+		~ThDelegate()
+		{
+			for (auto i = m_Slots.begin(); i != m_Slots.end(); ++i)
+			{
+				Connection con = i->m_Conn.lock();
+
+				if (con)
+					con->Reset();
+			}
+		}
+
+		ThDelegateConnection Connect(const Function& func)
+		{
+			//insert function
+			m_Slots.push_back(Slot(func));
+			SlotIterator last = m_Slots.end();
+			--last;
+			//create connection
+			auto impl = std::make_shared<ConnectionImpl>(this, last);
+			Connection result = impl;
+			//store a weak reference to the connection
+			m_Slots.back().m_Conn = result;
+			return ThDelegateConnection(result);
+		}
+
+		void Invoke(ArgsT... args)
+		{
+			SlotIterator slot = m_Slots.begin();
+			while (slot != m_Slots.end())
+			{
+				Connection con = slot->m_Conn.lock();
+
+				if (con)
+				{
+					slot->m_Func(args...);
+					++slot;
+				}
 				else
 				{
-					assert(0 && "This should not happen");
-					m_Connections.pop_back();
+					slot = m_Slots.erase(slot);
 				}
 			}
 		}
 
-		ThDelegateBase()
-		{
-			//THOR_STATIC_ASSERT(std::tr1::is_void<result_t>::value, "Return type should be void");
-		}
-
-        template <class FunctorT>
-        connection_t ConnectFunctor(const FunctorT& func)
-        {
-            return Connect( std::tr1::ref(func) );
-        }
-
-		connection_t Connect(const function_t& func)
-		{
-			mutex_t::scoped_lock lock(m_Mutex);
-			//insert function
-			m_Connections.push_back( Connection(func) );
-			//create connection
-			connection_t result( new connection_value_type_t( this, &m_Connections.back() ) );
-			//store a weak reference to the connection
-			m_Connections.back().m_Conn=result;
-			return result;
-		}
-		
 	protected:
 
-		struct Connection
-		{			
-			function_t			m_Func;
-			weak_connection_t	m_Conn;
+		struct Slot
+		{
+			Function	m_Func;
+			WeakConnection m_Conn;
 
-			Connection(const function_t& func)
+			Slot(const Function& func)
 				:
 			m_Func(func)
 			{
@@ -142,277 +220,17 @@ namespace Private
 			}
 		};
 
-		bool Disconnect(Connection* con)
-		{
-			mutex_t::scoped_lock lock(m_Mutex);
+		friend class ConnectionImpl;
 
-			if(!con)
-				return false;
-			//find connection
-			connection_list_t::iterator pos = m_Connections.end();
-			for( connection_list_t::iterator i = m_Connections.begin(); i != m_Connections.end(); ++i )
-			{
-				//check for equality using connection`s weak counters
-				if( GetCounter(i->m_Conn)==GetCounter(con->m_Conn) )
-				{
-					pos=i;
-					break;
-				}
-			}
-			//erase connection if it exists
-			if( pos != m_Connections.end() )
-			{
-				m_Connections.erase(pos);
-				return true;
-			}
-			//connection not found
-			return false;
+		typedef std::list< Slot > SlotList;
+		typedef typename SlotList::iterator SlotIterator;
+
+		void Disconnect(SlotIterator slot)
+		{
+			slot->m_Conn.reset();
+			slot->m_Func = nullptr;			
 		}	
 
-		friend class ThDelegateConnectionImpl<FuncT>;
-
-		typedef std::vector< Connection >	connection_list_t;
-		typedef tbb::spin_mutex				mutex_t;
-
-		mutex_t				m_Mutex;
-		connection_list_t	m_Connections;
+		SlotList m_Slots;
 	};
-}//Private
-
-struct NullArg{};
-
-template <class Arg0=NullArg, class Arg1=NullArg, class Arg2=NullArg, class Arg3=NullArg, class Arg4=NullArg, class Arg5=NullArg, class Arg6=NullArg, class Arg7=NullArg, class Arg8=NullArg, class Arg9=NullArg, class DummyArg=NullArg>
-class ThDelegate;
-
-template<>
-class ThDelegate<>:public Private::ThDelegateBase<void()>
-{
-public:
-
-    template <class MethodPtrT, class ObjectPtrT>
-    connection_t ConnectMethod(MethodPtrT method, ObjectPtrT obj)
-    {
-        using namespace std::tr1::placeholders;	
-		return Connect( std::tr1::bind(method, obj) );
-    }
-
-	void operator()()
-	{
-		for( ThSize i = 0; i < m_Connections.size(); ++i )
-		{
-			m_Connections[i].m_Func();
-		}
-	}
-};
-
-template<class Arg0>
-class ThDelegate<Arg0>:public Private::ThDelegateBase<void(Arg0)>
-{	
-public:
-
-    template <class MethodPtrT, class ObjectPtrT>
-    connection_t ConnectMethod(MethodPtrT method, ObjectPtrT obj)
-    {
-        using namespace std::tr1::placeholders;	
-		return Connect( std::tr1::bind(method, obj, _1) );
-    }
-
-	void operator()(Arg0 a0)
-	{
-		for( ThSize i = 0; i < m_Connections.size(); ++i )
-		{
-			m_Connections[i].m_Func(a0);
-		}
-	}
-};
-
-template<class Arg0, class Arg1>
-class ThDelegate<Arg0, Arg1>:public Private::ThDelegateBase<void(Arg0, Arg1)>
-{	
-public:
-
-    template <class MethodPtrT, class ObjectPtrT>
-    connection_t ConnectMethod(MethodPtrT method, ObjectPtrT obj)
-    {
-        using namespace std::tr1::placeholders;	
-		return Connect( std::tr1::bind(method, obj, _1, _2) );
-    }
-
-	void operator()(Arg0 a0, Arg1 a1)
-	{
-		for( ThSize i = 0; i < m_Connections.size(); ++i )
-		{
-			m_Connections[i].m_Func(a0, a1);
-		}
-	}
-};
-
-template<class Arg0, class Arg1, class Arg2>
-class ThDelegate<Arg0, Arg1, Arg2>:public Private::ThDelegateBase<void(Arg0, Arg1, Arg2)>
-{	
-public:
-
-    template <class MethodPtrT, class ObjectPtrT>
-    connection_t ConnectMethod(MethodPtrT method, ObjectPtrT obj)
-    {
-        using namespace std::tr1::placeholders;	
-		return Connect( std::tr1::bind(method, obj, _1, _2, _3) );
-    }
-
-	void operator()(Arg0 a0, Arg1 a1, Arg2 a2)
-	{
-		for( ThSize i = 0; i < m_Connections.size(); ++i )
-		{
-			m_Connections[i].m_Func(a0, a1, a2);
-		}
-	}
-};
-
-template<class Arg0, class Arg1, class Arg2, class Arg3>
-class ThDelegate<Arg0, Arg1, Arg2, Arg3>:public Private::ThDelegateBase<void(Arg0, Arg1, Arg2, Arg3)>
-{	
-public:
-
-    template <class MethodPtrT, class ObjectPtrT>
-    connection_t ConnectMethod(MethodPtrT method, ObjectPtrT obj)
-    {
-        using namespace std::tr1::placeholders;	
-		return Connect( std::tr1::bind(method, obj, _1, _2, _3, _4) );
-    }
-
-	void operator()(Arg0 a0, Arg1 a1, Arg2 a2, Arg3 a3)
-	{
-		for( ThSize i = 0; i < m_Connections.size(); ++i )
-		{
-			m_Connections[i].m_Func(a0, a1, a2, a3);
-		}
-	}
-};
-
-template<class Arg0, class Arg1, class Arg2, class Arg3, class Arg4>
-class ThDelegate<Arg0, Arg1, Arg2, Arg3, Arg4>:public Private::ThDelegateBase<void(Arg0, Arg1, Arg2, Arg3, Arg4)>
-{	
-public:
-
-    template <class MethodPtrT, class ObjectPtrT>
-    connection_t ConnectMethod(MethodPtrT method, ObjectPtrT obj)
-    {
-        using namespace std::tr1::placeholders;	
-		return Connect( std::tr1::bind(method, obj, _1, _2, _3, _4, _5) );
-    }
-
-	void operator()(Arg0 a0, Arg1 a1, Arg2 a2, Arg3 a3, Arg4 a4)
-	{
-		for( ThSize i = 0; i < m_Connections.size(); ++i )
-		{
-			m_Connections[i].m_Func(a0, a1, a2, a3, a4);
-		}
-	}
-};
-
-template<class Arg0, class Arg1, class Arg2, class Arg3, class Arg4, class Arg5>
-class ThDelegate<Arg0, Arg1, Arg2, Arg3, Arg4, Arg5>:public Private::ThDelegateBase<void(Arg0, Arg1, Arg2, Arg3, Arg4, Arg5)>
-{	
-public:
-
-    template <class MethodPtrT, class ObjectPtrT>
-    connection_t ConnectMethod(MethodPtrT method, ObjectPtrT obj)
-    {
-        using namespace std::tr1::placeholders;	
-		return Connect( std::tr1::bind(method, obj, _1, _2, _3, _4, _5, _6) );
-    }
-
-	void operator()(Arg0 a0, Arg1 a1, Arg2 a2, Arg3 a3, Arg4 a4, Arg5 a5)
-	{
-		for( ThSize i = 0; i < m_Connections.size(); ++i )
-		{
-			m_Connections[i].m_Func(a0, a1, a2, a3, a4, a5);
-		}
-	}
-};
-
-template<class Arg0, class Arg1, class Arg2, class Arg3, class Arg4, class Arg5, class Arg6>
-class ThDelegate<Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6>:public Private::ThDelegateBase<void(Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6)>
-{	
-public:
-
-    template <class MethodPtrT, class ObjectPtrT>
-    connection_t ConnectMethod(MethodPtrT method, ObjectPtrT obj)
-    {
-        using namespace std::tr1::placeholders;	
-		return Connect( std::tr1::bind(method, obj, _1, _2, _3, _4, _5, _6, _7) );
-    }
-
-	void operator()(Arg0 a0, Arg1 a1, Arg2 a2, Arg3 a3, Arg4 a4, Arg5 a5, Arg6 a6)
-	{
-		for( ThSize i = 0; i < m_Connections.size(); ++i )
-		{
-			m_Connections[i].m_Func(a0, a1, a2, a3, a4, a5, a6);
-		}
-	}
-};
-
-template<class Arg0, class Arg1, class Arg2, class Arg3, class Arg4, class Arg5, class Arg6, class Arg7>
-class ThDelegate<Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7>:public Private::ThDelegateBase<void(Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7)>
-{	
-public:
-
-    template <class MethodPtrT, class ObjectPtrT>
-    connection_t ConnectMethod(MethodPtrT method, ObjectPtrT obj)
-    {
-        using namespace std::tr1::placeholders;	
-		return Connect( std::tr1::bind(method, obj, _1, _2, _3, _4, _5, _6, _7, _8) );
-    }
-
-	void operator()(Arg0 a0, Arg1 a1, Arg2 a2, Arg3 a3, Arg4 a4, Arg5 a5, Arg6 a6, Arg7 a7)
-	{
-		for( ThSize i = 0; i < m_Connections.size(); ++i )
-		{
-			m_Connections[i].m_Func(a0, a1, a2, a3, a4, a5, a6, a7);
-		}
-	}
-};
-
-template<class Arg0, class Arg1, class Arg2, class Arg3, class Arg4, class Arg5, class Arg6, class Arg7, class Arg8>
-class ThDelegate<Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8>:public Private::ThDelegateBase<void(Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8)>
-{	
-public:
-
-    template <class MethodPtrT, class ObjectPtrT>
-    connection_t ConnectMethod(MethodPtrT method, ObjectPtrT obj)
-    {
-        using namespace std::tr1::placeholders;	
-		return Connect( std::tr1::bind(method, obj, _1, _2, _3, _4, _5, _6, _7, _8, _9) );
-    }
-
-	void operator()(Arg0 a0, Arg1 a1, Arg2 a2, Arg3 a3, Arg4 a4, Arg5 a5, Arg6 a6, Arg7 a7, Arg8 a8)
-	{
-		for( ThSize i = 0; i < m_Connections.size(); ++i )
-		{
-			m_Connections[i].m_Func(a0, a1, a2, a3, a4, a5, a6, a7, a8);
-		}
-	}
-};
-
-template<class Arg0, class Arg1, class Arg2, class Arg3, class Arg4, class Arg5, class Arg6, class Arg7, class Arg8, class Arg9>
-class ThDelegate<Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9>:public Private::ThDelegateBase<void(Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9)>
-{	
-public:
-
-    template <class MethodPtrT, class ObjectPtrT>
-    connection_t ConnectMethod(MethodPtrT method, ObjectPtrT obj)
-    {
-        using namespace std::tr1::placeholders;	
-		return Connect( std::tr1::bind(method, obj, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10) );
-    }
-
-	void operator()(Arg0 a0, Arg1 a1, Arg2 a2, Arg3 a3, Arg4 a4, Arg5 a5, Arg6 a6, Arg7 a7, Arg8 a8, Arg9 a9)
-	{
-		for( ThSize i = 0; i < m_Connections.size(); ++i )
-		{
-			m_Connections[i].m_Func(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9);
-		}
-	}
-};
-
 }//Thor
