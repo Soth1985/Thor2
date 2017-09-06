@@ -9,7 +9,8 @@ namespace Thor
     {
     public:
         ThUidGenerator();
-        ThU64 Generate();
+        ThU64 GenerateSnowflake();
+        ThU64 GenerateRandom();
         void SetConstant(ThU8 constant);
     private:
         ThU64 GetMilliseconds();

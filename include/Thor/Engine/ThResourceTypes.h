@@ -8,10 +8,12 @@ namespace Thor
     {
         enum Val
         {
-            Texture,
+            Texture = 1,
             Sampler,
             Buffer,
             PipelineState,
+            Geometry,
+            Material,
             Last = 128
         };
     };
@@ -20,6 +22,7 @@ namespace Thor
     {
         enum Val
         {
+            Any = eThType::AnyType,
             //Texture
             Texture1D,
             Texture2D,
@@ -33,14 +36,16 @@ namespace Thor
             //Sampler
             SamplerState,
             //Buffer
+            VertexBuffer,
+            IndexBuffer,
+            //PipelineState
+            GraphicsPipelineState,
+            ComputePipelineState,
+            //Geometry
+            MeshGeometry,
+            MeshInstance,
+            //Material
             Phong,
-            //Light
-            PointLight,
-            DirectionalLight,
-            SpotLight,
-            AreaLight,
-            //Camera
-            PinholeCamera,
             Last = 2048
         };
     };

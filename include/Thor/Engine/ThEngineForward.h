@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Thor/Engine/EngineTypeInfo.h>
+#include <Thor/Engine/ThEngineTypeInfo.h>
 
 namespace Thor
 {
@@ -21,12 +21,12 @@ namespace Thor
     template <ThU32 TypeID, ThU32 KindID>
     using ThComponentInstance = ThInstance<ThiComponentManager, TypeID, KindID>;
     
-    template <ThU32 TypeID, ThU32 KindID>
-    using ThComponentKey = ThKey<ThiComponentManager, TypeID, KindID>;
+    template <ThU32 KindID>
+    using ThComponentKey = ThKey<ThiComponentManager, KindID>;
     
     template <ThU32 TypeID, ThU32 KindID>
     using ThResourceInstance = ThInstance<ThiResourceManager, TypeID, KindID>;
     
-    template <ThU32 TypeID, ThU32 KindID>
-    using ThResourceKey = ThKey<ThiResourceManager, TypeID, KindID>;
+    template <ThU32 KindID>
+    using ThResourceKey = ThKey<ThiResourceManager, KindID>;
 }

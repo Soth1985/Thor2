@@ -1,6 +1,7 @@
 #include <Thor/Core/Util/ThUidGenerator.h>
 #include <Thor/Core/Debug/ThLogger.h>
 #include <chrono>
+#include <random>
 #include <cstdlib>
 #include <thread>
 
@@ -22,7 +23,7 @@ m_Sequence(0)
     
 }
 
-ThU64 ThUidGenerator::Generate()
+ThU64 ThUidGenerator::GenerateSnowflake()
 {
     ThU64 timestamp = GetMilliseconds();
     ThU64 sequence = m_Sequence++;
@@ -30,7 +31,7 @@ ThU64 ThUidGenerator::Generate()
     if (timestamp < m_LastTimestamp)
     {
         THOR_ERR("System time is reset or is going backwards", coreSysLogTag);
-        std::exit(-1);
+        return UINT64_MAX;
     }
     
     if (m_LastTimestamp == timestamp)
@@ -40,7 +41,7 @@ ThU64 ThUidGenerator::Generate()
         {
             THOR_WRN("Generating too many uids", coreSysLogTag);
             std::this_thread::sleep_for(std::chrono::milliseconds(2));
-            return Generate();
+            return GenerateSnowflake();
         }
     }
     else
@@ -54,6 +55,13 @@ ThU64 ThUidGenerator::Generate()
     
     ThU64 result = ((timestamp - m_Epoch) << m_TimestampShift) | (m_Constant << m_ConstantShift) | sequence;
     return result;
+}
+
+ThU64 ThUidGenerator::GenerateRandom()
+{
+    using namespace std::chrono;
+    static thread_local std::mt19937_64 generator(duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count());
+    return generator();
 }
 
 void ThUidGenerator::SetConstant(ThU8 constant)

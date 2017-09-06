@@ -11,7 +11,6 @@ namespace Thor
             Location = 1,
             GeometryShape,
             Light,
-            Material,
             Camera,
             CollisionShape,
             PhysicsActor,
@@ -25,8 +24,9 @@ namespace Thor
     {
         enum Val
         {
+            Any = eThType::AnyType,
             //Location
-            Transform = 1,
+            Transform,
             //GeometryShape
             MeshGeometry,
             SpriteGeometry,
@@ -35,8 +35,6 @@ namespace Thor
             BoxGeometry,
             SphereGeometry,
             CylinderGeometry,
-            //Material
-            Phong,
             //Light
             PointLight,
             DirectionalLight,

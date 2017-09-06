@@ -18,7 +18,12 @@ set(Engine_H
     ${THOR_INCLUDE_DIR}/Thor/Engine/ThResourceTypes.h
     ${THOR_INCLUDE_DIR}/Thor/Engine/ThEngineInterface.h
     ${THOR_INCLUDE_DIR}/Thor/Engine/ThSimdMatrixUtil.h
-    ${THOR_INCLUDE_DIR}/Thor/Engine/ThTransform.h)
+    ${THOR_INCLUDE_DIR}/Thor/Engine/ThTransform.h
+    ${THOR_INCLUDE_DIR}/Thor/Engine/ThStringHash.h
+    ${THOR_INCLUDE_DIR}/Thor/Engine/Components/ThMeshGeometryComponent.h
+    ${THOR_INCLUDE_DIR}/Thor/Engine/Components/ThSpriteGeometryComponent.h
+    ${THOR_INCLUDE_DIR}/Thor/Engine/Components/ThTaggingComponent.h
+    ${THOR_INCLUDE_DIR}/Thor/Engine/Components/ThTransformComponent.h)
 
 list(SORT Engine_SRC)
 list(SORT Engine_H)

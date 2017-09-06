@@ -5,11 +5,19 @@
 
 namespace Thor
 {
+    struct eThType
+    {
+        enum Val
+        {
+            AnyType = 1
+        };
+    };
+
     template <class Class>
     class ThTypeID
     {
     public:
-        explicit ThTypeID(ThU32 type, ThU32 kind)
+        explicit ThTypeID(ThU32 kind, ThU32 type)
             :
         m_Type(type),
         m_Kind(kind)
@@ -106,16 +114,17 @@ namespace Thor
         }
     };
     
-    template <class Class, ThU32 TypeID, ThU32 KindID>
+    template <class Class, ThU32 KindID>
     class ThKey
     {
     public:
-        ThKey()
+        ThKey(ThU32 type)
         :
-        m_Uid(0)
+        m_Uid(0),
+        m_Type(KindID, type)
         {}
         
-        explicit ThKey(ThU64 uid)
+        explicit ThKey(ThU64 uid, ThU32 type)
         :
         m_Uid(uid)
         {}
@@ -127,12 +136,12 @@ namespace Thor
         
         ThU32 Type()const
         {
-            return TypeID;
+            return m_Type.Type();
         }
         
         ThU32 Kind()const
         {
-            return KindID;
+            return m_Type.Kind();
         }
         
         ThU64 Uid()const
@@ -141,12 +150,13 @@ namespace Thor
         }
     private:
         ThU64 m_Uid;
+        ThTypeID<Class> m_Type;
     };
     
-    template <class Class, ThU32 TypeID, ThU32 KindID>
-    struct ThHash< ThKey<Class, TypeID, KindID> >
+    template <class Class, ThU32 KindID>
+    struct ThHash< ThKey<Class, KindID> >
     {
-        static inline ThSize HashCode(const ThKey<Class, TypeID, KindID>& key)
+        static inline ThSize HashCode(const ThKey<Class, KindID>& key)
         {
             return Private::HashFunc(key.Uid());
         }

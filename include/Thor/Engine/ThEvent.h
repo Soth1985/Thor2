@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Thor/Engine/EngineForward.h>
+#include <Thor/Engine/ThEngineForward.h>
 
 namespace Thor
 {

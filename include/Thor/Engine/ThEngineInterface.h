@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Thor/Engine/EngineForward.h>
+#include <Thor/Engine/ThEngineForward.h>
 #include <Thor/Engine/ThEntity.h>
 #include <Thor/Engine/ThEvent.h>
 #include <Thor/Containers/ThDelegate.h>
@@ -107,9 +107,15 @@ namespace Thor
         virtual ThiEventManager* GetEventManager() = 0;
         virtual ThiBlackboard* GetBlackboard() = 0;
         virtual ThU64 GenerateUid() = 0;
-        virtual void SetUidGeneratorConstant(ThU8 constant) = 0;
+        virtual ThU64 GenerateUid(const ThChar* name) = 0;
         virtual void GetVersion(ThI32& major, ThI32& minor) = 0;
         
+        virtual ThStringHash64 InternString(const ThString& str) = 0;
+        virtual const ThString& GetInternedString(const ThStringHash64& hash) = 0;
+        
+        virtual void SetLocalizedString(const ThString& tag, const ThString& value) = 0;
+        virtual const ThString& GetLocalizedString(const ThString& tag) = 0;
+        virtual void RequestLanguageChange(const ThString& lang) = 0;
         //static ThiEngine* CreateEngine(ThI32 versionMajor, ThI32 versionMinor);
     };
 }
