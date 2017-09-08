@@ -35,6 +35,7 @@ set(Core_SRC
     Memory/ThVirtualPoolAllocator.cpp
     Memory/ThVirtualSmallMemoryAllocator.cpp
     Memory/ThVirtualStackAllocator.cpp
+    Memory/ThVirtualGrowingStackAllocator.cpp
     String/ThStringUtilities.cpp
     String/ThStringBuilder.cpp
     Util/ThUidGenerator.cpp
@@ -86,6 +87,7 @@ set(Core_H
     ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThVirtualPoolAllocator.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThVirtualSmallMemoryAllocator.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThVirtualStackAllocator.h
+    ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThVirtualGrowingStackAllocator.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Platform/ThPlatformUtils.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Rtti/ThRttiManager.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Rtti/ThTypeInfo.h

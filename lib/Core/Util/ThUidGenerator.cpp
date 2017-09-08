@@ -64,7 +64,7 @@ ThU64 ThUidGenerator::GenerateRandom()
     return generator();
 }
 
-void ThUidGenerator::SetConstant(ThU8 constant)
+void ThUidGenerator::SetSnowflakeConstant(ThU8 constant)
 {
     m_Constant = constant;
 }

@@ -1,16 +1,16 @@
 #pragma once
 
 #include <Thor/Core/Common.h>
-#include <Thor/Core/Memory/ThiMemoryAllocator.h>
+#include <Thor/Core/Memory/ThVirtualStackAllocator.h>
 
 namespace Thor
 {
-    class ThVirtualStackAllocator : public ThiMemoryAllocator
+    class ThVirtualGrowingStackAllocator : public ThiMemoryAllocator
     {
     public:
         
-        ThVirtualStackAllocator(const char* name = nullptr);
-        ~ThVirtualStackAllocator();
+        ThVirtualGrowingStackAllocator(const char* name = nullptr);
+        ~ThVirtualGrowingStackAllocator();
         
         virtual void* Allocate(ThSize size, ThU32 alignment = DEFAULT_ALIGNMENT)override;
         virtual void Deallocate(void* ptr)override;
@@ -21,15 +21,10 @@ namespace Thor
         ThSize GetMarker()const;
         void FreeToMarker(ThSize Marker);
         void Reset();
-        ThU8* GetBaseAddress();
         
     private:
         
-        ThU8* m_BaseAddress;
-        ThU8* m_NextPage;
-        ThSize m_PageSize;
-        ThSize m_Size;
-        ThSize m_Alignment;
-        ThSize m_Marker;
+        ThVirtualStackAllocator* m_StackAllocator;
     };
 }
+

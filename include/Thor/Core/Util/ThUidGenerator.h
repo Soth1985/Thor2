@@ -11,7 +11,7 @@ namespace Thor
         ThUidGenerator();
         ThU64 GenerateSnowflake();
         ThU64 GenerateRandom();
-        void SetConstant(ThU8 constant);
+        void SetSnowflakeConstant(ThU8 constant);
     private:
         ThU64 GetMilliseconds();
         static const ThU64 m_Epoch;

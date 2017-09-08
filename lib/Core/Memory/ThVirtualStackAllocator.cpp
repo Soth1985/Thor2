@@ -25,7 +25,7 @@ ThVirtualStackAllocator::~ThVirtualStackAllocator()
 void* ThVirtualStackAllocator::Allocate(ThSize size, ThU32 alignment)
 {
     ThU8* currentPos = &m_BaseAddress[m_Marker];
-    ThU8* endPos = &m_BaseAddress[m_Size];
+    ThU8* endPos = m_BaseAddress + m_Size;
     ThSize offset = size % alignment;
     
     if (offset != 0)
@@ -34,7 +34,7 @@ void* ThVirtualStackAllocator::Allocate(ThSize size, ThU32 alignment)
         offset = 0;
     
     ThSize newMarker = m_Marker + size + offset;
-    ThU8* newPos = &m_BaseAddress[newMarker];
+    ThU8* newPos = m_BaseAddress + newMarker;
     
     if (newPos > endPos)
     {
@@ -108,4 +108,9 @@ void ThVirtualStackAllocator::Reset()
     ThSize size = (m_NextPage - m_BaseAddress);// / m_PageSize;
     ThMemory::VmDecommitMemory(m_BaseAddress, size);
     m_Marker = 0;
+}
+
+ThU8* ThVirtualStackAllocator::GetBaseAddress()
+{
+    return m_BaseAddress;
 }
