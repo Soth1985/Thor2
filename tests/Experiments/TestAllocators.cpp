@@ -14,7 +14,7 @@ void TouchMemory(ThU8* ptr, ThSize allocSize)
 void TestVirtualStackAllocator()
 {
     const ThSize allocSize = 5;
-    const ThSize bufferSize = ThMemory::Kilobyte() * 16;
+    const ThSize bufferSize = ThMemory::Megabyte() * 160;
     ThVirtualStackAllocator allocator("Virtual Stack");
     allocator.Init(bufferSize);
     
@@ -26,7 +26,7 @@ void TestVirtualStackAllocator()
         
         if (!ptr)
             break;
-        
+        //without access, memory will not be physically allocated
         TouchMemory(ptr, allocSize);
     }
     

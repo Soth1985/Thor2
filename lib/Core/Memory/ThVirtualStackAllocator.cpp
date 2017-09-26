@@ -24,7 +24,7 @@ ThVirtualStackAllocator::~ThVirtualStackAllocator()
 
 void* ThVirtualStackAllocator::Allocate(ThSize size, ThU32 alignment)
 {
-    ThU8* currentPos = &m_BaseAddress[m_Marker];
+    ThU8* currentPos = m_BaseAddress + m_Marker;
     ThU8* endPos = m_BaseAddress + m_Size;
     ThSize offset = size % alignment;
     
