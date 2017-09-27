@@ -32,6 +32,12 @@ namespace Thor
         {
             return m_Hash != rhs.m_Hash;
         }
+        
+        operator bool()const
+        {
+            return m_Hash != UINT32_MAX;
+        }
+        
     private:
         ThU32 m_Hash;
     };
@@ -50,7 +56,7 @@ namespace Thor
     public:
         ThStringHash64()
         :
-        m_Hash(UINT32_MAX)
+        m_Hash(UINT64_MAX)
         {}
         
         ThStringHash64(const char* str)
@@ -72,6 +78,12 @@ namespace Thor
         {
             return m_Hash != rhs.m_Hash;
         }
+        
+        operator bool()const
+        {
+            return m_Hash != UINT64_MAX;
+        }
+        
     private:
         ThU64 m_Hash;
     };

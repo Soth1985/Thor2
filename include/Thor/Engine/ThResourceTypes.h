@@ -1,7 +1,5 @@
 #pragma once
 
-#include <Thor/Engine/ThEngineInterface.h>
-
 namespace Thor
 {
     struct eResourceKind

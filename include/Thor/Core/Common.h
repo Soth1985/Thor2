@@ -75,8 +75,8 @@ namespace Thor
 	typedef wchar_t	 ThWchar;
     typedef size_t   ThSize;
     
-	typedef std::string			ThString;
-	typedef std::wstring		ThWideString;
+	typedef std::string  ThString;
+	typedef std::wstring ThWideString;
 
 	class NonCopyable
 	{

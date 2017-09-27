@@ -1,6 +1,8 @@
 #pragma once
 
 #include <Thor/Engine/ThEngineTypeInfo.h>
+#include <Thor/Engine/ThComponentTypes.h>
+#include <Thor/Engine/ThResourceTypes.h>
 
 namespace Thor
 {

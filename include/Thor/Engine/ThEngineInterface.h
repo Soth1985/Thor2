@@ -75,6 +75,7 @@ namespace Thor
     class ThiWorld
     {
     public:
+        virtual ThChar* GetName() = 0;
         virtual ThiComponentManager* GetComponentManager(ThComponentType type) = 0;
         virtual ThiComponentManager* GetComponentManager(ThI32 index) = 0;
         virtual ThI32 GetNumComponentManagers() = 0;

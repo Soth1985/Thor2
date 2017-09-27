@@ -8,7 +8,7 @@ ThVirtualGrowingStackAllocator::ThVirtualGrowingStackAllocator(const char* name)
 :
 ThiMemoryAllocator(name)
 {
-    m_StackAllocator = new ThVirtualStackAllocator(name);
+    m_StackAllocator = new ThVirtualStackAllocator();
 }
 
 ThVirtualGrowingStackAllocator::~ThVirtualGrowingStackAllocator()
@@ -24,7 +24,7 @@ void* ThVirtualGrowingStackAllocator::Allocate(ThSize size, ThU32 alignment)
     {
         ThSize allocatedSize = m_StackAllocator->GetTotalAllocated();
         ThSize newSize = m_StackAllocator->GetCapacity() * 2;
-        ThVirtualStackAllocator* newAllocator = new ThVirtualStackAllocator(m_StackAllocator->GetName());
+        ThVirtualStackAllocator* newAllocator = new ThVirtualStackAllocator();
         newAllocator->Init(newSize, alignment);
         newAllocator->Allocate(allocatedSize);
         ThMemory::MemoryCopy(newAllocator->GetBaseAddress(), m_StackAllocator->GetBaseAddress(), allocatedSize);

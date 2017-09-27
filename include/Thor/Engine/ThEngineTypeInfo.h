@@ -62,7 +62,7 @@ namespace Thor
         }
     };
     
-    template <class Class, ThU32 TypeID, ThU32 KindID>
+    template <class Class, ThU32 KindID, ThU32 TypeID>
     class ThInstance
     {
     public:
@@ -105,10 +105,10 @@ namespace Thor
         ThI32 m_Index;
     };
     
-    template <class Class, ThU32 TypeID, ThU32 KindID>
-    struct ThHash< ThInstance<Class, TypeID, KindID> >
+    template <class Class, ThU32 KindID, ThU32 TypeID>
+    struct ThHash< ThInstance<Class, KindID, TypeID> >
     {
-        static inline ThSize HashCode(const ThInstance<Class, TypeID, KindID>& key)
+        static inline ThSize HashCode(const ThInstance<Class, KindID, TypeID>& key)
         {
             return Private::HashFunc(key.Index());
         }

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <Thor/Engine/ThEngineInterface.h>
-
 namespace Thor
 {
     struct eComponentKind
@@ -16,6 +14,7 @@ namespace Thor
             PhysicsActor,
             ParticleSystem,
             Script,
+            Utility,
             Last = 128
         };
     };
@@ -42,6 +41,8 @@ namespace Thor
             AreaLight,
             //Camera
             PinholeCamera,
+            //Utility
+            Tag,
             Last = 2048
         };
     };
