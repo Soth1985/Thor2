@@ -30,7 +30,7 @@ ThU64 ThUidGenerator::GenerateSnowflake()
     
     if (timestamp < m_LastTimestamp)
     {
-        THOR_ERR("System time is reset or is going backwards", coreSysLogTag);
+        THOR_ERR("System time is reset or is going backwards", ThLogger::TagSystem);
         return UINT64_MAX;
     }
     
@@ -39,7 +39,7 @@ ThU64 ThUidGenerator::GenerateSnowflake()
         sequence = sequence & m_SequenceMask;
         if (sequence == 0)
         {
-            THOR_WRN("Generating too many uids", coreSysLogTag);
+            THOR_WRN("Generating too many uids", ThLogger::TagSystem);
             std::this_thread::sleep_for(std::chrono::milliseconds(2));
             return GenerateSnowflake();
         }

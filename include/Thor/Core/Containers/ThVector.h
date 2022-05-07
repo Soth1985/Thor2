@@ -1,7 +1,8 @@
 #pragma once
 
-#include <Thor/Core/Memory/ThAllocators.h>
+#include <Thor/Core/ThCore.h>
 #include <Thor/Core/Debug/ThAssert.h>
+#include <Thor/Core/Memory/ThiMemoryAllocator.h>
 
 #include <initializer_list>
 
@@ -36,7 +37,7 @@ public:
     m_Allocator(allocator)
 	{
         if (!m_Allocator)
-            m_Allocator = ThAllocators::Instance().GetSystemMemoryAllocator();
+            m_Allocator = ThCore::GetSystemAllocator();
 	}
 
 	explicit ThVector(SizeType n, ThiMemoryAllocator* allocator = nullptr)

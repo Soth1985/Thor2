@@ -5,8 +5,6 @@
 #include <string>
 #include <locale>
 
-//#include <boost/lexical_cast.hpp>
-
 #undef max
 #undef min
 
@@ -64,46 +62,4 @@ static unsigned int ToUInt(const std::string& str)
 
 }
 
-/*std::wstring StringToWString(const std::string& s)
-{
-std::wstring temp(s.length(),L' ');
-std::copy(s.begin(), s.end(), temp.begin());
-return temp; 
 }
-
-
-std::string WStringToString(const std::wstring& s)
-{
-std::string temp(s.length(), ' ');
-std::copy(s.begin(), s.end(), temp.begin());
-return temp; 
-}*/
-
-}//Thor
-
-//namespace boost
-//{
-//	template<>
-//    inline std::wstring lexical_cast<std::wstring, std::string>(const std::string& arg)
-//    {
-//		std::wstring result;
-//		std::locale loc;
-//		for(unsigned int i= 0; i < arg.size(); ++i)
-//		{
-//			result += std::use_facet<std::ctype<wchar_t> >(loc).widen(arg[i]);
-//		}
-//		return result;
-//    }
-//
-//	template<>
-//    inline std::string lexical_cast<std::string, std::wstring>(const std::wstring& arg)
-//    {
-//		std::string result;
-//		std::locale loc;
-//		for(unsigned int i= 0; i < arg.size(); ++i)
-//		{
-//			result += std::use_facet<std::ctype<wchar_t> >(loc).narrow(arg[i]);
-//		}
-//		return result;
-//    }
-//}

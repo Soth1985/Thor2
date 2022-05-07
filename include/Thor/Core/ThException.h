@@ -1,11 +1,10 @@
 #pragma once
 
-#include <Thor/Core/CoreExport.h>
 #include <string>
 
 namespace Thor{
 
-class THOR_FRAMEWORK_DLL ThException: public std::exception
+class ThException: public std::exception
 {
 public:
 	ThException();

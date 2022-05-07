@@ -1,5 +1,4 @@
 #include <Thor/Core/Memory/ThVirtualGrowingStackAllocator.h>
-#include <Thor/Core/Memory/ThAllocators.h>
 #include <Thor/Core/Debug/ThLogger.h>
 
 using namespace Thor;

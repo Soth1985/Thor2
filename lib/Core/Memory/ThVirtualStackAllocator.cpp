@@ -1,5 +1,4 @@
 #include <Thor/Core/Memory/ThVirtualStackAllocator.h>
-#include <Thor/Core/Memory/ThAllocators.h>
 #include <Thor/Core/Debug/ThLogger.h>
 
 using namespace Thor;
@@ -38,7 +37,7 @@ void* ThVirtualStackAllocator::Allocate(ThSize size, ThU32 alignment)
     
     if (newPos > endPos)
     {
-        THOR_WRN("Stack allocator %s is out of memory", coreSysLogTag, GetName());
+        THOR_WRN("Stack allocator %s is out of memory", ThLogger::TagSystem, GetName());
         return nullptr;
     }
     else if (newPos >= m_NextPage)
@@ -74,7 +73,7 @@ void ThVirtualStackAllocator::Init(ThSize size, ThSize alignment)
 {
     if (m_BaseAddress != nullptr)
     {
-        THOR_WRN("Allocator %s is already initialized", coreSysLogTag, GetName());
+        THOR_WRN("Allocator %s is already initialized", ThLogger::TagSystem, GetName());
         return;
     }
     

@@ -84,7 +84,7 @@ void ThGrowingPoolAllocator::Deallocate(void* ptr)
         }
         else
         {
-            THOR_WRN("Pointer is not inside the pool %s", coreSysLogTag, GetName());
+            THOR_WRN("Pointer is not inside the pool %s", ThLogger::TagSystem, GetName());
         }
     }
 }
@@ -113,12 +113,12 @@ void ThGrowingPoolAllocator::Init(ThSize chunkSize, ThSize numChunks, ThSize ali
 {
     if (!m_Pools.Empty())
     {
-        THOR_WRN("Allocator %s is already initialized", coreSysLogTag, GetName());
+        THOR_WRN("Allocator %s is already initialized", ThLogger::TagSystem, GetName());
         return;
     }
     
     if (!parent)
-        parent = ThAllocators::Instance().GetSystemMemoryAllocator();
+        parent = ThCore::GetSystemAllocator();
     
     ThPoolAllocator* pool = AllocateObject<ThPoolAllocator>(parent, GetName());
     m_Pools.PushBack(pool);
@@ -131,12 +131,12 @@ void ThGrowingPoolAllocator::InitToPageSize(ThSize chunkSize, ThSize alignment, 
 {
     if (!m_Pools.Empty())
     {
-        THOR_WRN("Allocator %s is already initialized", coreSysLogTag, GetName());
+        THOR_WRN("Allocator %s is already initialized", ThLogger::TagSystem, GetName());
         return;
     }
     
     if (!parent)
-        parent = ThAllocators::Instance().GetSystemMemoryAllocator();
+        parent = ThCore::GetSystemAllocator();
     
     ThSize pageSize = ThMemory::GetPageSize();
     ThSize numChunks = pageSize / chunkSize;

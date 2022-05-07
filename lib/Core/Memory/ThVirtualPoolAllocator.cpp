@@ -1,5 +1,4 @@
 #include <Thor/Core/Memory/ThVirtualPoolAllocator.h>
-#include <Thor/Core/Memory/ThAllocators.h>
 #include <Thor/Core/Debug/ThLogger.h>
 
 using namespace Thor;
@@ -42,7 +41,7 @@ void* ThVirtualPoolAllocator::Allocate(ThSize size, ThU32 alignment)
     }
     else
     {
-        THOR_WRN("Pool %s is out of space.", coreSysLogTag, GetName());
+        THOR_WRN("Pool %s is out of space.", ThLogger::TagSystem, GetName());
         return nullptr;
     }
 }
@@ -74,7 +73,7 @@ void ThVirtualPoolAllocator::Init(ThSize chunkSize, ThSize maxMemoryUsage, ThSiz
 {
     if (m_BaseAddress != nullptr)
     {
-        THOR_WRN("Allocator %s is already initialized", coreSysLogTag, GetName());
+        THOR_WRN("Allocator %s is already initialized", ThLogger::TagSystem, GetName());
         return;
     }
     

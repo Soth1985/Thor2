@@ -1,11 +1,11 @@
 #pragma once
 
-#include <Thor/Core/CoreFwd.h>
+#include <Thor/Core/Common.h>
 
 namespace Thor
 {
 
-struct THOR_FRAMEWORK_DLL ThStringUtilities
+struct ThStringUtilities
 {
 	static void ToString(ThF32 val, ThChar* result, ThSize bufSize);
 	static void ToString(ThF64 val, ThChar* result, ThSize bufSize);

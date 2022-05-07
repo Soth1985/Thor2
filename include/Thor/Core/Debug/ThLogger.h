@@ -1,29 +1,26 @@
 #pragma once
 
 #include <string>
-#include <map>
-#include <unordered_set>
 #include <stdarg.h>
 #include <mutex>
-#include <Thor/Core/Debug/ThAssert.h>
-#include <Thor/Core/CoreFwd.h>
-#include <Thor/Core/ThiObject.h>
-#include <Thor/Core/Containers/Singleton.h>
+#include <Thor/Core/Common.h>
 #include <Thor/Core/ThFlags.h>
+#include <Thor/Core/ThCore.h>
+#include <Thor/Core/Debug/ThAssert.h>
+#include <Thor/Core/Containers/ThVector.h>
 #include <Thor/Core/Containers/ThHashSet.h>
-#include <Thor/Core/Containers/ThHashMap.h>
 
 //msvc should truncate comma if no extra params without ##__VA_ARGS__
 
-#define THOR_INF(fmt, tag, ...) Thor::ThLogger::Instance().LogExtended(eMessageSeverity::Info, __FUNCTION__, __FILE__, __LINE__, fmt, tag, ##__VA_ARGS__)
-#define THOR_WRN(fmt, tag, ...) Thor::ThLogger::Instance().LogExtended(eMessageSeverity::Warning, __FUNCTION__, __FILE__, __LINE__, fmt, tag, ##__VA_ARGS__)
-#define THOR_ERR(fmt, tag, ...) Thor::ThLogger::Instance().LogExtended(eMessageSeverity::Error, __FUNCTION__, __FILE__, __LINE__, fmt, tag, ##__VA_ARGS__)
-#define THOR_CRT(fmt, tag, ...) Thor::ThLogger::Instance().LogExtended(eMessageSeverity::Critical, __FUNCTION__, __FILE__, __LINE__, fmt, tag, ##__VA_ARGS__)
+#define THOR_INF(fmt, tag, ...) ThCore::GetLogger()->LogExtended(eMessageSeverity::Info, __FUNCTION__, __FILE__, __LINE__, fmt, tag, ##__VA_ARGS__)
+#define THOR_WRN(fmt, tag, ...) ThCore::GetLogger()->LogExtended(eMessageSeverity::Warning, __FUNCTION__, __FILE__, __LINE__, fmt, tag, ##__VA_ARGS__)
+#define THOR_ERR(fmt, tag, ...) ThCore::GetLogger()->LogExtended(eMessageSeverity::Error, __FUNCTION__, __FILE__, __LINE__, fmt, tag, ##__VA_ARGS__)
+#define THOR_CRT(fmt, tag, ...) ThCore::GetLogger()->LogExtended(eMessageSeverity::Critical, __FUNCTION__, __FILE__, __LINE__, fmt, tag, ##__VA_ARGS__)
 
-#define THOR_INF_W(fmt, tag, ...) Thor::ThLogger::Instance().LogExtended(eMessageSeverity::Info, __FUNCTION__, __FILE__, __LINE__, fmt, tag, ##__VA_ARGS__)
-#define THOR_WRN_W(fmt, tag, ...) Thor::ThLogger::Instance().LogExtended(eMessageSeverity::Warning, __FUNCTION__, __FILE__, __LINE__, fmt, tag, ##__VA_ARGS__)
-#define THOR_ERR_W(fmt, tag, ...) Thor::ThLogger::Instance().LogExtended(eMessageSeverity::Error, __FUNCTION__, __FILE__, __LINE__, fmt, tag, ##__VA_ARGS__)
-#define THOR_CRT_W(fmt, tag, ...) Thor::ThLogger::Instance().LogExtended(eMessageSeverity::Critical, __FUNCTION__, __FILE__, __LINE__, fmt, tag, ##__VA_ARGS__)
+#define THOR_INF_W(fmt, tag, ...) ThCore::GetLogger()->LogExtended(eMessageSeverity::Info, __FUNCTION__, __FILE__, __LINE__, fmt, tag, ##__VA_ARGS__)
+#define THOR_WRN_W(fmt, tag, ...) ThCore::GetLogger()->LogExtended(eMessageSeverity::Warning, __FUNCTION__, __FILE__, __LINE__, fmt, tag, ##__VA_ARGS__)
+#define THOR_ERR_W(fmt, tag, ...) ThCore::GetLogger()->LogExtended(eMessageSeverity::Error, __FUNCTION__, __FILE__, __LINE__, fmt, tag, ##__VA_ARGS__)
+#define THOR_CRT_W(fmt, tag, ...) ThCore::GetLogger()->LogExtended(eMessageSeverity::Critical, __FUNCTION__, __FILE__, __LINE__, fmt, tag, ##__VA_ARGS__)
 
 namespace Thor{
 //----------------------------------------------------------------------------------------
@@ -67,9 +64,6 @@ struct ePrefix
 	};
 };
 
-THOR_DECLARE_CLASS_NS(ThiLoggerOutputTarget, Thor);
-THOR_DECLARE_CLASS_NS(ThLoggerDebuggerOutput, Thor);
-THOR_DECLARE_CLASS_NS(ThLoggerConsoleOutput, Thor);
 //----------------------------------------------------------------------------------------
 //
 //					ThiLoggerOutputTarget
@@ -80,7 +74,7 @@ THOR_DECLARE_CLASS_NS(ThLoggerConsoleOutput, Thor);
 * Base class for all of the logger`s output targets.
 *
 */
-class THOR_FRAMEWORK_DLL ThiLoggerOutputTarget: public ThiObject
+class ThiLoggerOutputTarget
 {
 public:
 	/*!
@@ -94,6 +88,8 @@ public:
 	virtual void Print(ThChar* str) = 0;
 
 	virtual void Print(ThWchar* str) = 0;
+    
+    virtual ~ThiLoggerOutputTarget();
 };
 //----------------------------------------------------------------------------------------
 //
@@ -105,17 +101,15 @@ public:
 * Output to the debugger`s console.
 *
 */
-class THOR_FRAMEWORK_DLL ThLoggerDebuggerOutput: public ThiLoggerOutputTarget
+class ThLoggerDebuggerOutput: public ThiLoggerOutputTarget
 {
 public:
 	/*!
 	* \copydoc ThLoggerDebuggerOuput::Print
 	*/
-	virtual void Print(ThChar* str);
+	virtual void Print(ThChar* str) override;
 
-	virtual void Print(ThWchar* str);
-
-	virtual ThiType* GetType()const;
+	virtual void Print(ThWchar* str) override;
 };
 //----------------------------------------------------------------------------------------
 //
@@ -127,17 +121,15 @@ public:
 * Output to the program`s console.
 *
 */
-class THOR_FRAMEWORK_DLL ThLoggerConsoleOutput: public ThiLoggerOutputTarget
+class ThLoggerConsoleOutput: public ThiLoggerOutputTarget
 {
 public:
 	/*!
 	* \copydoc ThLoggerDebuggerOuput::Print
 	*/
-	virtual void Print(ThChar* str);
+	virtual void Print(ThChar* str) override;
 
-	virtual void Print(ThWchar* str);
-
-	virtual ThiType* GetType()const;
+	virtual void Print(ThWchar* str) override;
 };
 //----------------------------------------------------------------------------------------
 //
@@ -155,7 +147,7 @@ public:
 * You can control which additional information the message is decorated with via setting appropriate prefix flags.
 *
 */
-class THOR_FRAMEWORK_DLL ThLogger:public NonCopyable
+class ThLogger
 {
 public:
 	typedef const ThChar* MessageId;
@@ -289,10 +281,8 @@ public:
 	* \brief
 	* Adds a new output target to the logger.
 	*
-	* \returns
-	* True if target was added.
 	*/
-	bool AddOutputTarget( ThiLoggerOutputTargetPtr& tgt );
+	void AddOutputTarget(ThiLoggerOutputTarget* tgt);
 
 	/*!
 	* \brief
@@ -304,13 +294,14 @@ public:
 	* \returns
 	* Pointer to the target or null if the target is not registered with the logger.
 	*/
-	ThiLoggerOutputTargetPtr GetOutputTarget( ThiType* type );
-
-	static ThLogger& Instance();
+	ThiLoggerOutputTarget* GetOutputTarget(ThSize index);
+    
+    static const ThChar* TagSystem;
 	
 private:		
 
 	ThLogger();
+	ThLogger(const ThLogger& rhs) = delete;
 
 	void Log(MessageId id, const ThChar* formatString, va_list args);
 
@@ -319,9 +310,9 @@ private:
     bool IsEnabled(MessageId id);
 
 	friend struct ThFormatHelper;
-	friend class Singleton<ThLogger>;
+	friend class ThCore;
 	typedef std::mutex Mutex;
-	typedef ThHashMap<ThiType*, ThiLoggerOutputTargetPtr> OutputTargets;
+	typedef ThVector<ThiLoggerOutputTarget*> OutputTargets;
 	
 	/*!
 	* \brief

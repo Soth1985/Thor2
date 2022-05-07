@@ -106,8 +106,8 @@ class ThHashContainerBase
 public:
 
 	typedef KeyT KeyType;
-	typedef ThVector< ItemT > ItemsList;
-	typedef ThVector< ThU64 > BucketsList;
+	typedef ThVector<ItemT> ItemsList;
+	typedef ThVector<ThU64> BucketsList;
 
 	typedef typename ItemsList::Pointer	Pointer;
 	typedef typename ItemsList::ConstPointer ConstPointer;

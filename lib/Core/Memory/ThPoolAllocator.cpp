@@ -1,5 +1,4 @@
 #include <Thor/Core/Memory/ThPoolAllocator.h>
-#include <Thor/Core/Memory/ThAllocators.h>
 #include <Thor/Core/Debug/ThLogger.h>
 
 using namespace Thor;
@@ -36,7 +35,7 @@ void* ThPoolAllocator::Allocate(ThSize size, ThU32 alignment)
     }
     else
     {
-        THOR_WRN("Pool %s is out of space.", coreSysLogTag, GetName());
+        THOR_WRN("Pool %s is out of space.", ThLogger::TagSystem, GetName());
         return nullptr;
     }
 }
@@ -68,7 +67,7 @@ void ThPoolAllocator::Init(ThSize chunkSize, ThSize numChunks, ThSize alignment,
 {
     if (m_Memory != nullptr)
     {
-        THOR_WRN("Allocator %s is already initialized", coreSysLogTag, GetName());
+        THOR_WRN("Allocator %s is already initialized", ThLogger::TagSystem, GetName());
         return;
     }
     
@@ -86,7 +85,7 @@ void ThPoolAllocator::Init(ThSize chunkSize, ThSize numChunks, ThSize alignment,
     if (parent)
         m_Parent = parent;
     else
-        m_Parent = ThAllocators::Instance().GetSystemMemoryAllocator();
+        m_Parent = ThCore::GetSystemAllocator();
     
     m_Memory = (ThU8*)m_Parent->Allocate(m_ChunkSize * m_NumChunks, m_Alignment);
     

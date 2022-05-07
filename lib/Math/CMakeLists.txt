@@ -2,8 +2,7 @@ project(Math VERSION ${THOR_VERSION} LANGUAGES CXX)
 
 set(Math_SRC
     decompose.c
-    MatrixDecompose.cpp
-    ThMathReflection.cpp)
+    MatrixDecompose.cpp)
 
 set(Math_H
     ${THOR_INCLUDE_DIR}/Thor/Math/Allocators.h
@@ -34,7 +33,6 @@ set(Math_H
     ${THOR_INCLUDE_DIR}/Thor/Math/QuaternionGeneric.inl
     ${THOR_INCLUDE_DIR}/Thor/Math/Ray.h
     ${THOR_INCLUDE_DIR}/Thor/Math/Sphere.h
-    ${THOR_INCLUDE_DIR}/Thor/Math/ThMathReflection.h
     ${THOR_INCLUDE_DIR}/Thor/Math/ThorMath.h
     ${THOR_INCLUDE_DIR}/Thor/Math/ThorMathExport.h
     ${THOR_INCLUDE_DIR}/Thor/Math/Transform.h

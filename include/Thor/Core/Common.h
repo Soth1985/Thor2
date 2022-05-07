@@ -18,6 +18,11 @@
         #define THOR_PLATFORM_IOS
     #else
         #define THOR_PLATFORM_OSX
+        #if TARGET_CPU_ARM64
+            #define THOR_PLATFORM_OSX_ARM
+        #elif TARGET_CPU_X86_64
+            #define THOR_PLATFORM_OSX_X64
+        #endif
     #endif
 #endif
 
@@ -53,7 +58,7 @@
 //#define USE_VECTOR_EXPRESSION_TEMPLATES
 //#define USE_MATRIX_EXPRESSION_TEMPLATES
 
-#if !defined(THOR_PLATFORM_IOS)
+#if !defined(THOR_PLATFORM_IOS) && !defined(THOR_PLATFORM_OSX_ARM)
     #define THOR_ENABLE_SSE_MATH
 #endif
 
@@ -77,16 +82,6 @@ namespace Thor
     
 	typedef std::string  ThString;
 	typedef std::wstring ThWideString;
-
-	class NonCopyable
-	{
-	public:
-		NonCopyable(){}
-	private:
-
-		NonCopyable(const NonCopyable& copy){}
-		NonCopyable& operator=(const NonCopyable& rhs){return *this;}
-	};
 
 	template <class FirstT, class SecondT>
 	class ThPair

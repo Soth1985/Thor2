@@ -1,5 +1,4 @@
 #include <Thor/Core/Memory/ThSmallMemoryAllocator.h>
-#include <Thor/Core/Memory/ThAllocators.h>
 #include <Thor/Core/Debug/ThLogger.h>
 
 using namespace Thor;
@@ -37,7 +36,7 @@ void* ThSmallMemoryAllocator::Allocate(ThSize size, ThU32 alignment)
     }
     else
     {
-        THOR_WRN("Invalid object size for allocator %s", coreSysLogTag, GetName());
+        THOR_WRN("Invalid object size for allocator %s", ThLogger::TagSystem, GetName());
         return nullptr;
     }
 }
@@ -59,7 +58,7 @@ void ThSmallMemoryAllocator::Deallocate(void* ptr)
             }
         }
         
-        THOR_WRN("Pointer is not inside the managed memory %s", coreSysLogTag, GetName());
+        THOR_WRN("Pointer is not inside the managed memory %s", ThLogger::TagSystem, GetName());
     }
 }
 
@@ -87,7 +86,7 @@ void ThSmallMemoryAllocator::Init(ThSize maxObjectSize, ThSize alignment, ThiMem
 {
     if (!m_Pools.Empty())
     {
-        THOR_WRN("Allocator %s is already initialized", coreSysLogTag, GetName());
+        THOR_WRN("Allocator %s is already initialized", ThLogger::TagSystem, GetName());
         return;
     }
     
@@ -96,7 +95,7 @@ void ThSmallMemoryAllocator::Init(ThSize maxObjectSize, ThSize alignment, ThiMem
     THOR_ASSERT(maxObjectSize % alignment == 0, "maxObjectSize must be aligned");
     
     if (!parent)
-        parent = ThAllocators::Instance().GetSystemMemoryAllocator();
+        parent = ThCore::GetSystemAllocator();
     
     if (maxObjectSize > MAX_OBJECT_SIZE)
         maxObjectSize = MAX_OBJECT_SIZE;

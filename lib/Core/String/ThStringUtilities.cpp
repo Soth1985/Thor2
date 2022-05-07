@@ -1,5 +1,6 @@
 #include <Thor/Core/String/ThStringUtilities.h>
 #include <Thor/Core/String/utf8.h>
+#include <Thor/Core/Debug/ThAssert.h>
 
 namespace Thor
 {

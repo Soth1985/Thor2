@@ -1,5 +1,4 @@
 #include <Thor/Core/Memory/ThStackAllocator.h>
-#include <Thor/Core/Memory/ThAllocators.h>
 #include <Thor/Core/Debug/ThLogger.h>
 
 using namespace Thor;
@@ -25,7 +24,7 @@ void ThStackAllocator::Init(ThSize size, ThSize alignment, ThiMemoryAllocator* p
 {
     if (m_Memory != nullptr)
     {
-        THOR_WRN("Allocator %s is already initialized", coreSysLogTag, GetName());
+        THOR_WRN("Allocator %s is already initialized", ThLogger::TagSystem, GetName());
         return;
     }
     
@@ -38,7 +37,7 @@ void ThStackAllocator::Init(ThSize size, ThSize alignment, ThiMemoryAllocator* p
     if (parent)
         m_Parent = parent;
     else
-        m_Parent = ThAllocators::Instance().GetSystemMemoryAllocator();
+        m_Parent = ThCore::GetSystemAllocator();
     
     m_Memory = (ThU8*)m_Parent->Allocate(m_Size, m_Alignment);
     
@@ -60,7 +59,7 @@ void* ThStackAllocator::Allocate(ThSize size, ThU32 alignment)
     ThSize newMarker = m_Marker + size + offset;
     if (newMarker > m_Size)
     {
-        THOR_WRN("Stack allocator %s is out of memory", coreSysLogTag, GetName());
+        THOR_WRN("Stack allocator %s is out of memory", ThLogger::TagSystem, GetName());
         return nullptr;
     }
     else

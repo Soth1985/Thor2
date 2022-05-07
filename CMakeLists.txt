@@ -1,12 +1,12 @@
 ##########################################################################
 # Thor Project                                                    	     #
 ##########################################################################
-cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.20 FATAL_ERROR)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 set(THOR_VERSION_MAJOR 0)
-set(THOR_VERSION_MINOR 1)
+set(THOR_VERSION_MINOR 2)
 set(THOR_VERSION_PATCH 0)
 set(THOR_VERSION "${THOR_VERSION_MAJOR}.${THOR_VERSION_MINOR}.${THOR_VERSION_PATCH}")
 
@@ -45,20 +45,13 @@ include(msvc_scripts)
 include(xcode_ios_scripts)
 include(xcode_macos_scripts)
 
-#imported/prebuilt libraries
-include(import_bass)
-
 #project modules
 add_subdirectory(lib)
 
 if (NOT IOS)
     add_subdirectory(tests)
-    add_subdirectory(tools)
 endif()
 
 add_subdirectory(applications)
-
-#build external libs
-add_subdirectory(submodules)
 
 install(DIRECTORY ${THOR_INCLUDE_DIR}/Thor DESTINATION include)

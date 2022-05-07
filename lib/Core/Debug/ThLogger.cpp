@@ -6,13 +6,9 @@
 #include <windows.h>
 #endif
 
-namespace Thor{
-
-THOR_REG_TYPE(ThiLoggerOutputTarget, THOR_TYPELIST_1(ThiObject));
-THOR_REG_TYPE(ThLoggerDebuggerOutput, THOR_TYPELIST_1(ThiLoggerOutputTarget));
-THOR_REG_TYPE(ThLoggerConsoleOutput, THOR_TYPELIST_1(ThiLoggerOutputTarget));
+using namespace Thor;
     
-const ThChar* coreSysLogTag = "Core";
+const ThChar* ThLogger::TagSystem = "Core";
 //----------------------------------------------------------------------------------------
 //
 //					ThLoggerDebuggerOutput
@@ -36,10 +32,9 @@ void ThLoggerDebuggerOutput::Print(ThWchar* str)
     wprintf(L"%s", str);
 #endif
 }
-//----------------------------------------------------------------------------------------
-ThiType* ThLoggerDebuggerOutput::GetType()const
+
+ThiLoggerOutputTarget::~ThiLoggerOutputTarget()
 {
-	return ThType<ThLoggerDebuggerOutput>::Instance();
 }
 //----------------------------------------------------------------------------------------
 //
@@ -57,11 +52,6 @@ void ThLoggerConsoleOutput::Print(ThWchar* str)
 	wprintf(L"%s", str);
 }
 //----------------------------------------------------------------------------------------
-ThiType* ThLoggerConsoleOutput::GetType()const
-{
-	return ThType<ThLoggerConsoleOutput>::Instance();
-}
-//----------------------------------------------------------------------------------------
 //
 //					ThLogger
 //
@@ -75,16 +65,21 @@ ThLogger::ThLogger()
 	m_Enabled = true;
     m_BufferOffset = 0;
 	m_PrefixFlags.Combine( ePrefix::Func );
-    ThiLoggerOutputTargetPtr tgt = ThiLoggerOutputTargetPtr( new ThLoggerDebuggerOutput() );
+    ThiLoggerOutputTarget* tgt = new ThLoggerDebuggerOutput();
 	AddOutputTarget( tgt );
 }
 //----------------------------------------------------------------------------------------
 ThLogger::~ThLogger()
 {
-	if(m_Buffer)
+    for (ThSize i = 0; i < m_OutputTargets.Size(); ++i)
+    {
+        delete m_OutputTargets[i];
+    }
+    
+	if (m_Buffer)
 		delete[] m_Buffer;
 
-	if(m_WideBuffer)
+	if (m_WideBuffer)
 		delete[] m_WideBuffer;
 }
 //----------------------------------------------------------------------------------------
@@ -242,9 +237,9 @@ void ThLogger::Log(MessageId id, const ThChar* formatString, va_list args)
 	}
 
 	//output to the targets
-	for(OutputTargets::Iterator i = m_OutputTargets.Begin(); i != m_OutputTargets.End(); ++i)
+	for (OutputTargets::Iterator i = m_OutputTargets.Begin(); i != m_OutputTargets.End(); ++i)
 	{
-		i->Value()->Print(buffer);
+        (*i)->Print(buffer);
 	}
 }
 //----------------------------------------------------------------------------------------
@@ -304,7 +299,7 @@ void ThLogger::Log(MessageId id, const ThWchar* formatString, va_list args)
 	//output to the targets
 	for(OutputTargets::Iterator i = m_OutputTargets.Begin(); i != m_OutputTargets.End(); ++i)
 	{
-		i->Value()->Print(buffer);
+        (*i)->Print(buffer);
 	}
 }
 //----------------------------------------------------------------------------------------
@@ -486,20 +481,15 @@ void ThLogger::LogExtended(eMessageSeverity::Val severity, const ThChar* func, c
     
     va_end(args);
 }
-    //----------------------------------------------------------------------------------------
-bool ThLogger::AddOutputTarget( ThiLoggerOutputTargetPtr& tgt )
+//----------------------------------------------------------------------------------------
+void ThLogger::AddOutputTarget( ThiLoggerOutputTarget* tgt )
 {
-	return m_OutputTargets.Insert( tgt->GetType(), tgt);
+    return m_OutputTargets.PushBack(tgt);
 }
 //----------------------------------------------------------------------------------------
-ThiLoggerOutputTargetPtr ThLogger::GetOutputTarget( ThiType* type )
+ThiLoggerOutputTarget* ThLogger::GetOutputTarget( ThSize index )
 {
-	OutputTargets::Iterator i = m_OutputTargets.Find(type);
-
-	if( i != m_OutputTargets.End() )
-		return i->Value();
-	else
-		return ThiLoggerOutputTargetPtr();
+    return m_OutputTargets[index];
 }
 //----------------------------------------------------------------------------------------
 void ThLogger::SetPrefixFlags(ThFlags32& flags)
@@ -511,10 +501,3 @@ const ThFlags32& ThLogger::GetPrefixFlags()const
 {
 	return m_PrefixFlags;
 }
-//----------------------------------------------------------------------------------------
-ThLogger& ThLogger::Instance()
-{
-	return Singleton<ThLogger>::Instance();
-}
-
-}//Thor

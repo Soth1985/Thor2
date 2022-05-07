@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Thor/Core/CoreExport.h>
+#include <Thor/Core/Common.h>
 
 #define THOR_DEFAULT_ALIGNMENT 16
 
@@ -17,7 +17,7 @@ namespace Thor{
 *
 * 
 */
-class THOR_FRAMEWORK_DLL ThMemory
+class ThMemory
 {
 public:	
 

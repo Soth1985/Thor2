@@ -184,11 +184,13 @@ void TestCrc32()
 
 int main()
 {
+    Thor::ThCore::Initialize();
 	TestThVector();
 	TestThHashMap();
 	TestThHashSet();
     TestSha3();
     TestMurmur3();
     TestCrc32();
+    Thor::ThCore::Shutdown();
 	return 0;
 }

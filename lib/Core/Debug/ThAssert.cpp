@@ -1,7 +1,6 @@
 #include <Thor/Core/Debug/ThAssert.h>
-#include <Thor/Core/Platform/ThPlatformUtils.h>
-#include <Thor/Core/String/String.h>
 #include <Thor/Core/Debug/ThLogger.h>
+#include <Thor/Core/String/String.h>
 
 #ifdef THOR_PLATFORM_WIN
 	#include <windows.h>
@@ -17,21 +16,21 @@ using namespace Thor;
 //					ThAssert
 //
 //----------------------------------------------------------------------------------------
-void ThAssert::Assert(bool result, const ThString& expr, const ThString& msg, const ThString& file, int line)
+void ThAssert::Assert(bool result, const char* expr, const char* msg, const char* file, int line)
 {
-	if(!m_Ignore)
+	if (!m_Ignore)
 	{
-		if(!result)
+		if (!result)
 		{
 			ThString text("Expr: ");
-			text += expr + " Msg: " + msg + "\n File: " + file + " Line: " + ToString(line);
-			THOR_CRT("%s", coreSysLogTag, text.c_str());
+			text += ThString(expr) + " Msg: " + ThString(msg) + "\n File: " + ThString(file) + " Line: " + ToString(line);
+			THOR_CRT("%s", ThLogger::TagSystem, text.c_str());
 #if defined(THOR_DEBUG) 
     #if defined(THOR_PLATFORM_WIN)
 			text += "\nPress Retry to debug the application.";
 			ThI32 msgboxID = MessageBox(0, text.c_str(), "Assertion Failed", MB_ABORTRETRYIGNORE | MB_ICONERROR | MB_DEFBUTTON2);			
 
-			switch(msgboxID)
+			switch (msgboxID)
 			{
 			case IDABORT:
 				exit(1);

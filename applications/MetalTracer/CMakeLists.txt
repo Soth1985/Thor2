@@ -19,7 +19,7 @@ if(MACOS)
     list(APPEND ${PROJECT_NAME}_SRC
         macos/AppDelegate.mm
         macos/ViewController.mm
-        macos/main.m)
+        macos/main.mm)
 
     list(APPEND ${PROJECT_NAME}_H
         macos/AppDelegate.h
@@ -38,7 +38,7 @@ if(IOS)
     list(APPEND ${PROJECT_NAME}_SRC
         ios/AppDelegate.mm
         ios/ViewController.mm
-        ios/main.m)
+        ios/main.mm)
 
     list(APPEND ${PROJECT_NAME}_H
         ios/AppDelegate.h
