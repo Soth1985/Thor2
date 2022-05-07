@@ -37,6 +37,7 @@ set(Core_H
     ${THOR_INCLUDE_DIR}/Thor/Core/Containers/ThHashMap.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Containers/ThHashSet.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Containers/ThVector.h
+    ${THOR_INCLUDE_DIR}/Thor/Core/Containers/ThRefPtr.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Debug/ThAssert.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Debug/ThLogger.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Hash/ThCrc32.h

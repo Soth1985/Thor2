@@ -1,4 +1,4 @@
-#include <Thor/Core/SmartPointers/RefPtr.h>
+#include <Thor/Core/Containers/ThRefPtr.h>
 #include <memory>
 
 using namespace Thor;

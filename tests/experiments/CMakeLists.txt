@@ -3,16 +3,6 @@ thor_macos_target_setup_console_app(TestContainers)
 target_link_libraries(TestContainers Core)
 set_target_properties (TestContainers PROPERTIES FOLDER Tests)
 
-add_executable(TestFileSystem TestFileSystem.cpp)
-thor_macos_target_setup_console_app(TestFileSystem)
-target_link_libraries(TestFileSystem Core)
-set_target_properties (TestFileSystem PROPERTIES FOLDER Tests)
-
-add_executable(TestReflection TestReflection.cpp)
-thor_macos_target_setup_console_app(TestReflection)
-target_link_libraries(TestReflection Core)
-set_target_properties (TestReflection PROPERTIES FOLDER Tests)
-
 add_executable(TestRefPtr TestRefPtr.cpp)
 thor_macos_target_setup_console_app(TestRefPtr)
 target_link_libraries(TestRefPtr Core)
