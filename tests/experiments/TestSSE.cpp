@@ -250,8 +250,6 @@ void TestSSE()
 	}
 }
 
-#include <simd/simd.h>
-
 int main()
 {
     bool tvc1 = std::is_trivially_copyable<ThMat4x4f>::value;

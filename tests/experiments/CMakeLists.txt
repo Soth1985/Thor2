@@ -13,6 +13,11 @@ thor_macos_target_setup_console_app(TestSSE)
 target_link_libraries(TestSSE Core Math)
 set_target_properties (TestSSE PROPERTIES FOLDER Tests)
 
+add_executable(TestSIMD TestSimd.cpp)
+thor_macos_target_setup_console_app(TestSIMD)
+target_link_libraries(TestSIMD Core Math)
+set_target_properties (TestSIMD PROPERTIES FOLDER Tests)
+
 add_executable(TestAllocators TestAllocators.cpp)
 thor_macos_target_setup_console_app(TestAllocators)
 target_link_libraries(TestAllocators Core)
