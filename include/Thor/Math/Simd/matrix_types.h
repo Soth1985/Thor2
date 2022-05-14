@@ -29,8 +29,8 @@
 #ifndef SIMD_MATRIX_TYPES_HEADER
 #define SIMD_MATRIX_TYPES_HEADER
 
-#include <simd/types.h>
-#include <simd/vector_make.h>
+#include "types.h"
+#include "vector_make.h"
 #if SIMD_COMPILER_HAS_REQUIRED_FEATURES
 
 /*  Matrix types available in C, Objective-C, and C++                         */

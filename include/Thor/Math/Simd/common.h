@@ -121,11 +121,11 @@
 #ifndef SIMD_COMMON_HEADER
 #define SIMD_COMMON_HEADER
 
-#include <simd/base.h>
+#include "base.h"
 #if SIMD_COMPILER_HAS_REQUIRED_FEATURES
-#include <simd/vector_make.h>
-#include <simd/logic.h>
-#include <simd/math.h>
+#include "vector_make.h"
+#include "logic.h"
+#include "math.h"
 
 #ifdef __cplusplus
 extern "C" {

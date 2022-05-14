@@ -82,12 +82,12 @@
 #ifndef SIMD_MATRIX_HEADER
 #define SIMD_MATRIX_HEADER
 
-#include <simd/base.h>
+#include "base.h"
 #if SIMD_COMPILER_HAS_REQUIRED_FEATURES
-#include <simd/matrix_types.h>
-#include <simd/geometry.h>
-#include <simd/extern.h>
-#include <simd/logic.h>
+#include "matrix_types.h"
+#include "geometry.h"
+#include "extern.h"
+#include "logic.h"
 
 #ifdef __cplusplus
     extern "C" {

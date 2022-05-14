@@ -69,7 +69,7 @@
 #ifndef SIMD_VECTOR_CONSTRUCTORS
 #define SIMD_VECTOR_CONSTRUCTORS
 
-#include <simd/vector_types.h>
+#include "vector_types.h"
 #if SIMD_COMPILER_HAS_REQUIRED_FEATURES
 
 #ifdef __cplusplus
@@ -5308,7 +5308,7 @@ static inline SIMD_CFUNC simd_double8 simd_make_double8(simd_double8 other) {
 } /* extern "C" */
 
 #include <tuple>
-#include <simd/packed.h>
+#include "packed.h"
 
 namespace simd {
 /*! @abstract Concatenates `x` and `y` to form a vector of two 8-bit signed

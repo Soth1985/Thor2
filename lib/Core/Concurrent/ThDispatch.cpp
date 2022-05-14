@@ -67,49 +67,42 @@ ThDispatchQueue::ThDispatchQueue(const char* name, eQueueType::Enum type)
     m_Queue = dispatch_queue_create(name, attr);
 }
 
-void ThDispatchQueue::DispatchAsync(std::function<void()> func)
+void ThDispatchQueue::DispatchAsync(std::function<void()>&& func)
 {
-    dispatch_async(m_Queue, ^(void){
-        func();
+    dispatch_async_f(m_Queue, &func, [](void* ctx) {
+        auto called = (std::function<void()>*)ctx;
+        (*called)();
     });
 }
 
-void ThDispatchQueue::DispatchGroupAsync(const ThDispatchGroup& group, std::function<void()> func)
+void ThDispatchQueue::DispatchGroupAsync(const ThDispatchGroup& group, std::function<void()>&& func)
 {
-    dispatch_group_async(group.Id(), m_Queue, ^(void) {
-        func();
+    dispatch_group_async_f(group.Id(), m_Queue, &func, [](void* ctx) {
+        auto called = (std::function<void()>*)ctx;
+        (*called)();
     });
 }
 
-void ThDispatchQueue::DispatchGroupAsyncManual(const ThDispatchGroup& group, std::function<void()> func)
+void ThDispatchQueue::DispatchGroupNotify(const ThDispatchGroup& group, std::function<void()>&& func)
 {
-    dispatch_group_t groupId = group.Id();
-    //dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        dispatch_group_enter(groupId);
-        dispatch_group_async(groupId, m_Queue, ^(void) {
-            func();
-            dispatch_group_leave(groupId);
-        });
-    //});
-}
-
-void ThDispatchQueue::DispatchGroupNotify(const ThDispatchGroup& group, std::function<void()> func)
-{
-    dispatch_group_notify(group.Id(), m_Queue, ^(void) {
-        func();
+    dispatch_group_notify_f(group.Id(), m_Queue, &func, [](void* ctx) {
+        auto called = (std::function<void()>*)ctx;
+        (*called)();
     });
 }
 
-void ThDispatchQueue::DispatchSync(std::function<void()> func)
+void ThDispatchQueue::DispatchSync(std::function<void()>&& func)
 {
-    dispatch_sync(m_Queue, ^(void){
-        func();
+    dispatch_sync_f(m_Queue, &func, [](void* ctx) {
+        auto called = (std::function<void()>*)ctx;
+        (*called)();
     });
 }
 
-void ThDispatchQueue::DispatchApply(ThSize count, std::function<void(ThSize)> func)
+void ThDispatchQueue::DispatchApply(ThSize count, std::function<void(ThSize)>&& func)
 {
-    dispatch_apply(count, m_Queue, ^(ThSize index){
-        func(index);
+    dispatch_apply_f(count, m_Queue, &func, [](void* ctx, ThSize index) {
+        auto called = (std::function<void(ThSize)>*)ctx;
+        (*called)(index);
     });
 }

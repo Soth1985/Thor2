@@ -86,10 +86,11 @@
 #ifndef SIMD_MATH_HEADER
 #define SIMD_MATH_HEADER
 
-#include <simd/base.h>
+#include "base.h"
 #if SIMD_COMPILER_HAS_REQUIRED_FEATURES
-#include <simd/vector_make.h>
-#include <simd/logic.h>
+#include "vector_make.h"
+#include "logic.h"
+#include <numbers>
 
 #ifdef __cplusplus
 extern "C" {
@@ -1567,17 +1568,17 @@ static SIMD_CPPFUNC float __tg_tan(float x) { return ::tan(x); }
 /*! @abstract Do not call this function directly; use simd::tan instead.      */
 static SIMD_CPPFUNC double __tg_tan(double x) { return ::tan(x); }
 /*! @abstract Do not call this function directly; use simd::cospi instead.    */
-static SIMD_CPPFUNC float __tg_cospi(float x) { return ::__cospi(x); }
+static SIMD_CPPFUNC float __tg_cospi(float x) { return ::cos(x * std::numbers::pi); }
 /*! @abstract Do not call this function directly; use simd::cospi instead.    */
-static SIMD_CPPFUNC double __tg_cospi(double x) { return ::__cospi(x); }
+static SIMD_CPPFUNC double __tg_cospi(double x) { return ::cos(x * std::numbers::pi); }
 /*! @abstract Do not call this function directly; use simd::sinpi instead.    */
-static SIMD_CPPFUNC float __tg_sinpi(float x) { return ::__sinpi(x); }
+static SIMD_CPPFUNC float __tg_sinpi(float x) { return ::sin(x * std::numbers::pi); }
 /*! @abstract Do not call this function directly; use simd::sinpi instead.    */
-static SIMD_CPPFUNC double __tg_sinpi(double x) { return ::__sinpi(x); }
+static SIMD_CPPFUNC double __tg_sinpi(double x) { return ::sin(x * std::numbers::pi); }
 /*! @abstract Do not call this function directly; use simd::tanpi instead.    */
-static SIMD_CPPFUNC float __tg_tanpi(float x) { return ::__tanpi(x); }
+static SIMD_CPPFUNC float __tg_tanpi(float x) { return ::tan(x * std::numbers::pi); }
 /*! @abstract Do not call this function directly; use simd::tanpi instead.    */
-static SIMD_CPPFUNC double __tg_tanpi(double x) { return ::__tanpi(x); }
+static SIMD_CPPFUNC double __tg_tanpi(double x) { return ::tan(x * std::numbers::pi);}
 /*! @abstract Do not call this function directly; use simd::acosh instead.    */
 static SIMD_CPPFUNC float __tg_acosh(float x) { return ::acosh(x); }
 /*! @abstract Do not call this function directly; use simd::acosh instead.    */
@@ -1611,9 +1612,9 @@ static SIMD_CPPFUNC float __tg_exp2(float x) { return ::exp2(x); }
 /*! @abstract Do not call this function directly; use simd::exp2 instead.     */
 static SIMD_CPPFUNC double __tg_exp2(double x) { return ::exp2(x); }
 /*! @abstract Do not call this function directly; use simd::exp10 instead.    */
-static SIMD_CPPFUNC float __tg_exp10(float x) { return ::__exp10(x); }
+static SIMD_CPPFUNC float __tg_exp10(float x) { return ::exp2(x * ::log2(10.0f)); }
 /*! @abstract Do not call this function directly; use simd::exp10 instead.    */
-static SIMD_CPPFUNC double __tg_exp10(double x) { return ::__exp10(x); }
+static SIMD_CPPFUNC double __tg_exp10(double x) { return ::exp2(x * ::log2(10.0));}
 /*! @abstract Do not call this function directly; use simd::expm1 instead.    */
 static SIMD_CPPFUNC float __tg_expm1(float x) { return ::expm1(x); }
 /*! @abstract Do not call this function directly; use simd::expm1 instead.    */

@@ -211,15 +211,6 @@ namespace Thor
 
 		return val;
 	}
-    
-    static inline ThSize NextPowerOf2(ThSize val)
-    {
-#ifdef THOR_X64
-        return NextPowerOf2((ThU64)val);
-#else
-        return NextPowerOf2((ThU32)val);
-#endif
-    }
 
 	template <bool B>
 	inline void STATIC_ASSERT_IMPL()

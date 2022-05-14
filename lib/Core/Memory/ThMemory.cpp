@@ -1,15 +1,16 @@
 #include <Thor/Core/Memory/ThMemory.h>
 #include <Thor/Core/Debug/ThAssert.h>
 #include <stdlib.h>
-#include <malloc/malloc.h>
 
 #ifdef THOR_PLATFORM_APPLE
+    #include <malloc/malloc.h>
     #include <unistd.h>
     #include <sys/mman.h>
 #endif
 
 #ifdef THOR_PLATFORM_WIN
     #include <windows.h>
+    #include <malloc.h>
 #endif
 
 using namespace Thor;
@@ -79,7 +80,7 @@ ThSize ThMemory::MallocSize(void* ptr)
     ThSize sz = malloc_size(ptr);
     return malloc_good_size(sz);
 #elif defined THOR_PLATFORM_WIN
-    msize(ptr);
+    return _msize(ptr);
 #else
     static_assert(0, "MallocSize must be implemented");
 #endif
@@ -118,7 +119,7 @@ void* ThMemory::VmCommitMemory(void* ptr, ThSize size)
     msync(ptr, size, MS_SYNC|MS_INVALIDATE);
     return result;
 #elif defined THOR_PLATFORM_WIN
-    return VirtualAlloc(addr, size, MEM_COMMIT, PAGE_READWRITE);
+    return VirtualAlloc(ptr, size, MEM_COMMIT, PAGE_READWRITE);
 #else
     static_assert(0, "VmCommitMemory must be implemented");
 #endif
@@ -130,7 +131,7 @@ void ThMemory::VmDecommitMemory(void* ptr, ThSize size)
     mmap(ptr, size, PROT_NONE, MAP_FIXED | MAP_PRIVATE | MAP_ANON, -1, 0);
     msync(ptr, size, MS_SYNC | MS_INVALIDATE);
 #elif defined THOR_PLATFORM_WIN
-    VirtualFree((void*)addr, size, MEM_DECOMMIT);
+    VirtualFree((void*)ptr, size, MEM_DECOMMIT);
 #else
     static_assert(0, "VmDecommitMemory must be implemented");
 #endif
@@ -142,7 +143,7 @@ void ThMemory::VmFreeMemory(void* ptr, ThSize size)
     msync(ptr, size, MS_SYNC);
     munmap(ptr, size);
 #elif defined THOR_PLATFORM_WIN
-    VirtualFree((void*)addr, 0, MEM_RELEASE);
+    VirtualFree((void*)ptr, 0, MEM_RELEASE);
 #else
     static_assert(0, "VmFreeMemory must be implemented");
 #endif

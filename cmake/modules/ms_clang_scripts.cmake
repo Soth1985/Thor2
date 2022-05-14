@@ -1,0 +1,30 @@
+function (thor_msvc_target_set_compiler_options target)
+	if (THOR_MSVC_CLANG)
+        set_target_properties(${target} PROPERTIES CXX_STANDARD 20)
+	endif()	
+endfunction()
+
+function (thor_msvc_target_setup_library target)
+	thor_msvc_target_set_compiler_options(${target})
+	thor_target_install(${target})
+endfunction()
+
+function (thor_msvc_target_link_libraries target)
+	
+endfunction()
+
+function (thor_msvc_target_setup_executable target)
+	if (THOR_MSVC_CLANG)
+		thor_msvc_target_set_compiler_options(${target})
+		thor_msvc_target_link_libraries(${target})
+		thor_target_install(${target})
+	endif()
+endfunction()
+
+function (thor_msvc_target_setup_console_executable target)
+	if (THOR_MSVC_CLANG)
+		thor_msvc_target_set_compiler_options(${target})
+		thor_msvc_target_link_libraries(${target})
+		thor_target_install(${target})
+	endif()
+endfunction()

@@ -40,13 +40,13 @@
 #ifndef __SIMD_VECTOR_HEADER__
 #define __SIMD_VECTOR_HEADER__
 
-#include <simd/vector_types.h>
-#include <simd/packed.h>
-#include <simd/vector_make.h>
-#include <simd/logic.h>
-#include <simd/math.h>
-#include <simd/common.h>
-#include <simd/geometry.h>
-#include <simd/conversion.h>
+#include "vector_types.h"
+#include "packed.h"
+#include "vector_make.h"
+#include "logic.h"
+#include "math.h"
+#include "common.h"
+#include "geometry.h"
+#include "conversion.h"
 
 #endif

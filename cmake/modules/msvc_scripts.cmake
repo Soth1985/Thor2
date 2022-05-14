@@ -72,7 +72,7 @@ function (thor_msvc_target_setup_executable target)
 	endif()
 endfunction()
 
-function (slp_msvc_target_setup_console_executable target)
+function (thor_msvc_target_setup_console_executable target)
 	if (MSVC)
 		thor_msvc_target_set_compiler_options(${target})
 		set_target_properties(${target} PROPERTIES LINK_FLAGS_DEBUG ${THOR_MSVC_LINKER_FLAGS_CONSOLE_EXE_DEBUG})

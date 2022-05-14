@@ -30,7 +30,7 @@
 #ifndef SIMD_PACKED_TYPES
 #define SIMD_PACKED_TYPES
 
-# include <simd/vector_types.h>
+# include "vector_types.h"
 # if SIMD_COMPILER_HAS_REQUIRED_FEATURES
 /*! @abstract A vector of two 8-bit signed (twos-complement) integers with
  *  relaxed alignment.

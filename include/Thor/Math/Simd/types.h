@@ -5,7 +5,7 @@
 #ifndef SIMD_TYPES
 #define SIMD_TYPES
 
-#include <simd/vector_types.h>
+#include "vector_types.h"
 #if SIMD_COMPILER_HAS_REQUIRED_FEATURES
 
 /*! @group Matrices

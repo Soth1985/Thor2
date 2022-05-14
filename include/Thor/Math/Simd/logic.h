@@ -60,9 +60,9 @@
 #ifndef SIMD_LOGIC_HEADER
 #define SIMD_LOGIC_HEADER
 
-#include <simd/base.h>
+#include "base.h"
 #if SIMD_COMPILER_HAS_REQUIRED_FEATURES
-#include <simd/vector_make.h>
+#include "vector_make.h"
 #include <stdint.h>
 
 #ifdef __cplusplus

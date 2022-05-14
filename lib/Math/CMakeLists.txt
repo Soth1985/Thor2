@@ -53,6 +53,7 @@ set_target_properties (Math PROPERTIES FOLDER Lib)
 thor_add_precompiled_header(Math "${CMAKE_CURRENT_SOURCE_DIR}/stdafx.h" "${CMAKE_CURRENT_SOURCE_DIR}/stdafx.cpp")
 thor_macos_target_setup_library(Math)
 thor_ios_target_setup_library(Math)
+thor_msvc_target_setup_library(Math)
 
 target_compile_options(Math PUBLIC -msse4.2)
 

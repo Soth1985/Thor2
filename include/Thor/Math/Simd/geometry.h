@@ -120,11 +120,11 @@
 #ifndef __SIMD_GEOMETRY_HEADER__
 #define __SIMD_GEOMETRY_HEADER__
 
-#include <simd/base.h>
+#include "base.h"
 #if SIMD_COMPILER_HAS_REQUIRED_FEATURES
-#include <simd/vector_types.h>
-#include <simd/common.h>
-#include <simd/extern.h>
+#include "vector_types.h"
+#include "common.h"
+#include "extern.h"
 
 #ifdef __cplusplus
 extern "C" {

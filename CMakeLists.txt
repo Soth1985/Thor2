@@ -1,7 +1,7 @@
 ##########################################################################
 # Thor Project                                                    	     #
 ##########################################################################
-cmake_minimum_required(VERSION 3.20 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.23 FATAL_ERROR)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -17,6 +17,8 @@ set(THOR_INSTALL_DIR ${CMAKE_INSTALL_PREFIX})
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
 set(CMAKE_SCRIPT_PATH ${CMAKE_SOURCE_DIR}/cmake/scripts)
 
+#set(CMAKE_GENERATOR_TOOLSET "ClangCL")
+
 project(Thor VERSION ${THOR_VERSION} LANGUAGES CXX)
 
 if (APPLE)
@@ -27,6 +29,7 @@ endif()
 
 if (MSVC)
 	option(THOR_MSVC_STATIC_RUNTIME "Link c runtime statically." TRUE)
+    option(THOR_MSVC_CLANG "Use clang toolset." TRUE)
 endif()
 
 if (IOS)
@@ -41,7 +44,13 @@ endif()
 
 #extra cmake scripts
 include(thor_utils)
-include(msvc_scripts)
+
+if (THOR_MSVC_CLANG)
+    include(ms_clang_scripts)
+else()
+    include(msvc_scripts)
+endif()
+
 include(xcode_ios_scripts)
 include(xcode_macos_scripts)
 

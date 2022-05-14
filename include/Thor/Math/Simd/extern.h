@@ -3,9 +3,9 @@
 #ifndef __SIMD_EXTERN_HEADER__
 #define __SIMD_EXTERN_HEADER__
 
-#include <simd/base.h>
+#include "base.h"
 #if SIMD_COMPILER_HAS_REQUIRED_FEATURES
-#include <simd/types.h>
+#include "types.h"
 
 #ifdef __cplusplus
 extern "C" {

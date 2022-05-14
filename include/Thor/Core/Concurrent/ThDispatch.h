@@ -49,12 +49,11 @@ namespace Thor
         ThDispatchQueue(eQueuePriority::Enum priority);
         ThDispatchQueue(const char* name, eQueueType::Enum type);
         
-        void DispatchAsync(std::function<void()> func);
-        void DispatchGroupAsync(const ThDispatchGroup& group, std::function<void()> func);
-        void DispatchGroupAsyncManual(const ThDispatchGroup& group, std::function<void()> func);
-        void DispatchGroupNotify(const ThDispatchGroup& group, std::function<void()> func);
-        void DispatchSync(std::function<void()> func);
-        void DispatchApply(ThSize count, std::function<void(ThSize)> func);
+        void DispatchAsync(std::function<void()>&& func);
+        void DispatchGroupAsync(const ThDispatchGroup& group, std::function<void()>&& func);
+        void DispatchGroupNotify(const ThDispatchGroup& group, std::function<void()>&& func);
+        void DispatchSync(std::function<void()>&& func);
+        void DispatchApply(ThSize count, std::function<void(ThSize)>&& func);
         
     private:
         ThDispatchQueue(const ThDispatchQueue& copy) = delete;

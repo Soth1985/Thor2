@@ -89,7 +89,7 @@
 #ifndef SIMD_VECTOR_TYPES
 #define SIMD_VECTOR_TYPES
 
-# include <simd/base.h>
+# include "base.h"
 # if SIMD_COMPILER_HAS_REQUIRED_FEATURES
 
 /*  MARK: Basic vector types                                                  */

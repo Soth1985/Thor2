@@ -6,10 +6,10 @@
 #ifndef SIMD_QUATERNIONS
 #define SIMD_QUATERNIONS
 
-#include <simd/base.h>
+#include "base.h"
 #if SIMD_COMPILER_HAS_REQUIRED_FEATURES
-#include <simd/vector.h>
-#include <simd/types.h>
+#include "vector.h"
+#include "types.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -290,8 +290,8 @@ extern "C" {
   
 /*  MARK: - float implementations                                             */
 
-#include <simd/math.h>
-#include <simd/geometry.h>
+#include "math.h"
+#include "geometry.h"
   
 /*  tg_promote is implementation gobbledygook that enables the compile-time
  *  dispatching in tgmath.h to work its magic.                                */
@@ -876,8 +876,8 @@ extern "C" {
   
 /*  MARK: - double implementations                                             */
 
-#include <simd/math.h>
-#include <simd/geometry.h>
+#include "math.h"
+#include "geometry.h"
   
 /*  tg_promote is implementation gobbledygook that enables the compile-time
  *  dispatching in tgmath.h to work its magic.                                */
