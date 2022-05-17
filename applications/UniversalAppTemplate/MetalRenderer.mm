@@ -79,7 +79,6 @@
 #else
     resourceOptions = MTLResourceStorageModeManaged;
 #endif
-    simd_float4
     _vertexBuffer = [_device newBufferWithBytes:Vertices length:sizeof(Vertices) options:resourceOptions];
     id<MTLFunction> vertexFunc = [_defaultLibrary newFunctionWithName:@"vertexFunc"];
     id<MTLFunction> fragmentFunc = [_defaultLibrary newFunctionWithName:@"fragmentFunc"];
