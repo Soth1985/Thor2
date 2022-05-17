@@ -5,8 +5,10 @@ function (thor_msvc_target_set_compiler_options target)
 endfunction()
 
 function (thor_msvc_target_setup_library target)
-	thor_msvc_target_set_compiler_options(${target})
-	thor_target_install(${target})
+	if (THOR_MSVC_CLANG)
+		thor_msvc_target_set_compiler_options(${target})
+		thor_target_install(${target})
+	endif()
 endfunction()
 
 function (thor_msvc_target_link_libraries target)

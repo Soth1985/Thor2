@@ -6,9 +6,9 @@
 //  Copyright © 2017 Victor Rykov. All rights reserved.
 //
 
-#import <simd/simd.h>
 #import "MetalRenderer.h"
 
+#include <Thor/Math/Simd/Simd.h>
 #include <Thor/Core/Common.h>
 
 @implementation MetalRenderer

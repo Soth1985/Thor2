@@ -22,6 +22,40 @@ RayTracer::~RayTracer()
         delete m_Scene;
 }
 
+void RayTracer::SyncFunc(void *ctx)
+{
+    auto self = (RayTracer*)ctx;
+    self->m_FramesRendered++;
+    self->m_State = RayTracerState::FrameReady;
+}
+
+void RayTracer::RenderFunc(void *ctx)
+{
+    auto workItem = (WorkItem*)ctx;
+    for (ThI32 i = 0; i < workItem->m_Self->m_Options.m_Width; ++i)
+    {
+         ThVec3f color;
+         for (ThI32 s = 0; s < workItem->m_Self->m_Options.m_SamplesPerPixel; ++s)
+         {
+             float u = (i + workItem->m_Self->m_RngUniform(workItem->m_Self->m_Generator)) * workItem->m_OneOverW;
+             float v = (workItem->m_J + workItem->m_Self->m_RngUniform(workItem->m_Self->m_Generator)) * workItem->m_OneOverH;
+             ThRayf ray;
+             
+             if (workItem->m_Self->m_Options.m_CameraMode == CameraMode::Normal)
+                 ray = workItem->m_Self->m_Camera.GetRay(u, v);
+             else
+                 ray = workItem->m_Self->m_Camera.GetRayLens(u, v);
+             
+             color += workItem->m_Self->TraceScene(ray, 1);
+         }
+         color /= workItem->m_Self->m_Options.m_SamplesPerPixel;
+         color.x() = Math::Sqrt(color.x());
+         color.y() = Math::Sqrt(color.y());
+         color.z() = Math::Sqrt(color.z());
+         workItem->m_Self->m_Film->Pixel(i, workItem->m_J) = ThVec4ub(255.99f * color.r(), 255.99f * color.g(), 255.99f * color.b(), 255);
+     }
+}
+
 void RayTracer::Init(const RayTracerOptions& options, Scene* scene)
 {
     if (m_State == RayTracerState::Uninitialized)
@@ -56,40 +90,23 @@ bool RayTracer::RenderFrame()
         
         float oneOverW = 1.0 / this->m_Options.m_Width;
         float oneOverH = 1.0f / this->m_Options.m_Height;
+        m_WorkItems.Clear();
+        m_WorkItems.Resize(this->m_Options.m_Height);
+        
         for (ThI32 j = this->m_Options.m_Height - 1; j >= 0; --j)
         {
-            m_Queue.DispatchGroupAsyncManual(m_Group, [=](void)
+            m_WorkItems[j] = WorkItem
             {
-                 for (ThI32 i = 0; i < this->m_Options.m_Width; ++i)
-                 {
-                     ThVec3f color;
-                     for (ThI32 s = 0; s < this->m_Options.m_SamplesPerPixel; ++s)
-                     {
-                         float u = (i + this->m_RngUniform(m_Generator)) * oneOverW;
-                         float v = (j + this->m_RngUniform(m_Generator)) * oneOverH;
-                         ThRayf ray;
-                         
-                         if (this->m_Options.m_CameraMode == CameraMode::Normal)
-                             ray = this->m_Camera.GetRay(u, v);
-                         else
-                             ray = this->m_Camera.GetRayLens(u, v);
-                         
-                         color += TraceScene(ray, 1);
-                     }
-                     color /= this->m_Options.m_SamplesPerPixel;
-                     color.x() = Math::Sqrt(color.x());
-                     color.y() = Math::Sqrt(color.y());
-                     color.z() = Math::Sqrt(color.z());
-                     this->m_Film->Pixel(i, j) = ThVec4ub(255.99f * color.r(), 255.99f * color.g(), 255.99f * color.b(), 255);
-                 }
-             });
+                .m_Self = this,
+                .m_OneOverH = oneOverH,
+                .m_OneOverW = oneOverW,
+                .m_J = j
+            };
+            
+            m_Queue.DispatchGroupAsync(m_Group, &m_WorkItems[j], &RenderFunc);
         }
         
-        m_Queue.DispatchGroupNotify(m_Group, [=](void)
-        {
-            this->m_FramesRendered++;
-            this->m_State = RayTracerState::FrameReady;
-        });
+        m_Queue.DispatchGroupNotify(m_Group, this, &SyncFunc);
         
         return true;
     }

@@ -35,12 +35,15 @@ function (thor_msvc_target_set_compiler_options target)
 endfunction()
 
 function (thor_msvc_target_setup_library target)
-	thor_msvc_target_set_compiler_options(${target})
-	thor_target_install(${target})
+	if (MSVC)
+		thor_msvc_target_set_compiler_options(${target})
+		thor_target_install(${target})
+	endif()
 endfunction()
 
 function (thor_msvc_target_link_libraries target)
-	target_link_libraries(${target}
+	if (MSVC)
+		target_link_libraries(${target}
 			Opengl32.lib
 			Winmm.lib
 			Iphlpapi.lib
@@ -58,6 +61,7 @@ function (thor_msvc_target_link_libraries target)
 			odbc32.lib
 			odbccp32.lib
 			)
+	endif()
 endfunction()
 
 function (thor_msvc_target_setup_executable target)

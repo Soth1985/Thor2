@@ -5,6 +5,7 @@
 #include <atomic>
 #include <random>
 #include <chrono>
+#include <functional>
 
 namespace Thor
 {
@@ -202,6 +203,17 @@ namespace Thor
         bool ScatterDielectric(const ComponentRef& mat, const ThRayf& rayIn, const ThRayHitf& hit, ThVec3f& attenuation, ThRayf& scattered);
         float Schlick(float cosine, float n1, float n2);
         float Schlick2(const ThVec3f& vec, const ThVec3f& norm, float n1, float n2);
+        static void RenderFunc(void* ctx);
+        static void SyncFunc(void* ctx);
+        
+        struct WorkItem
+        {
+            RayTracer* m_Self;
+            float m_OneOverW;
+            float m_OneOverH;
+            ThI32 m_J;
+        };
+        
         std::atomic<RayTracerState> m_State;
         Film* m_Film;        
         ThI32 m_FramesRendered;
@@ -212,5 +224,6 @@ namespace Thor
         Camera m_Camera;
         ThDispatchQueue m_Queue;
         ThDispatchGroup m_Group;
+        ThVector<WorkItem> m_WorkItems;
     };
 }
