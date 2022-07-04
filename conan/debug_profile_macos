@@ -1,0 +1,11 @@
+include(default)
+[settings]
+arch=armv8
+os=Macos
+compiler=apple-clang
+compiler.version=13.1
+compiler.libcxx=libc++
+build_type=Debug
+[options]
+[build_requires]
+[env]
