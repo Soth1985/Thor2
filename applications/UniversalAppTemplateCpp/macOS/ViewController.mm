@@ -7,33 +7,27 @@
 //
 
 #import "ViewController.h"
-#import "AppDelegate.h"
 
 #import "../MetalViewDelegate.h"
+#include "../MetalContext.h"
 
 @implementation ViewController
 {
     MetalViewDelegate* m_Delegate;
 }
 
-- (void)dealloc
-{
-    delete m_Delegate;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    MTKView* view = (MTKView*)self.view;
-    MTK::View* cppView = (__bridge MTK::View*)view;
-    AppDelegate* appDelegate = (AppDelegate*)NSApplication.sharedApplication.delegate;
-    m_Delegate = new MetalViewDelegate(appDelegate.Device, cppView);
+    MTKView *view = (MTKView *)self.view;
+    MetalContext::Initialize();
+    m_Delegate = [[MetalViewDelegate alloc] initWithView:view];
 }
 
-- (void)setRepresentedObject:(id)representedObject
-{
+- (void)setRepresentedObject:(id)representedObject {
     [super setRepresentedObject:representedObject];
+
     // Update the view, if already loaded.
 }
 

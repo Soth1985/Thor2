@@ -1,12 +1,14 @@
 project(UniversalAppTemplateCpp VERSION ${THOR_VERSION})
 
 set(${PROJECT_NAME}_SRC
-    MetalViewDelegate.cpp
-    MetalRenderer.h)
+    MetalViewDelegate.mm
+    MetalContext.cpp
+    MetalRenderer.cpp)
 
 set(${PROJECT_NAME}_H
     MetalViewDelegate.h
-    MetalRenderer.cpp)
+    MetalContext.h
+    MetalRenderer.h)
 
 set(${PROJECT_NAME}_RESOURCE_FILES)
 

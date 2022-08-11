@@ -1,14 +1,16 @@
-#pragma once
+//
+//  Renderer.h
+//  ArTest
+//
+//  Created by Victor Rykov on 6/20/17.
+//  Copyright © 2017 Victor Rykov. All rights reserved.
+//
 
-#include <Metal/Metal.hpp>
-#include <MetalKit/MetalKit.hpp>
+#import <Metal/Metal.h>
+#import <MetalKit/MetalKit.h>
 
-class MetalViewDelegate : public MTK::ViewDelegate
-{
-public:
-    MetalViewDelegate(NS::SharedPtr<MTL::Device> device, MTK::View* view);
-    virtual ~MetalViewDelegate()override = default;
-    virtual void drawInMTKView( MTK::View* pView ) override;
-private:
-    NS::SharedPtr<MTL::Device> m_Device;
-};
+@interface MetalViewDelegate : NSObject<MTKViewDelegate>
+
+- (instancetype)initWithView:(MTKView*)view;
+
+@end

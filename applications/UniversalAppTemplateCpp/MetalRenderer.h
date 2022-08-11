@@ -7,5 +7,4 @@ class MetalRenderer
 {
 public:
 private:
-    MTL::Device* m_Device;
 };

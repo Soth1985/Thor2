@@ -7,27 +7,32 @@
 //
 
 #import "MetalViewDelegate.h"
+#import <Metal/Metal.h>
 
 #include <Thor/Math/Simd/Simd.h>
 #include <Thor/Core/Common.h>
 #include <Metal/Metal.hpp>
 
+#include "MetalRenderer.h"
+#include "MetalContext.h"
+
+#include <Thor/Core/Debug/ThLogger.h>
+
 @implementation MetalViewDelegate
 {
     MTKView* m_View;
-    id <MTLDevice> _device;
-    id <MTLCommandQueue> _commandQueue;
-    id <MTLLibrary> _defaultLibrary;
     
-    id <MTLBuffer> _vertexBuffer;
-    id <MTLRenderPipelineState> _pipelineState;
+    NS::SharedPtr<MTL::Device> m_Device;
+    NS::SharedPtr<MTL::CommandQueue> m_CommandQueue;
+    NS::SharedPtr<MTL::Library> m_DefaultLibrary;
+    NS::SharedPtr<MTL::RenderPipelineState> m_PipelineState;
     
-    MTL::Device* m_Device;
+    NS::SharedPtr<MTL::Buffer> m_VertexBuffer;
 }
 
-- (instancetype)initWithView:(MTKView*)view {
+- (instancetype)initWithView:(MTKView*)view
+{
     self = [super init];
-    m_Device = nullptr;
     
     if (self)
     {
@@ -40,15 +45,10 @@
     return self;
 }
 
--(void)dealloc
-{
-    m_Device->release();
-}
-
 - (void)setupView
 {
     m_View.delegate = self;
-    m_View.device = _device;
+    m_View.device = (__bridge id<MTLDevice>)m_Device.get();
     
     // Setup the render target, choose values based on your app.
     m_View.sampleCount = 1;
@@ -60,14 +60,9 @@
 
 - (void)setupMetal
 {
-    // Set the view to use the default device.
-    _device = MTLCreateSystemDefaultDevice();
-    
-    // Create a new command queue.
-    _commandQueue = [_device newCommandQueue];
-    
-    // Load all the shader files with a metal file extension in the project.
-    _defaultLibrary = [_device newDefaultLibrary];
+    m_Device = MetalContext::DefaultDevice();
+    m_CommandQueue = NS::TransferPtr(m_Device->newCommandQueue());
+    m_DefaultLibrary = NS::TransferPtr(m_Device->newDefaultLibrary());
 }
 
 - (void)setupRendering
@@ -82,36 +77,46 @@
         0.0f, 0.0f, 1.0f, 1.0f
     };
     
-    MTLResourceOptions resourceOptions;
+    MTL::ResourceOptions resourceOptions;
 #ifdef THOR_PLATFORM_IOS
-    resourceOptions = MTLResourceStorageModeShared;
+    resourceOptions = MTL::StorageMode::StorageModeShared;
 #else
-    resourceOptions = MTLResourceStorageModeManaged;
+    resourceOptions = MTL::StorageMode::StorageModeManaged;
 #endif
-    _vertexBuffer = [_device newBufferWithBytes:Vertices length:sizeof(Vertices) options:resourceOptions];
-    id<MTLFunction> vertexFunc = [_defaultLibrary newFunctionWithName:@"vertexFunc"];
-    id<MTLFunction> fragmentFunc = [_defaultLibrary newFunctionWithName:@"fragmentFunc"];
-    MTLRenderPipelineDescriptor *renderPipelineDesc = [[MTLRenderPipelineDescriptor alloc] init];
-    MTLVertexDescriptor* vertexDesc = [[MTLVertexDescriptor alloc] init];
     
-    vertexDesc.attributes[0].format = MTLVertexFormatFloat2;
-    vertexDesc.attributes[0].bufferIndex = 0;
-    vertexDesc.attributes[0].offset = 0;
-    vertexDesc.attributes[1].format = MTLVertexFormatFloat4;
-    vertexDesc.attributes[1].bufferIndex = 0;
-    vertexDesc.attributes[1].offset = 2 * sizeof(float);
-    vertexDesc.layouts[0].stride = 6 * sizeof(float);
-    vertexDesc.layouts[0].stepFunction = MTLVertexStepFunctionPerVertex;
-    renderPipelineDesc.vertexFunction = vertexFunc;
-    renderPipelineDesc.fragmentFunction = fragmentFunc;
-    renderPipelineDesc.vertexDescriptor = vertexDesc;
-    renderPipelineDesc.colorAttachments[0].pixelFormat = MTLPixelFormatBGRA8Unorm;
-    renderPipelineDesc.depthAttachmentPixelFormat = MTLPixelFormatDepth32Float_Stencil8;
-    renderPipelineDesc.stencilAttachmentPixelFormat = MTLPixelFormatDepth32Float_Stencil8;
+    m_VertexBuffer = NS::TransferPtr(m_Device->newBuffer(Vertices, sizeof(Vertices), resourceOptions));
+    auto vertexFunc = NS::TransferPtr(m_DefaultLibrary->newFunction(NS::String::string("vertexFunc", NS::UTF8StringEncoding)));
+    auto fragmentFunc = NS::TransferPtr(m_DefaultLibrary->newFunction(NS::String::string("fragmentFunc", NS::UTF8StringEncoding)));
+    auto renderPipelineDescriptor = NS::TransferPtr(MTL::RenderPipelineDescriptor::alloc()->init());
     
-    // Create MTLRenderPipelineState from MTLRenderPipelineDescriptor
-    NSError *errors = nil;
-    _pipelineState = [_device newRenderPipelineStateWithDescriptor:renderPipelineDesc error:&errors];
+    auto vertexDescriptor = NS::TransferPtr(MTL::VertexDescriptor::alloc()->init());
+    auto attribute0 = vertexDescriptor->attributes()->object(0);
+    attribute0->setFormat(MTL::VertexFormat::VertexFormatFloat2);
+    attribute0->setBufferIndex(0);
+    attribute0->setOffset(0);
+    auto attribute1 = vertexDescriptor->attributes()->object(1);
+    attribute1->setFormat(MTL::VertexFormat::VertexFormatFloat4);
+    attribute1->setBufferIndex(0);
+    attribute1->setOffset(2 * sizeof(float));
+    auto layout = vertexDescriptor->layouts()->object(0);
+    layout->setStride(6 * sizeof(float));
+    layout->setStepFunction(MTL::VertexStepFunction::VertexStepFunctionPerVertex);
+    
+    renderPipelineDescriptor->setVertexFunction(vertexFunc.get());
+    renderPipelineDescriptor->setFragmentFunction(fragmentFunc.get());
+    renderPipelineDescriptor->setVertexDescriptor(vertexDescriptor.get());
+    renderPipelineDescriptor->colorAttachments()->object(0)->setPixelFormat(MTL::PixelFormat::PixelFormatBGRA8Unorm);
+    renderPipelineDescriptor->setDepthAttachmentPixelFormat(MTL::PixelFormat::PixelFormatDepth32Float_Stencil8);
+    renderPipelineDescriptor->setStencilAttachmentPixelFormat(MTL::PixelFormat::PixelFormatDepth32Float_Stencil8);
+    
+    NS::Error* pError = nullptr;
+    m_PipelineState = NS::TransferPtr(m_Device->newRenderPipelineState(renderPipelineDescriptor.get(), &pError));
+    
+    if (pError)
+    {
+        auto message = pError->localizedDescription()->utf8String();
+        THOR_ERR("Failed to create pipeline state: %s", "Metal", message);
+    }
 }
 
 - (void)reshape
@@ -124,48 +129,41 @@
 
 - (void)render
 {
-    id <MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
-    commandBuffer.label = @"Main Command Buffer";
+    NS::AutoreleasePool* pool = NS::AutoreleasePool::alloc()->init();
+
+    MTL::CommandBuffer* commandBuffer = m_CommandQueue->commandBuffer();
+    commandBuffer->setLabel(NS::String::string("Main Command Buffer", NS::UTF8StringEncoding));
     
-    // Obtain a renderPassDescriptor generated from the view's drawable textures.
-    MTLRenderPassDescriptor* renderPassDescriptor = m_View.currentRenderPassDescriptor;
-    
-    if (renderPassDescriptor == nil)
-        return;
-    
-    // Create a render command encoder so we can render into something.
-    id <MTLRenderCommandEncoder> renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
-    
-    renderEncoder.label = @"Final Pass Encoder";
-    
-    // Set context state.
-    [renderEncoder setViewport:{0, 0, m_View.drawableSize.width, m_View.drawableSize.height, 0, 1}];
-    [renderEncoder pushDebugGroup:@"Render Triangle"];
-    
-    [renderEncoder setRenderPipelineState:_pipelineState];
-    [renderEncoder setVertexBuffer:_vertexBuffer offset:0 atIndex:0];
-    [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:3];
-    
-    [renderEncoder popDebugGroup];
-    
-    // We're done encoding commands.
-    [renderEncoder endEncoding];
-    
-    /*
-     Call the view's completion handler which is required by the view since
-     it will signal its semaphore and set up the next buffer.
-     */
-    
-    [commandBuffer addCompletedHandler:^(id<MTLCommandBuffer> buffer)
-     {
-         //NSLog(@"Frame done");
-     }];
-    
-    // Schedule a present once the framebuffer is complete using the current drawable.
-    [commandBuffer presentDrawable:m_View.currentDrawable];
-    
-    // Finalize rendering here & push the command buffer to the GPU.
-    [commandBuffer commit];
+    commandBuffer->addCompletedHandler( ^void( MTL::CommandBuffer* pCmd )
+    {
+        
+    });
+
+    MTL::RenderPassDescriptor* renderPassDescriptor = (__bridge_retained MTL::RenderPassDescriptor*)m_View.currentRenderPassDescriptor;
+    MTL::RenderCommandEncoder* renderEncoder = commandBuffer->renderCommandEncoder(renderPassDescriptor);
+    renderEncoder->setLabel(NS::String::string("Final Pass Encoder", NS::UTF8StringEncoding));
+    MTL::Viewport viewport =
+    {
+        .originX = 0.0,
+        .originY = 0.0,
+        .width = m_View.drawableSize.width,
+        .height = m_View.drawableSize.height,
+        .znear = 0.0,
+        .zfar = 1.0
+    };
+    renderEncoder->setViewport(viewport);
+    renderEncoder->pushDebugGroup(NS::String::string("Render Triangle", NS::UTF8StringEncoding));
+    renderEncoder->setRenderPipelineState(m_PipelineState.get());
+    renderEncoder->setVertexBuffer(m_VertexBuffer.get(), 0, 0);
+    renderEncoder->drawPrimitives(MTL::PrimitiveType::PrimitiveTypeTriangle, NS::UInteger(0), NS::UInteger(3));
+    renderEncoder->popDebugGroup();
+    renderEncoder->endEncoding();
+
+    MTL::Drawable* drawable = (__bridge MTL::Drawable*)m_View.currentDrawable;
+    commandBuffer->presentDrawable(drawable);
+    commandBuffer->commit();
+
+    pool->release();
 }
 
 // Called whenever view changes orientation or layout is changed

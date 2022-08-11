@@ -8,11 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-#include <Metal/Metal.hpp>
-
 @interface AppDelegate : NSObject <NSApplicationDelegate>
-
-@property(readonly) NS::SharedPtr<MTL::Device> Device;
 
 @end
 
