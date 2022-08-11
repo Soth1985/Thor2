@@ -4,7 +4,7 @@ MetalViewDelegate::MetalViewDelegate(NS::SharedPtr<MTL::Device> device, MTK::Vie
 :
 m_Device(device)
 {
-    view->setDevice(m_Device);
+    view->setDevice(m_Device.get());
     view->setDelegate(this);
 }
 
