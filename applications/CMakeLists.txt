@@ -1,3 +1,4 @@
 add_subdirectory(MetalTracer)
 add_subdirectory(MetalByExample)
 add_subdirectory(UniversalAppTemplate)
+add_subdirectory(UniversalAppTemplateCpp)
