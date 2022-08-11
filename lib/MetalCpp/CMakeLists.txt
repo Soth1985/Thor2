@@ -1,4 +1,4 @@
-add_library(MetalCpp STATIC ${CMAKE_SOURCE_DIR}/lib/MetalCpp/Implementation.cpp)
+add_library(MetalCpp STATIC ${CMAKE_SOURCE_DIR}/lib/MetalCpp/Implementation.mm)
 target_include_directories(MetalCpp PUBLIC ${CMAKE_SOURCE_DIR}/lib/MetalCpp)
 set_target_properties (MetalCpp PROPERTIES FOLDER Lib)
 

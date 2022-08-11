@@ -11,4 +11,4 @@ public:
     virtual void drawInMTKView( MTK::View* pView ) override;
 private:
     NS::SharedPtr<MTL::Device> m_Device;
-}
+};
