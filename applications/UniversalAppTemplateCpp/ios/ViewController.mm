@@ -9,6 +9,8 @@
 #import "ViewController.h"
 #import "../MetalViewDelegate.h"
 
+#include "../MetalContext.h"
+
 @implementation ViewController
 {
     MetalViewDelegate* m_Delegate;
@@ -19,6 +21,7 @@
     [super viewDidLoad];
     
     MTKView *view = (MTKView *)self.view;
+    MetalContext::Initialize();
     m_Delegate = [[MetalViewDelegate alloc] initWithView:view];
     
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];

@@ -7,8 +7,8 @@
 //
 
 #import "ViewController.h"
-
 #import "../MetalViewDelegate.h"
+
 #include "../MetalContext.h"
 
 @implementation ViewController
