@@ -3,12 +3,14 @@ project(UniversalAppTemplateCpp VERSION ${THOR_VERSION})
 set(${PROJECT_NAME}_SRC
     MetalViewDelegate.mm
     MetalContext.cpp
-    MetalRenderer.cpp)
+    MetalRenderer.cpp
+    MetalRendererTriangle.cpp)
 
 set(${PROJECT_NAME}_H
     MetalViewDelegate.h
     MetalContext.h
-    MetalRenderer.h)
+    MetalRenderer.h
+    MetalRendererTriangle.h)
 
 set(${PROJECT_NAME}_RESOURCE_FILES)
 
