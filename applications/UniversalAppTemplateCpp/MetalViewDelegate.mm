@@ -92,6 +92,7 @@
 // Called whenever the view needs to render
 - (void)drawInMTKView:(nonnull MTKView *)view
 {
+    NS::AutoreleasePool* pool = NS::AutoreleasePool::alloc()->init();
     MTL::Viewport viewport =
     {
         .originX = 0.0,
@@ -104,6 +105,7 @@
     MTL::RenderPassDescriptor* renderPassDescriptor = (__bridge_retained MTL::RenderPassDescriptor*)m_View.currentRenderPassDescriptor;
     MTL::Drawable* drawable = (__bridge MTL::Drawable*)m_View.currentDrawable;
     m_Renderer->RenderFrame(viewport, renderPassDescriptor, drawable);
+    pool->release();
 }
 
 @end

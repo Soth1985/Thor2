@@ -68,8 +68,6 @@ void MetalRendererTriangle::SetupRendering()
 
 void MetalRendererTriangle::RenderFrame(MTL::Viewport viewport, MTL::RenderPassDescriptor* renderPassDescriptor, MTL::Drawable* drawable)
 {
-    NS::AutoreleasePool* pool = NS::AutoreleasePool::alloc()->init();
-
     MTL::CommandBuffer* commandBuffer = m_CommandQueue->commandBuffer();
     commandBuffer->setLabel(NS::String::string("Main Command Buffer", NS::UTF8StringEncoding));
     
@@ -90,8 +88,6 @@ void MetalRendererTriangle::RenderFrame(MTL::Viewport viewport, MTL::RenderPassD
 
     commandBuffer->presentDrawable(drawable);
     commandBuffer->commit();
-
-    pool->release();
 }
 
 void MetalRendererTriangle::ViewportSizeChanged(MTL::Viewport viewport)
