@@ -2,6 +2,26 @@
 
 using namespace Thor;
 
+ThDispatchSemaphore::ThDispatchSemaphore(ThI32 initialValue)
+{
+    m_Semaphore = dispatch_semaphore_create(initialValue);
+}
+
+ThDispatchSemaphore::~ThDispatchSemaphore()
+{
+    
+}
+
+void ThDispatchSemaphore::Wait(ThI64 timeoutNanoseconds)
+{
+    dispatch_semaphore_wait(m_Semaphore, timeoutNanoseconds);
+}
+
+void ThDispatchSemaphore::Signal()
+{
+    dispatch_semaphore_signal(m_Semaphore);
+}
+
 ThDispatchGroup::~ThDispatchGroup()
 {
     dispatch_release(m_Group);

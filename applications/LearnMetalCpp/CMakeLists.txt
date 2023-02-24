@@ -7,6 +7,7 @@ set(${PROJECT_NAME}_SRC
     MetalRendererSample0.cpp
     MetalRendererSample1.cpp
     MetalRendererSample2.cpp
+    MetalRendererSample3.cpp
     MetalRendererTriangle.cpp)
 
 set(${PROJECT_NAME}_H
@@ -16,6 +17,7 @@ set(${PROJECT_NAME}_H
     MetalRendererSample0.h
     MetalRendererSample1.h
     MetalRendererSample2.h
+    MetalRendererSample3.h
     MetalRendererTriangle.h)
 
 set(${PROJECT_NAME}_RESOURCE_FILES)
@@ -23,6 +25,7 @@ set(${PROJECT_NAME}_RESOURCE_FILES)
 set(${PROJECT_NAME}_SHADERS
     Sample1.metal
     Sample2.metal
+    Sample3.metal
     Shaders.metal)
 
 if(MACOS)

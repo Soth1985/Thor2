@@ -1,16 +1,21 @@
-#include "MetalRendererSample2.h"
+#include "MetalRendererSample3.h"
 
 #include <Thor/Core/Debug/ThLogger.h>
 #include <Thor/Math/Simd/Simd.h>
 
-MetalRendererSample2::MetalRendererSample2(NS::SharedPtr<MTL::Device> device)
+struct FrameData
+{
+    float angle;
+};
+
+MetalRendererSample3::MetalRendererSample3(NS::SharedPtr<MTL::Device> device)
     :
 MetalRenderer(device)
 {
     
 }
 
-void MetalRendererSample2::SetupRendering()
+void MetalRendererSample3::SetupRendering()
 {
     m_CommandQueue = NS::TransferPtr(m_Device->newCommandQueue());
     m_DefaultLibrary = NS::TransferPtr(m_Device->newDefaultLibrary());
@@ -46,8 +51,13 @@ void MetalRendererSample2::SetupRendering()
     m_PositionBuffer->didModifyRange(NS::Range::Make(0, m_PositionBuffer->length()));
     m_ColorBuffer->didModifyRange(NS::Range::Make(0, m_ColorBuffer->length()));
     
-    auto vertexFn = NS::TransferPtr(m_DefaultLibrary->newFunction( NS::String::string("vertexMain2", NS::UTF8StringEncoding)));
-    auto fragFn = NS::TransferPtr(m_DefaultLibrary->newFunction( NS::String::string("fragmentMain2", NS::UTF8StringEncoding)));
+    for ( int i = 0; i < kMaxFramesInFlight; ++i )
+    {
+        m_PerFrameBuffers[ i ] = NS::TransferPtr(m_Device->newBuffer(sizeof(FrameData), MTL::ResourceStorageModeManaged));
+    }
+    
+    auto vertexFn = NS::TransferPtr(m_DefaultLibrary->newFunction( NS::String::string("vertexMain3", NS::UTF8StringEncoding)));
+    auto fragFn = NS::TransferPtr(m_DefaultLibrary->newFunction( NS::String::string("fragmentMain3", NS::UTF8StringEncoding)));
     
     auto argEncoder = NS::TransferPtr(vertexFn->newArgumentEncoder(0));
     m_ArgBuffer = NS::TransferPtr(m_Device->newBuffer( argEncoder->encodedLength(), MTL::ResourceStorageModeManaged));
@@ -73,15 +83,24 @@ void MetalRendererSample2::SetupRendering()
     }
 }
 
-void MetalRendererSample2::RenderFrame(MTL::Viewport viewport, MTL::RenderPassDescriptor* renderPassDescriptor, MTL::Drawable* drawable)
+void MetalRendererSample3::RenderFrame(MTL::Viewport viewport, MTL::RenderPassDescriptor* renderPassDescriptor, MTL::Drawable* drawable)
 {
     MTL::CommandBuffer* commandBuffer = m_CommandQueue->commandBuffer();
     commandBuffer->setLabel(NS::String::string("Main Command Buffer", NS::UTF8StringEncoding));
     
+    m_Frame = (m_Frame + 1) % kMaxFramesInFlight;
+    auto perFrameDataBuffer = m_PerFrameBuffers[m_Frame];
+    
+    m_Semaphore.Wait();
+    
     commandBuffer->addCompletedHandler( ^void( MTL::CommandBuffer* pCmd )
     {
-        
+        m_Semaphore.Signal();
     });
+    
+    m_Angle += 0.01f;
+    reinterpret_cast<FrameData*>(perFrameDataBuffer->contents())->angle = m_Angle;
+    perFrameDataBuffer->didModifyRange(NS::Range::Make(0, sizeof(FrameData)));
 
     MTL::RenderCommandEncoder* renderEncoder = commandBuffer->renderCommandEncoder(renderPassDescriptor);
     renderEncoder->setLabel(NS::String::string("Final Pass Encoder", NS::UTF8StringEncoding));
@@ -89,6 +108,7 @@ void MetalRendererSample2::RenderFrame(MTL::Viewport viewport, MTL::RenderPassDe
     renderEncoder->pushDebugGroup(NS::String::string("Render Triangle", NS::UTF8StringEncoding));
     renderEncoder->setRenderPipelineState(m_PipelineState.get());
     renderEncoder->setVertexBuffer(m_ArgBuffer.get(), 0, 0);
+    renderEncoder->setVertexBuffer(perFrameDataBuffer.get(), 0, 1);
     renderEncoder->useResource(m_ColorBuffer.get(), MTL::ResourceUsageRead);
     renderEncoder->useResource(m_PositionBuffer.get(), MTL::ResourceUsageRead);
     renderEncoder->drawPrimitives(MTL::PrimitiveType::PrimitiveTypeTriangle, NS::UInteger(0), NS::UInteger(3));
@@ -99,7 +119,7 @@ void MetalRendererSample2::RenderFrame(MTL::Viewport viewport, MTL::RenderPassDe
     commandBuffer->commit();
 }
 
-void MetalRendererSample2::ViewportSizeChanged(MTL::Viewport viewport)
+void MetalRendererSample3::ViewportSizeChanged(MTL::Viewport viewport)
 {
     
 }

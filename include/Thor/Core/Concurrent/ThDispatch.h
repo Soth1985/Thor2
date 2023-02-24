@@ -23,6 +23,18 @@ namespace Thor
             Background
         };
     };
+
+    class ThDispatchSemaphore
+    {
+    public:
+        ThDispatchSemaphore(ThI32 initialValue);
+        ~ThDispatchSemaphore();
+        
+        void Wait(ThI64 timeoutNanoseconds = DISPATCH_TIME_FOREVER);
+        void Signal();
+    private:
+        dispatch_semaphore_t m_Semaphore;
+    };
     
     class ThDispatchGroup
     {

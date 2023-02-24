@@ -16,6 +16,8 @@
 #include "MetalRendererTriangle.h"
 #include "MetalRendererSample0.h"
 #include "MetalRendererSample1.h"
+#include "MetalRendererSample2.h"
+#include "MetalRendererSample3.h"
 #include "MetalContext.h"
 
 @implementation MetalViewDelegate
@@ -66,9 +68,11 @@
 
 - (void)setupRendering
 {
-    //m_Renderer = new MetalRendererTriangle(m_Device);MetalRendererSample0
+    //m_Renderer = new MetalRendererTriangle(m_Device);
     //m_Renderer = new MetalRendererSample0(m_Device);
-    m_Renderer = new MetalRendererSample1(m_Device);
+    //m_Renderer = new MetalRendererSample1(m_Device);
+    //m_Renderer = new MetalRendererSample2(m_Device);
+    m_Renderer = new MetalRendererSample3(m_Device);
     m_Renderer->SetupRendering();
 }
 
