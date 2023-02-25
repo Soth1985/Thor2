@@ -18,6 +18,8 @@
 #include "MetalRendererSample1.h"
 #include "MetalRendererSample2.h"
 #include "MetalRendererSample3.h"
+#include "MetalRendererSample4.h"
+#include "MetalRendererSample5.h"
 #include "MetalContext.h"
 
 @implementation MetalViewDelegate
@@ -63,7 +65,7 @@
     m_View.depthStencilPixelFormat = MTLPixelFormatDepth32Float_Stencil8;
     m_View.colorPixelFormat = MTLPixelFormatBGRA8Unorm;
     m_View.clearColor = MTLClearColorMake( 0.0, 0.0, 0.0, 0.0 );
-    m_View.clearDepth = 0;
+    m_View.clearDepth = 1.0;
 }
 
 - (void)setupRendering
@@ -72,7 +74,9 @@
     //m_Renderer = new MetalRendererSample0(m_Device);
     //m_Renderer = new MetalRendererSample1(m_Device);
     //m_Renderer = new MetalRendererSample2(m_Device);
-    m_Renderer = new MetalRendererSample3(m_Device);
+    //m_Renderer = new MetalRendererSample3(m_Device);
+    m_Renderer = new MetalRendererSample4(m_Device);
+    m_Renderer = new MetalRendererSample5(m_Device);
     m_Renderer->SetupRendering();
 }
 

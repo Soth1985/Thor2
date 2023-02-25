@@ -3,21 +3,29 @@ project(LearnMetalCpp VERSION ${THOR_VERSION})
 set(${PROJECT_NAME}_SRC
     MetalViewDelegate.mm
     MetalContext.cpp
+    MetalMath.cpp
     MetalRenderer.cpp
     MetalRendererSample0.cpp
     MetalRendererSample1.cpp
     MetalRendererSample2.cpp
     MetalRendererSample3.cpp
+    MetalRendererSample4.cpp
+    MetalRendererSample5.cpp
     MetalRendererTriangle.cpp)
 
 set(${PROJECT_NAME}_H
     MetalViewDelegate.h
     MetalContext.h
     MetalRenderer.h
+    MetalMath.h
+    Shared4.h
+    Shared5.h
     MetalRendererSample0.h
     MetalRendererSample1.h
     MetalRendererSample2.h
     MetalRendererSample3.h
+    MetalRendererSample4.h
+    MetalRendererSample5.h
     MetalRendererTriangle.h)
 
 set(${PROJECT_NAME}_RESOURCE_FILES)
@@ -26,6 +34,8 @@ set(${PROJECT_NAME}_SHADERS
     Sample1.metal
     Sample2.metal
     Sample3.metal
+    Sample4.metal
+    Sample5.metal
     Shaders.metal)
 
 if(MACOS)

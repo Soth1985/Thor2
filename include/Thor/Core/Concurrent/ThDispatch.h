@@ -1,3 +1,4 @@
+#pragma once
 #include <Thor/Core/Common.h>
 #include <dispatch/dispatch.h>
 #include <functional>
