@@ -7,6 +7,7 @@ arch_build=x86_64
 compiler=Visual Studio
 compiler.version=17
 compiler.toolset=ClangCL
+compiler.cppstd=20
 build_type=Debug
 [options]
 [build_requires]

@@ -2,4 +2,6 @@
 .vscode/*.*
 build
 build_ios
+build_windows
+build_macos
 CMakeUserPresets.json

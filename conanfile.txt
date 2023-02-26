@@ -3,6 +3,9 @@
 glfw/3.3.7
 glm/0.9.9.8
 stb/cci.20210910
+poco/1.12.4
+#cgltf/1.13
+#ktx/4.0.0
 
 [generators]
 CMakeDeps

@@ -21,6 +21,7 @@
 #include "MetalRendererSample4.h"
 #include "MetalRendererSample5.h"
 #include "MetalRendererSample6.h"
+#include "MetalRendererSample8.h"
 #include "MetalContext.h"
 
 @implementation MetalViewDelegate
@@ -78,7 +79,9 @@
     //m_Renderer = new MetalRendererSample3(m_Device);
     //m_Renderer = new MetalRendererSample4(m_Device);
     //m_Renderer = new MetalRendererSample5(m_Device);
-    m_Renderer = new MetalRendererSample6(m_Device);
+    //m_Renderer = new MetalRendererSample6(m_Device);
+    //m_Renderer = new MetalRendererSample7(m_Device);
+    m_Renderer = new MetalRendererSample8(m_Device);
     m_Renderer->SetupRendering();
 }
 

@@ -5,4 +5,5 @@ os=Macos
 compiler=apple-clang
 compiler.version=14.0
 compiler.libcxx=libc++
+compiler.cppstd=20
 build_type=Debug
