@@ -11,7 +11,7 @@ if (MACOS)
 	thor_set_xcode_property(${target} VALIDATE_PRODUCT[variant=Debug] NO)#maybe only exe
 	thor_set_xcode_property(${target} COPY_PHASE_STRIP YES)
 	thor_set_xcode_property(${target} IPHONEOS_DEPLOYMENT_TARGET "")
-	thor_set_xcode_property(${target} MACOSX_DEPLOYMENT_TARGET "12.3")
+	thor_set_xcode_property(${target} MACOSX_DEPLOYMENT_TARGET "13.0")
 	thor_set_xcode_property(${target} SKIP_INSTALL NO)
 	thor_set_xcode_property(${target} STRIP_INSTALLED_PRODUCT YES)
 	thor_set_xcode_property(${target} STRIP_STYLE "all")

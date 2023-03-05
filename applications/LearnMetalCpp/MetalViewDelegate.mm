@@ -28,11 +28,6 @@
 {
     MTKView* m_View;    
     NS::SharedPtr<MTL::Device> m_Device;
-    NS::SharedPtr<MTL::CommandQueue> m_CommandQueue;
-    NS::SharedPtr<MTL::Library> m_DefaultLibrary;
-    NS::SharedPtr<MTL::RenderPipelineState> m_PipelineState;
-    NS::SharedPtr<MTL::Buffer> m_VertexBuffer;
-    
     MetalRenderer* m_Renderer;
 }
 
@@ -68,6 +63,17 @@
     m_View.colorPixelFormat = MTLPixelFormatBGRA8Unorm;
     m_View.clearColor = MTLClearColorMake( 0.0, 0.0, 0.0, 0.0 );
     m_View.clearDepth = 1.0;
+    
+    auto metalLayer = (CAMetalLayer*)m_View.layer;
+    
+    if (@available(macOS 13.0, *))
+    {
+        metalLayer.developerHUDProperties =
+        @{
+            @"mode": @"default",
+            @"logging": @"default"
+        };
+    }
 }
 
 - (void)setupRendering

@@ -111,3 +111,90 @@ void ThDispatchQueue::DispatchApply(ThSize count, void* ctx, DispatchApplyFunc f
 {
     dispatch_apply_f(count, m_Queue, ctx, func);
 }
+
+void ThDispatchQueue::DispatchAsync(std::function<void()> func)
+{
+    dispatch_async(m_Queue, ^(void)
+    {
+        func();
+    });
+}
+
+void ThDispatchQueue::DispatchGroupAsync(const ThDispatchGroup& group, std::function<void()> func)
+{
+    dispatch_group_async(group.Id(), m_Queue, ^(void)
+    {
+        func();
+    });
+}
+
+void ThDispatchQueue::DispatchGroupAsyncManual(const ThDispatchGroup& group, std::function<void()> func)
+{
+    dispatch_group_t groupId = group.Id();
+    dispatch_group_enter(groupId);
+    dispatch_group_async(groupId, m_Queue, ^(void)
+    {
+        func();
+        dispatch_group_leave(groupId);
+    });
+}
+
+void ThDispatchQueue::DispatchGroupNotify(const ThDispatchGroup& group, std::function<void()> func)
+{
+    dispatch_group_notify(group.Id(), m_Queue, ^(void)
+    {
+        func();
+    });
+}
+
+void ThDispatchQueue::DispatchSync(std::function<void()> func)
+{
+    dispatch_sync(m_Queue, ^(void)
+    {
+        func();
+    });
+}
+
+void ThDispatchQueue::DispatchApply(ThSize count, std::function<void(ThSize)> func)
+{
+    dispatch_apply(count, m_Queue, ^(ThSize index)
+    {
+        func(index);
+    });
+}
+
+void ThDispatchQueue::DispatchBarrierSync(std::function<void()> func)
+{
+    dispatch_barrier_sync(m_Queue, ^
+    {
+        func();
+    });
+}
+
+void ThDispatchQueue::DispatchBarrierAsync(std::function<void()> func)
+{
+    dispatch_barrier_async(m_Queue, ^
+    {
+        func();
+    });
+}
+
+void ThDispatchQueue::DispatchSuspend()
+{
+    dispatch_suspend(m_Queue);
+}
+
+void ThDispatchQueue::DispatchResume()
+{
+    dispatch_resume(m_Queue);
+}
+
+void ThDispatchQueue::DispatchBarrierSync(void* ctx, DispatchFunc func)
+{
+    dispatch_barrier_sync_f(m_Queue, ctx, func);
+}
+
+void ThDispatchQueue::DispatchBarrierAsync(void* ctx, DispatchFunc func)
+{
+    dispatch_barrier_async_f(m_Queue, ctx, func);
+}

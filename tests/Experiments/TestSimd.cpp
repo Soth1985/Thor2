@@ -1,4 +1,4 @@
-#include <Thor/Math/Simd/Simd.h>
+#include <Thor/SimdMath/Simd.h>
 
 int main()
 {
