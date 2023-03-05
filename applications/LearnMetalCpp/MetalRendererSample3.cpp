@@ -1,7 +1,7 @@
 #include "MetalRendererSample3.h"
 
 #include <Thor/Core/Debug/ThLogger.h>
-#include <Thor/Math/Simd/Simd.h>
+#include <Thor/SimdMath/Simd.h>
 
 struct FrameData
 {

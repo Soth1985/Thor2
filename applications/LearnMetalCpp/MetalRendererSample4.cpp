@@ -2,7 +2,7 @@
 #include "Shared4.h"
 
 #include <Thor/Core/Debug/ThLogger.h>
-#include <Thor/Math/Simd/Simd.h>
+#include <Thor/SimdMath/Simd.h>
 
 using namespace Thor;
 

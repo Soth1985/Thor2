@@ -42,7 +42,7 @@ namespace Thor
     public:
         ThDispatchGroup();
         ~ThDispatchGroup();
-        void Wait(ThI64 timeoutNanoseconds);
+        void Wait(ThI64 timeoutNanoseconds = DISPATCH_TIME_FOREVER);
         void Enter()const;
         void Leave()const;
         const dispatch_group_t& Id()const;

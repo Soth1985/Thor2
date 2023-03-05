@@ -2,14 +2,10 @@ project(UniversalAppTemplateCpp VERSION ${THOR_VERSION})
 
 set(${PROJECT_NAME}_SRC
     MetalViewDelegate.mm
-    MetalContext.cpp
-    MetalRenderer.cpp
     MetalRendererTriangle.cpp)
 
 set(${PROJECT_NAME}_H
     MetalViewDelegate.h
-    MetalContext.h
-    MetalRenderer.h
     MetalRendererTriangle.h)
 
 set(${PROJECT_NAME}_RESOURCE_FILES)
@@ -62,6 +58,7 @@ list(SORT ${PROJECT_NAME}_RESOURCE_FILES)
 add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SRC} ${${PROJECT_NAME}_H} ${${PROJECT_NAME}_SHADERS} ${${PROJECT_NAME}_RESOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} Core)
 target_link_libraries(${PROJECT_NAME} MetalCpp)
+target_link_libraries(${PROJECT_NAME} MetalRenderer)
 target_link_libraries(${PROJECT_NAME} SimdMath)
 source_group ("Resources" FILES ${PROJECT_NAME}_RESOURCE_FILES)
 set_target_properties (${PROJECT_NAME} PROPERTIES FOLDER Applications)

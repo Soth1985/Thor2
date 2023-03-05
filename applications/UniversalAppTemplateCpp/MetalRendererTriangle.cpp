@@ -1,10 +1,13 @@
 #include "MetalRendererTriangle.h"
 
+#include <Thor/MetalRenderer/ThMetalContext.h>
 #include <Thor/Core/Debug/ThLogger.h>
+
+using namespace Thor;
 
 MetalRendererTriangle::MetalRendererTriangle(NS::SharedPtr<MTL::Device> device)
     :
-MetalRenderer(device)
+ThMetalRenderer(device)
 {
     
 }
@@ -52,9 +55,11 @@ void MetalRendererTriangle::SetupRendering()
     renderPipelineDescriptor->setVertexFunction(vertexFunc.get());
     renderPipelineDescriptor->setFragmentFunction(fragmentFunc.get());
     renderPipelineDescriptor->setVertexDescriptor(vertexDescriptor.get());
-    renderPipelineDescriptor->colorAttachments()->object(0)->setPixelFormat(MTL::PixelFormat::PixelFormatBGRA8Unorm);
-    renderPipelineDescriptor->setDepthAttachmentPixelFormat(MTL::PixelFormat::PixelFormatDepth32Float_Stencil8);
-    renderPipelineDescriptor->setStencilAttachmentPixelFormat(MTL::PixelFormat::PixelFormatDepth32Float_Stencil8);
+    
+    auto frameBufferDesc = ThMetalContext::GetFramebufferDescriptor();
+    renderPipelineDescriptor->colorAttachments()->object(0)->setPixelFormat(frameBufferDesc.m_ColorPixelFormat);
+    renderPipelineDescriptor->setDepthAttachmentPixelFormat(frameBufferDesc.m_DepthStencilPixelFormat);
+    renderPipelineDescriptor->setStencilAttachmentPixelFormat(frameBufferDesc.m_DepthStencilPixelFormat);
     
     NS::Error* pError = nullptr;
     m_PipelineState = NS::TransferPtr(m_Device->newRenderPipelineState(renderPipelineDescriptor.get(), &pError));

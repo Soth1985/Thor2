@@ -8,13 +8,15 @@
 
 #import "MetalViewDelegate.h"
 
-#include <Thor/Math/Simd/Simd.h>
+#include <Thor/SimdMath/Simd.h>
 #include <Thor/Core/Common.h>
 #include <Thor/Core/Debug/ThLogger.h>
+#include <Thor/MetalRenderer/ThMetalContext.h>
 #include <Metal/Metal.hpp>
 
 #include "MetalRendererTriangle.h"
-#include "MetalContext.h"
+
+using namespace Thor;
 
 @implementation MetalViewDelegate
 {
@@ -25,7 +27,7 @@
     NS::SharedPtr<MTL::RenderPipelineState> m_PipelineState;
     NS::SharedPtr<MTL::Buffer> m_VertexBuffer;
     
-    MetalRenderer* m_Renderer;
+    ThMetalRenderer* m_Renderer;
 }
 
 -(void)dealloc
@@ -50,16 +52,18 @@
 
 - (void)setupView
 {
-    m_Device = MetalContext::DefaultDevice();
+    m_Device = ThMetalContext::DefaultDevice();
     m_View.delegate = self;
     m_View.device = (__bridge id<MTLDevice>)m_Device.get();
     
     // Setup the render target, choose values based on your app.
-    m_View.sampleCount = 1;
-    m_View.depthStencilPixelFormat = MTLPixelFormatDepth32Float_Stencil8;
-    m_View.colorPixelFormat = MTLPixelFormatBGRA8Unorm;
-    m_View.clearColor = MTLClearColorMake( 0.0, 0.0, 0.0, 0.0 );
-    m_View.clearDepth = 0;
+    auto frameBufferDesc = ThMetalContext::GetFramebufferDescriptor();
+    m_View.sampleCount = frameBufferDesc.m_SampleCount;
+    m_View.depthStencilPixelFormat = (MTLPixelFormat)frameBufferDesc.m_DepthStencilPixelFormat;
+    m_View.colorPixelFormat = (MTLPixelFormat)frameBufferDesc.m_ColorPixelFormat;
+    auto clearColor = frameBufferDesc.m_ClearColor;
+    m_View.clearColor = MTLClearColorMake(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
+    m_View.clearDepth = frameBufferDesc.m_ClearDepth;
 }
 
 - (void)setupRendering

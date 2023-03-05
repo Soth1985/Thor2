@@ -1,7 +1,7 @@
 #include "MetalRendererSample2.h"
 
 #include <Thor/Core/Debug/ThLogger.h>
-#include <Thor/Math/Simd/Simd.h>
+#include <Thor/SimdMath/Simd.h>
 
 MetalRendererSample2::MetalRendererSample2(NS::SharedPtr<MTL::Device> device)
     :

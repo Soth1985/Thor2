@@ -5,4 +5,5 @@ add_subdirectory(SimdMath)
 
 if (APPLE)
     add_subdirectory(MetalCpp)
+    add_subdirectory(MetalRenderer)
 endif()

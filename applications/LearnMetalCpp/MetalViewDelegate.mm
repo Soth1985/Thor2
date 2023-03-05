@@ -8,7 +8,7 @@
 
 #import "MetalViewDelegate.h"
 
-#include <Thor/Math/Simd/Simd.h>
+#include <Thor/SimdMath/Simd.h>
 #include <Thor/Core/Common.h>
 #include <Thor/Core/Debug/ThLogger.h>
 #include <Metal/Metal.hpp>
@@ -23,6 +23,8 @@
 #include "MetalRendererSample6.h"
 #include "MetalRendererSample8.h"
 #include "MetalContext.h"
+
+using namespace Thor;
 
 @implementation MetalViewDelegate
 {
@@ -63,6 +65,8 @@
     m_View.colorPixelFormat = MTLPixelFormatBGRA8Unorm;
     m_View.clearColor = MTLClearColorMake( 0.0, 0.0, 0.0, 0.0 );
     m_View.clearDepth = 1.0;
+    
+    
     
     auto metalLayer = (CAMetalLayer*)m_View.layer;
     

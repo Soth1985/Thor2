@@ -3,7 +3,7 @@
 #include "MetalMath.h"
 
 #include <Thor/Core/Debug/ThLogger.h>
-#include <Thor/Math/Simd/Simd.h>
+#include <Thor/SimdMath/Simd.h>
 //#include <AppKit/AppKit.hpp>
 
 using namespace Thor;
