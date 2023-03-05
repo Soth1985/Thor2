@@ -1,13 +1,13 @@
 #pragma once
 
-#include "MetalRenderer.h"
+#include <Thor/MetalRenderer/ThMetalRenderer.h>
 #include <Metal/Metal.hpp>
 #include <Thor/Core/Concurrent/ThDispatch.h>
 
 #include <chrono>
 #include <time.h>
 
-class MetalRendererSample8 : public MetalRenderer
+class MetalRendererSample8 : public Thor::ThMetalRenderer
 {
 public:
     ~MetalRendererSample8() = default;

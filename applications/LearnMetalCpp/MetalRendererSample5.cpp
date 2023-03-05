@@ -1,15 +1,16 @@
 #include "MetalRendererSample5.h"
 #include "Shared5.h"
-#include "MetalMath.h"
 
+#include <Thor/SimdMath/ThGraphics.h>
 #include <Thor/Core/Debug/ThLogger.h>
+#include <Thor/MetalRenderer/ThMetalContext.h>
 #include <Thor/SimdMath/Simd.h>
 
 using namespace Thor;
 
 MetalRendererSample5::MetalRendererSample5(NS::SharedPtr<MTL::Device> device)
     :
-MetalRenderer(device)
+ThMetalRenderer(device)
 {
     
 }
@@ -101,9 +102,11 @@ void MetalRendererSample5::SetupRendering()
     auto pDesc = NS::TransferPtr(MTL::RenderPipelineDescriptor::alloc()->init());
     pDesc->setVertexFunction(vertexFn.get());
     pDesc->setFragmentFunction(fragFn.get());
-    pDesc->colorAttachments()->object(0)->setPixelFormat( MTL::PixelFormat::PixelFormatBGRA8Unorm);
-    pDesc->setDepthAttachmentPixelFormat(MTL::PixelFormat::PixelFormatDepth32Float_Stencil8);
-    pDesc->setStencilAttachmentPixelFormat(MTL::PixelFormat::PixelFormatDepth32Float_Stencil8);
+    
+    auto frameBufferDesc = ThMetalContext::GetFramebufferDescriptor();
+    pDesc->colorAttachments()->object(0)->setPixelFormat(frameBufferDesc.m_ColorPixelFormat);
+    pDesc->setDepthAttachmentPixelFormat(frameBufferDesc.m_DepthStencilPixelFormat);
+    pDesc->setStencilAttachmentPixelFormat(frameBufferDesc.m_DepthStencilPixelFormat);
 
     NS::Error* pError = nullptr;
     m_PipelineState = NS::TransferPtr(m_Device->newRenderPipelineState(pDesc.get(), &pError));
@@ -141,9 +144,9 @@ void MetalRendererSample5::RenderFrame(MTL::Viewport viewport, MTL::RenderPassDe
 
     // Update instance positions:
 
-    float4x4 rt = MetalMath::makeTranslate(objectPosition);
-    float4x4 rr = MetalMath::makeYRotate(-m_Angle);
-    float4x4 rtInv = MetalMath::makeTranslate({ -objectPosition.x, -objectPosition.y, -objectPosition.z } );
+    float4x4 rt = ThGraphics::MakeTranslate(objectPosition);
+    float4x4 rr = ThGraphics::MakeYRotate(-m_Angle);
+    float4x4 rtInv = ThGraphics::MakeTranslate({ -objectPosition.x, -objectPosition.y, -objectPosition.z } );
     float4x4 fullObjectRot = rt * rr * rtInv;
 
     for ( size_t i = 0; i < kNumInstances; ++i )
@@ -153,10 +156,10 @@ void MetalRendererSample5::RenderFrame(MTL::Viewport viewport, MTL::RenderPassDe
         float yoff = sin((iDivNumInstances + m_Angle) * 2.0f * M_PI);
 
         // Use the tiny math library to apply a 3D transformation to the instance.
-        float4x4 scale = MetalMath::makeScale((float3){scl, scl, scl });
-        float4x4 zrot = MetalMath::makeZRotate(m_Angle);
-        float4x4 yrot = MetalMath::makeYRotate(m_Angle);
-        float4x4 translate = MetalMath::makeTranslate( MetalMath::add( objectPosition, { xoff, yoff, 0.f } ) );
+        float4x4 scale = ThGraphics::MakeScale((float3){scl, scl, scl });
+        float4x4 zrot = ThGraphics::MakeZRotate(m_Angle);
+        float4x4 yrot = ThGraphics::MakeYRotate(m_Angle);
+        float4x4 translate = ThGraphics::MakeTranslate(objectPosition + simd::float3{ xoff, yoff, 0.f });
 
         pInstanceData[ i ].instanceTransform = fullObjectRot * translate * yrot * zrot * scale;
 
@@ -172,8 +175,8 @@ void MetalRendererSample5::RenderFrame(MTL::Viewport viewport, MTL::RenderPassDe
 
     CameraData* pCameraData = reinterpret_cast<CameraData*>( pCameraDataBuffer->contents());
     
-    pCameraData->perspectiveTransform = MetalMath::makePerspective( 45.f * M_PI / 180.f, 1.f, 0.03f, 500.0f ) ;
-    pCameraData->worldTransform = MetalMath::makeIdentity();
+    pCameraData->perspectiveTransform = ThGraphics::MakePerspective( 45.f * M_PI / 180.f, 1.f, 0.03f, 500.0f ) ;
+    pCameraData->worldTransform = ThGraphics::MakeIdentity();
     pCameraDataBuffer->didModifyRange(NS::Range::Make(0, sizeof(CameraData)));
 
     MTL::RenderCommandEncoder* renderEncoder = commandBuffer->renderCommandEncoder(renderPassDescriptor);

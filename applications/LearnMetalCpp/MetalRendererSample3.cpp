@@ -1,7 +1,10 @@
 #include "MetalRendererSample3.h"
 
 #include <Thor/Core/Debug/ThLogger.h>
+#include <Thor/MetalRenderer/ThMetalContext.h>
 #include <Thor/SimdMath/Simd.h>
+
+using namespace Thor;
 
 struct FrameData
 {
@@ -10,7 +13,7 @@ struct FrameData
 
 MetalRendererSample3::MetalRendererSample3(NS::SharedPtr<MTL::Device> device)
     :
-MetalRenderer(device)
+ThMetalRenderer(device)
 {
     
 }
@@ -69,9 +72,11 @@ void MetalRendererSample3::SetupRendering()
     auto pDesc = NS::TransferPtr(MTL::RenderPipelineDescriptor::alloc()->init());
     pDesc->setVertexFunction(vertexFn.get());
     pDesc->setFragmentFunction(fragFn.get());
-    pDesc->colorAttachments()->object(0)->setPixelFormat( MTL::PixelFormat::PixelFormatBGRA8Unorm);
-    pDesc->setDepthAttachmentPixelFormat(MTL::PixelFormat::PixelFormatDepth32Float_Stencil8);
-    pDesc->setStencilAttachmentPixelFormat(MTL::PixelFormat::PixelFormatDepth32Float_Stencil8);
+    
+    auto frameBufferDesc = ThMetalContext::GetFramebufferDescriptor();
+    pDesc->colorAttachments()->object(0)->setPixelFormat(frameBufferDesc.m_ColorPixelFormat);
+    pDesc->setDepthAttachmentPixelFormat(frameBufferDesc.m_DepthStencilPixelFormat);
+    pDesc->setStencilAttachmentPixelFormat(frameBufferDesc.m_DepthStencilPixelFormat);
 
     NS::Error* pError = nullptr;
     m_PipelineState = NS::TransferPtr(m_Device->newRenderPipelineState(pDesc.get(), &pError));

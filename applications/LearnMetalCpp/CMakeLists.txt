@@ -2,9 +2,6 @@ project(LearnMetalCpp VERSION ${THOR_VERSION})
 
 set(${PROJECT_NAME}_SRC
     MetalViewDelegate.mm
-    MetalContext.cpp
-    MetalMath.cpp
-    MetalRenderer.cpp
     MetalRendererSample0.cpp
     MetalRendererSample1.cpp
     MetalRendererSample2.cpp
@@ -13,14 +10,10 @@ set(${PROJECT_NAME}_SRC
     MetalRendererSample5.cpp
     MetalRendererSample6.cpp
     MetalRendererSample7.cpp
-    MetalRendererSample8.cpp
-    MetalRendererTriangle.cpp)
+    MetalRendererSample8.cpp)
 
 set(${PROJECT_NAME}_H
     MetalViewDelegate.h
-    MetalContext.h
-    MetalRenderer.h
-    MetalMath.h
     Shared4.h
     Shared5.h
     Shared6.h
@@ -34,8 +27,7 @@ set(${PROJECT_NAME}_H
     MetalRendererSample5.h
     MetalRendererSample6.h
     MetalRendererSample7.h
-    MetalRendererSample8.h
-    MetalRendererTriangle.h)
+    MetalRendererSample8.h)
 
 set(${PROJECT_NAME}_RESOURCE_FILES)
 
@@ -95,6 +87,8 @@ list(SORT ${PROJECT_NAME}_RESOURCE_FILES)
 add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SRC} ${${PROJECT_NAME}_H} ${${PROJECT_NAME}_SHADERS} ${${PROJECT_NAME}_RESOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} Core)
 target_link_libraries(${PROJECT_NAME} MetalCpp)
+target_link_libraries(${PROJECT_NAME} MetalRenderer)
+target_link_libraries(${PROJECT_NAME} SimdMath)
 source_group ("Resources" FILES ${PROJECT_NAME}_RESOURCE_FILES)
 set_target_properties (${PROJECT_NAME} PROPERTIES FOLDER Applications)
 thor_add_precompiled_header(Core "${CMAKE_CURRENT_SOURCE_DIR}/stdafx.h" "${CMAKE_CURRENT_SOURCE_DIR}/stdafx.cpp")

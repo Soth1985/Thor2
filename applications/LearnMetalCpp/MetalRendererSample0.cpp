@@ -2,9 +2,11 @@
 
 #include <Thor/Core/Debug/ThLogger.h>
 
+using namespace Thor;
+
 MetalRendererSample0::MetalRendererSample0(NS::SharedPtr<MTL::Device> device)
     :
-MetalRenderer(device)
+ThMetalRenderer(device)
 {
     
 }

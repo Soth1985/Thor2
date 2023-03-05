@@ -1,9 +1,9 @@
 #pragma once
 
-#include "MetalRenderer.h"
+#include <Thor/MetalRenderer/ThMetalRenderer.h>
 #include <Metal/Metal.hpp>
 
-class MetalRendererSample2 : public MetalRenderer
+class MetalRendererSample2 : public Thor::ThMetalRenderer
 {
 public:
     ~MetalRendererSample2() = default;

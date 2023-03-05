@@ -11,9 +11,9 @@
 #include <Thor/SimdMath/Simd.h>
 #include <Thor/Core/Common.h>
 #include <Thor/Core/Debug/ThLogger.h>
+#include <Thor/MetalRenderer/ThMetalContext.h>
 #include <Metal/Metal.hpp>
 
-#include "MetalRendererTriangle.h"
 #include "MetalRendererSample0.h"
 #include "MetalRendererSample1.h"
 #include "MetalRendererSample2.h"
@@ -22,7 +22,6 @@
 #include "MetalRendererSample5.h"
 #include "MetalRendererSample6.h"
 #include "MetalRendererSample8.h"
-#include "MetalContext.h"
 
 using namespace Thor;
 
@@ -30,7 +29,7 @@ using namespace Thor;
 {
     MTKView* m_View;    
     NS::SharedPtr<MTL::Device> m_Device;
-    MetalRenderer* m_Renderer;
+    ThMetalRenderer* m_Renderer;
 }
 
 -(void)dealloc
@@ -55,18 +54,18 @@ using namespace Thor;
 
 - (void)setupView
 {
-    m_Device = MetalContext::DefaultDevice();
+    m_Device = ThMetalContext::DefaultDevice();
     m_View.delegate = self;
     m_View.device = (__bridge id<MTLDevice>)m_Device.get();
     
     // Setup the render target, choose values based on your app.
-    m_View.sampleCount = 1;
-    m_View.depthStencilPixelFormat = MTLPixelFormatDepth32Float_Stencil8;
-    m_View.colorPixelFormat = MTLPixelFormatBGRA8Unorm;
-    m_View.clearColor = MTLClearColorMake( 0.0, 0.0, 0.0, 0.0 );
-    m_View.clearDepth = 1.0;
-    
-    
+    auto frameBufferDesc = ThMetalContext::GetFramebufferDescriptor();
+    m_View.sampleCount = frameBufferDesc.m_SampleCount;
+    m_View.depthStencilPixelFormat = (MTLPixelFormat)frameBufferDesc.m_DepthStencilPixelFormat;
+    m_View.colorPixelFormat = (MTLPixelFormat)frameBufferDesc.m_ColorPixelFormat;
+    auto clearColor = frameBufferDesc.m_ClearColor;
+    m_View.clearColor = MTLClearColorMake(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
+    m_View.clearDepth = frameBufferDesc.m_ClearDepth;
     
     auto metalLayer = (CAMetalLayer*)m_View.layer;
     
@@ -82,7 +81,6 @@ using namespace Thor;
 
 - (void)setupRendering
 {
-    //m_Renderer = new MetalRendererTriangle(m_Device);
     //m_Renderer = new MetalRendererSample0(m_Device);
     //m_Renderer = new MetalRendererSample1(m_Device);
     //m_Renderer = new MetalRendererSample2(m_Device);
