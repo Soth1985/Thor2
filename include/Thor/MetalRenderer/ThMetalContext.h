@@ -22,6 +22,8 @@ public:
     static void Initialize(const ThFramebufferDescriptor& frameBufferDesc);
     static NS::SharedPtr<MTL::Device> DefaultDevice();
     static const ThFramebufferDescriptor& GetFramebufferDescriptor();
+    static MTL::ResourceOptions GetDefaultBufferOptions();
+    static MTL::StorageMode GetDefaultTextureStorageMode();
 private:
     static NS::SharedPtr<MTL::Device> m_DefaultDevice;
     static ThFramebufferDescriptor m_FramebufferDescriptor;

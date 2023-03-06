@@ -8,7 +8,7 @@
 
 #import "MetalRenderer.h"
 
-#include <Thor/Math/Simd/Simd.h>
+#include <Thor/SimdMath/Simd.h>
 #include <Thor/Core/Common.h>
 
 @implementation MetalRenderer

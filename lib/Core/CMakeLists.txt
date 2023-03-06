@@ -75,6 +75,5 @@ thor_ios_target_setup_library(Core)
 thor_msvc_target_setup_library(Core)
 
 if (MSVC)
-    include(import_dispatch)
     target_link_libraries(Core dispatch)
 endif()

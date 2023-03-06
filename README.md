@@ -14,7 +14,7 @@
 * conan install . --output-folder=build_macos --build=missing -s build_type=Debug --profile:build="conan/debug_profile_macos" --profile:host="conan/debug_profile_macos"
 3. Generate Xcode project with cmake
 *  cd build_macos
-*  cmake -G Xcode
+*  cmake .. -G Xcode
 
 ## iOS Specific
 cmake .. -GXcode -DCMAKE_SYSTEM_NAME=iOS

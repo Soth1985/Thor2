@@ -44,6 +44,11 @@ endif()
 
 #extra cmake scripts
 include(thor_utils)
+include(import_ktx)
+
+if (MSVC)
+    include(import_dispatch)
+endif()
 
 if (THOR_MSVC_CLANG)
     include(ms_clang_scripts)

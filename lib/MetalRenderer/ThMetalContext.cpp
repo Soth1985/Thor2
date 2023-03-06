@@ -20,3 +20,21 @@ const ThFramebufferDescriptor& ThMetalContext::GetFramebufferDescriptor()
 {
     return m_FramebufferDescriptor;
 }
+
+MTL::ResourceOptions ThMetalContext::GetDefaultBufferOptions()
+{
+#ifdef THOR_PLATFORM_OSX
+    return MTL::ResourceStorageModeManaged;
+#else
+    return MTL::ResourceStorageModeShared;
+#endif
+}
+
+MTL::StorageMode ThMetalContext::GetDefaultTextureStorageMode()
+{
+#ifdef THOR_PLATFORM_OSX
+    return MTL::StorageModeManaged;
+#else
+    return MTL::StorageModeShared;
+#endif
+}
