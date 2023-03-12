@@ -3,6 +3,7 @@
 #include <Thor/Core/Hash/ThIntHash.h>
 #include <Thor/Core/Hash/ThMurmurHash.h>
 #include <Thor/Core/Containers/ThVector.h>
+#include <Thor/Core/String/ThString.h>
 
 namespace Thor
 {
@@ -48,6 +49,11 @@ namespace Private
 	inline ThU64 HashFunc(wchar_t* str)
 	{
 		return (HashRange(str, str + wcslen(str)));
+	}
+
+	inline ThU64 HashFunc(const ThString& str)
+	{
+		return str.GetHash();
 	}
 
 	template <class T>

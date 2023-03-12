@@ -20,7 +20,8 @@ set(Core_SRC
     Memory/ThVirtualStackAllocator.cpp
     Memory/ThVirtualGrowingStackAllocator.cpp
     String/ThStringUtilities.cpp
-    String/ThStringBuilder.cpp
+    String/ThString.cpp
+    String/ThStringTable.cpp
     Util/ThUidGenerator.cpp
     Concurrent/ThDispatch.cpp
     ThCore.cpp)
@@ -57,8 +58,8 @@ set(Core_H
     ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThVirtualSmallMemoryAllocator.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThVirtualStackAllocator.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThVirtualGrowingStackAllocator.h
-    ${THOR_INCLUDE_DIR}/Thor/Core/String/String.h
-    ${THOR_INCLUDE_DIR}/Thor/Core/String/ThStringBuilder.h
+    ${THOR_INCLUDE_DIR}/Thor/Core/String/ThString.h
+    ${THOR_INCLUDE_DIR}/Thor/Core/String/ThStringTable.h
     ${THOR_INCLUDE_DIR}/Thor/Core/String/ThStringUtilities.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Concurrent/ThDispatch.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Concurrent/ThSpinMutex.h

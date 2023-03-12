@@ -41,10 +41,10 @@ struct ThStringUtilities
 	static bool Parse(const ThChar* str, ThI64& val);
 	static bool Parse(const ThChar* str, ThU64& val);
 
-	static ThString WideStringToUtf8(const ThWideString& str);
-	static ThWideString Utf8ToWideString(const ThString& str);
-	static ThString WideStringToUtf8(const ThWchar* str);
-	static ThWideString Utf8ToWideString(const ThChar* str);
+	static std::string WideStringToUtf8(const std::wstring& str);
+	static std::wstring Utf8ToWideString(const std::string& str);
+	static std::string WideStringToUtf8(const ThWchar* str);
+	static std::wstring Utf8ToWideString(const ThChar* str);
 	static void WideStringToUtf8(const ThWchar* str, ThChar* buf, ThSize bufSize);
 	static void Utf8ToWideString(const ThChar* ThChar, ThWchar* buf, ThSize bufSize);
 };

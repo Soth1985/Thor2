@@ -79,9 +79,6 @@ namespace Thor
 	typedef uint64_t ThU64;
 	typedef wchar_t	 ThWchar;
     typedef size_t   ThSize;
-    
-	typedef std::string  ThString;
-	typedef std::wstring ThWideString;
 
 	template <class FirstT, class SecondT>
 	class ThPair
@@ -210,6 +207,24 @@ namespace Thor
 		val++;
 
 		return val;
+	}
+
+	static constexpr ThU64 Make8CC(const ThChar ext[9])
+	{
+		ThU64 result = 0;
+		for (ThI32 i = 0; i < 8; ++i)
+		{
+			if (ext[i] == '\0')
+			{
+				break;
+			}
+
+			ThU64 letter = ext[i];
+			letter = letter << (8 * (7 - i));
+			result |= letter;
+		}
+
+		return result;
 	}
 
 	template <bool B>

@@ -8,6 +8,7 @@ private:
     
     static class ThiMemoryAllocator* m_SystemAllocator;
     static class ThLogger* m_Logger;
+    static class ThUidGenerator* m_UidGenerator;
     
     ~ThCore() = delete;
     ThCore() = delete;
@@ -26,6 +27,11 @@ public:
     static ThLogger* GetLogger()
     {
         return m_Logger;
+    }
+
+    static ThUidGenerator* GetUidGenerator()
+    {
+        return m_UidGenerator;
     }
 };
 

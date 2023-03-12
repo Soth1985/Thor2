@@ -271,30 +271,30 @@ bool ThStringUtilities::Parse(const ThChar* str, bool& val)
 	return false;
 }
 
-ThString ThStringUtilities::WideStringToUtf8(const ThWideString& str)
+std::string ThStringUtilities::WideStringToUtf8(const std::wstring& str)
 {
-	ThString converted;
+    std::string converted;
 	utf8::utf16to8(str.begin(), str.end(), std::back_inserter(converted));
 	return converted;
 }
 
-ThWideString ThStringUtilities::Utf8ToWideString(const ThString& str)
+std::wstring ThStringUtilities::Utf8ToWideString(const std::string& str)
 {
-	ThWideString converted;
+    std::wstring converted;
 	utf8::utf8to16(str.begin(), str.end(), std::back_inserter(converted));
 	return converted;
 }
 
-ThString ThStringUtilities::WideStringToUtf8(const ThWchar* str)
+std::string ThStringUtilities::WideStringToUtf8(const ThWchar* str)
 {
-	ThString converted;
+    std::string converted;
 	utf8::utf16to8(str, str + wcslen(str), std::back_inserter(converted));
 	return converted;
 }
 
-ThWideString ThStringUtilities::Utf8ToWideString(const ThChar* str)
+std::wstring ThStringUtilities::Utf8ToWideString(const ThChar* str)
 {
-	ThWideString converted;
+    std::wstring converted;
 	utf8::utf8to16(str, str + strlen(str), std::back_inserter(converted));
 	return converted;
 }

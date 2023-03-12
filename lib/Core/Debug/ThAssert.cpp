@@ -1,6 +1,5 @@
 #include <Thor/Core/Debug/ThAssert.h>
 #include <Thor/Core/Debug/ThLogger.h>
-#include <Thor/Core/String/String.h>
 
 #ifdef THOR_PLATFORM_WIN
 	#include <windows.h>
@@ -22,8 +21,8 @@ void ThAssert::Assert(bool result, const char* expr, const char* msg, const char
 	{
 		if (!result)
 		{
-			ThString text("Expr: ");
-			text += ThString(expr) + " Msg: " + ThString(msg) + "\n File: " + ThString(file) + " Line: " + ToString(line);
+			std::string text("Expr: ");
+			text += std::string(expr) + " Msg: " + std::string(msg) + "\n File: " + std::string(file) + " Line: " + std::to_string(line);
 			THOR_CRT("%s", ThLogger::TagSystem, text.c_str());
 #if defined(THOR_DEBUG) 
     #if defined(THOR_PLATFORM_WIN)

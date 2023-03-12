@@ -12,12 +12,12 @@
 using namespace Thor;
 using namespace Thor::Hash;
 
-THOR_INLINE uint32_t rotl32(uint32_t x, int8_t r)
+THOR_INLINE ThU32 rotl32(ThU32 x, ThI8 r)
 {
     return (x << r) | (x >> (32 - r));
 }
 
-THOR_INLINE uint64_t rotl64(uint64_t x, int8_t r)
+THOR_INLINE ThU64 rotl64(ThU64 x, ThI8 r)
 {
     return (x << r) | (x >> (64 - r));
 }
@@ -26,12 +26,12 @@ THOR_INLINE uint64_t rotl64(uint64_t x, int8_t r)
 // Block read - if your platform needs to do endian-swapping or can only
 // handle aligned reads, do the conversion here
 
-THOR_INLINE ThU32 getblock32(const ThU32* p, int i)
+THOR_INLINE ThU32 getblock32(const ThU32* p, ThI32 i)
 {
     return p[i];
 }
 
-THOR_INLINE ThU64 getblock64(const ThU64* p, int i)
+THOR_INLINE ThU64 getblock64(const ThU64* p, ThI32 i)
 {
     return p[i];
 }

@@ -1,5 +1,4 @@
 #include <Thor/Core/Debug/ThLogger.h>
-#include <Thor/Core/String/String.h>
 #include <Thor/Core/String/ThStringUtilities.h>
 
 #ifdef THOR_PLATFORM_WIN
