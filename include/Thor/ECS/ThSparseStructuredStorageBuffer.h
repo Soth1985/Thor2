@@ -4,7 +4,6 @@
 #include <Thor/Core/Debug/ThLogger.h>
 #include <Thor/Core/Memory/ThMemory.h>
 #include <Thor/Core/Hash/ThIntHash.h>
-#include <Thor/Core/Containers/ThVector.h>
 
 namespace Thor
 {
@@ -72,18 +71,27 @@ public:
         ThEntitySparseIndex entityIndexHash = HashEntityIndex(entityId);
         ThEntitySparseIndex sparseIndex = m_EntitiesSparse[entityIndexHash];
 
-        // Slot is already occupied
-        if (sparseIndex != ThEntitySparseNull)
+        // Slot is empty, add new component data
+        if (sparseIndex == ThEntitySparseNull)
         {
-            return false;
+            m_EntitiesSparse[sparseIndex] = m_Size;
+            m_EntitiesDense[m_Size] = entityId;
+            m_Items[m_Size] = component;
+            ++m_Size;
+
+            return true;
         }
 
-        m_EntitiesSparse[sparseIndex] = m_Size;
-        m_EntitiesDense[m_Size] = entityId;
-        m_Items[m_Size] = component;
-        ++m_Size;
+        // See if slot is pointing to the same entityId and overwrite data
+        ThEntityId storedEntity = m_EntitiesDense[sparseIndex];
 
-        return true;
+        if (storedEntity == entityId)
+        {
+            m_Items[sparseIndex] = component;
+            return true;
+        }
+
+        return false;
     }
 
     bool RemoveComponent(ThEntityId entityId)

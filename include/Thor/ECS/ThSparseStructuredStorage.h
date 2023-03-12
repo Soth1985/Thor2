@@ -2,6 +2,7 @@
 
 #include <Thor/ECS/ThEntity.h>
 #include <Thor/ECS/ThSparseStructuredStorage.h>
+#include <Thor/Core/Containers/ThVector.h>
 
 namespace Thor
 {
