@@ -57,6 +57,7 @@ public:
         {
             m_Entities[entityIndex] = CreateEntityId(m_LastFreeSlot, entityGeneration + 1);
             m_LastFreeSlot = entityIndex;
+            --m_NumAliveEntities;
             return true;
         }
 
@@ -75,6 +76,21 @@ public:
         ThEntityGeneration entityGeneration = GetEntityGeneration(entityId);
         ThEntityGeneration storedEntityGeneration = GetEntityGeneration(m_Entities[entityIndex]);
         return entityGeneration == storedEntityGeneration;
+    }
+
+    ThSize GetNumAliveEntities()const
+    {
+        return m_NumAliveEntities;
+    }
+
+    ThSize Size()const
+    {
+        return m_Entities.Size();
+    }
+
+    ThEntityId operator[](ThSize index)const
+    {
+        return m_Entities[index];
     }
 
 private:

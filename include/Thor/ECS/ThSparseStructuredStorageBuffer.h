@@ -60,7 +60,28 @@ public:
         return m_EntitiesDense[sparseIndex] == entityId;
     }
 
-    bool AddComponent(ThEntityId entityId, const TItem& component)
+    bool GetComponent(ThEntityId entityId, TItem& component)
+    {
+        ThEntitySparseIndex entityIndexHash = HashEntityIndex(entityId);
+        ThEntitySparseIndex sparseIndex = m_EntitiesSparse[entityIndexHash];
+
+        if (sparseIndex == ThEntitySparseNull)
+        {
+            return false;
+        }
+
+        ThEntityId storedEntity = m_EntitiesDense[sparseIndex];
+
+        if (storedEntity == entityId)
+        {
+            component = m_Items[sparseIndex];
+            return true;
+        }
+
+        return false;
+    }
+
+    bool SetComponent(ThEntityId entityId, const TItem& component)
     {
         // Out of space
         if (m_Size >= m_Capacity)
@@ -117,10 +138,12 @@ public:
         }
 
         // Swap with last
-        ThEntitySparseIndex lastEntityIndexHash = HashEntityIndex(m_EntitiesDense[m_Size - 1]);
+        ThEntityId lastEntityId = m_EntitiesDense[m_Size - 1];
+        ThEntitySparseIndex lastEntityIndexHash = HashEntityIndex(lastEntityId);
         ThEntitySparseIndex lastEntitySparseIndex = m_EntitiesSparse[lastEntityIndexHash];
         m_EntitiesSparse[entityIndexHash] = lastEntitySparseIndex;
         m_EntitiesSparse[lastEntityIndexHash] = ThEntitySparseNull;
+        m_EntitiesDense[sparseIndex] = lastEntityId;
         m_Items[sparseIndex] = m_Items[m_Size - 1];
 
         --m_Size;

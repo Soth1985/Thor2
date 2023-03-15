@@ -63,18 +63,18 @@ public:
         return false;
     }
 
-    void AddComponent(ThEntityId entityId, const TItem& component)
+    void SetComponent(ThEntityId entityId, const TItem& component)
     {
         for(auto i = m_Pages.Size() - 1; i >= 0; --i)
         {
-            if (m_Pages[i].AddComponent(entityId, component))
+            if (m_Pages[i].SetComponent(entityId, component))
             {
                 return;
             }
         }
          
         m_Pages.EmplaceBack(TBuffer);
-        m_Pages.Back().AddComponent(entityId, component);
+        m_Pages.Back().SetComponent(entityId, component);
     }
 
     bool HasEntity(ThEntityId entityId)const
