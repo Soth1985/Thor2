@@ -18,3 +18,9 @@
 
 ## iOS Specific
 cmake .. -GXcode -DCMAKE_SYSTEM_NAME=iOS
+
+## Building KTX libraries
+
+1. To build for ios simulator, select any as build device in XCode and build
+2. mac build: cmake -G Xcode -B build/mac -D KTX_FEATURE_STATIC_LIBRARY=ON -DCMAKE_BUILD_TYPE=Release
+3. ios build: cmake -G Xcode -B build/ios -D CMAKE_SYSTEM_NAME=iOS -D KTX_FEATURE_STATIC_LIBRARY=ON

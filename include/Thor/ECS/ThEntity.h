@@ -7,6 +7,7 @@ using ThEntityIndex = ThU32;
 using ThEntityGeneration = ThU16;
 using ThEntityId = ThU64;
 using ThEntitySparseIndex = ThU16;
+using ThEventId = ThI32;
 constexpr ThU32 ThEntityNull = 0xFFFFFFFF;
 constexpr ThU16 ThEntitySparseNull = 0xFFFF;
 

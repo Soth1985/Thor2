@@ -7,8 +7,20 @@
 namespace Thor
 {
 
+namespace Private
+{
+    class ThComponentStorageBase
+    {
+    public:
+        virtual ~ThComponentStorageBase()
+        {
+
+        }
+    };
+}
+
 template <class TItem, ThI16 PageSize = Private::PageSize, ThI8 BufferAlignment = Private::PageAlignment>
-class ThSparseStructuredStorage
+class ThSparseStructuredStorage: public Private::ThComponentStorageBase
 {
 public:
     using TBuffer = ThSparseStructuredStorageBuffer<TItem, PageSize, BufferAlignment>;
