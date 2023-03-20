@@ -26,6 +26,11 @@ public:
         return m_Data.Capacity();
     }
 
+    void Clear()
+    {
+        m_Data.Clear();
+    }
+
     void Reserve(ThSize size)
     {
         m_Data.Reserve(size);

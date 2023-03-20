@@ -14,7 +14,7 @@ private:
     
     struct ListNode
     {
-        T m_Payload;
+        T m_Payload = default(T);
         ThU64 m_Prev = NullNode;
         ThU64 m_Next = NullNode;
 
@@ -136,14 +136,14 @@ public:
         m_Nodes.Reserve(size);
     }
 
-    void PushFront(const T& item)
+    Iterator PushFront(const T& item)
     {
-        InsertBefore(Begin(), item);
+        return InsertBefore(Begin(), item);
     }
 
-    void PushBack(const T& item)
+    Iterator PushBack(const T& item)
     {
-        InsertAfter(Last(), item);
+        return InsertAfter(Last(), item);
     }
 
     T PopFront()
@@ -276,7 +276,7 @@ public:
 
             m_Nodes[positionIndex].m_Next = m_FirstFreeNode;
             m_FirstFreeNode = positionIndex;
-            DestroyObjects(&m_Nodes[positionIndex].m_Payload, 1);
+            DestroyObject(&m_Nodes[positionIndex].m_Payload);
             --m_Size;
         }
     }
@@ -293,7 +293,7 @@ private:
         return NullNode;
     }
 
-    ThU64 PrevNode(ListNode* node)
+    ThU64 PrevNode(ThU64 node)
     {
         if (node != NullNode)
         {
@@ -306,6 +306,7 @@ private:
     ThU64 AddNewNode(const T& item)
     {
         ThU64 resultIndex = NullNode;
+
         if (m_FirstFreeNode != NullNode)
         {
             resultIndex = m_FirstFreeNode;

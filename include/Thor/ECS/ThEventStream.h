@@ -46,7 +46,7 @@ public:
         ThI32 readBufferIndex = m_WriteBufferIndex;
         m_WriteBufferIndex = (m_WriteBufferIndex + 1) % 2;
 
-        for (ThI32 i = m_Slots.Size() - 1; i >= 0; --i)
+        for (ThI64 i = m_Slots.Size() - 1; i >= 0; --i)
         {
             m_Slots[i].m_Callback(m_EventStream[readBufferIndex].Data(), m_EventStream[readBufferIndex].Size());
         }
