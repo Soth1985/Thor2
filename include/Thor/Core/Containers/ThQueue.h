@@ -1,15 +1,15 @@
 #pragma once
 
-#include <Thor/Core/Containers/ThVector.h>
+#include <Thor/Core/Containers/ThList.h>
 
 namespace Thor
 {
 
 template <class T>
-class ThStack
+class ThQueue
 {
 public:
-    explicit ThStack(ThiMemoryAllocator* allocator = nullptr)
+    explicit ThQueue(ThiMemoryAllocator* allocator = nullptr)
         :
     m_Data(allocator)
     {
@@ -38,29 +38,39 @@ public:
 
     void Push(const T& item)
     {
-        m_Data.PushBack(item);
-    }
-
-    T& Top()
-    {
-        return m_Data.Back();
-    }
-
-    const T& Top()const
-    {
-        return m_Data.Back();
+        m_Data.PushLast(item);
     }
 
     void Pop()
     {
-        m_Data.MoveToBackAndRemove(m_Data.Size() - 1);
+        m_Data.PopFront();
+    }
+    
+    T& Front()
+    {
+        return *m_Data.Begin();
+    }
+
+    const T& Front()const
+    {
+        return *m_Data.Begin();
+    }
+
+    T& Last()
+    {
+        return *m_Data.Last();
+    }
+
+    const T& Last()const
+    {
+        return *m_Data.Back();
     }
 
     bool Contains(const T& item)
     {
-        for (ThSize i = 0; i < m_Data.Size(); ++i)
+        for (auto i = m_Data.Begin(); i != m_Data.End(); ++i)
         {
-            if (m_Data[i] == item)
+            if (*i == item)
             {
                 return true;
             }
@@ -69,7 +79,7 @@ public:
         return false;
     }
 private:
-    ThVector<T> m_Data;
+    ThList<T> m_Data;
 };
 
 }

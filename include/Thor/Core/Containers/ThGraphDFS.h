@@ -16,15 +16,13 @@ public:
     template <class TCallback>
     void Visit(VertexId rootVertex, const TGraph& graph, TCallback&& callback)
     {
-        m_Visited.Resize(graph.Capacity(), false);
-
-        m_Stack.Reserve(graph.Capacity());
-        m_Stack.Clear();
+        Init(graph);
         m_Stack.Push(rootVertex);
 
         while (m_Stack.Size() > 0)
         {
-            VertexId currentVertex = m_Stack.Pop();
+            VertexId currentVertex = m_Stack.Top();
+            m_Stack.Pop();
 
             if (!m_Visited[currentVertex])
             {
@@ -45,7 +43,51 @@ public:
         }
     }
 
+    bool HasCycle(VertexId rootVertex, const TGraph& graph)
+    {
+        Init(graph);
+        m_Stack.Push(rootVertex);
+
+        while (m_Stack.Size() > 0)
+        {
+            VertexId currentVertex = m_Stack.Top();
+            m_Stack.Pop();
+
+            if (!m_Visited[currentVertex])
+            {
+                m_Visited[currentVertex] = true;
+                auto vertexData = graph[VertexId];
+
+                for (ThI64 e = vertexData.Size(); e >= 0; --e)
+                {
+                    VertexId targetVertex = vertexData[e].To();
+
+                    if (m_Stack.Contains(targetVertex))
+                    {
+                        return true;
+                    }
+
+                    if (!m_Visited[targetVertex])
+                    {
+                        m_Stack.Push(targetVertex);
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
 private:
+
+    void Init(const TGraph& graph)
+    {
+        m_Visited.Resize(graph.Capacity(), false);
+
+        m_Stack.Reserve(graph.Capacity());
+        m_Stack.Clear();
+    }
+
     ThVector<bool> m_Visited;
     ThStack<VertexId> m_Stack;
 };

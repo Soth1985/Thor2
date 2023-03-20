@@ -141,25 +141,19 @@ public:
         return InsertBefore(Begin(), item);
     }
 
-    Iterator PushBack(const T& item)
+    Iterator PushLast(const T& item)
     {
         return InsertAfter(Last(), item);
     }
 
-    T PopFront()
+    void PopFront()
     {
-        Iterator begin = Begin();
-        T result = *begin;
-        Remove(begin);
-        return result;
+        Remove(Begin());
     }
 
-    T PopBack()
+    void PopLast()
     {
-        Iterator last = Last();
-        T result = *last;
-        Remove(last);
-        return result;
+        Remove(Last());
     }
 
     Iterator Begin()
