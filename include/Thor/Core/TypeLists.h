@@ -25,6 +25,11 @@ struct ThTypeList<T>
 	typedef Private::NullType Tail;
 };
 
+struct ThTypeList
+{
+
+};
+
 template <typename T, typename TL>
 struct ThTypeId
 {
@@ -57,6 +62,12 @@ struct ThLength
 
 template <>
 struct ThLength<Private::NullType>
+{
+	enum { value = 0 };
+};
+
+template <>
+struct ThLength<ThTypeList>
 {
 	enum { value = 0 };
 };
