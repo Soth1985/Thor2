@@ -68,6 +68,12 @@ public:
 
         return false;
     }
+
+    const ThVector<T>& Data()const
+    {
+        return m_Data;
+    }
+    
 private:
     ThVector<T> m_Data;
 };

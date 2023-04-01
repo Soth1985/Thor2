@@ -7,20 +7,19 @@
 namespace Thor
 {
 
-namespace Private
+class ThEventStreamBase
 {
-    class ThEventStreamBase
+public:
+    virtual ~ThEventStreamBase()
     {
-    public:
-        virtual ~ThEventStreamBase()
-        {
 
-        }
-    };
-}
+    }
+
+    virtual void ProcessEvents() = 0;
+};
 
 template <class TEvent, ThI32 ReservedEvents = 64>
-class ThEventStream: public Private::ThEventStreamBase
+class ThEventStream: public ThEventStreamBase
 {
 public:
     using TCallback = std::function<void(const TEvent*, ThSize)>;
@@ -41,7 +40,7 @@ public:
         }
     }
 
-    void ProcessEvents()
+    virtual void ProcessEvents()override
     {
         ThI32 readBufferIndex = m_WriteBufferIndex;
         m_WriteBufferIndex = (m_WriteBufferIndex + 1) % 2;
@@ -62,7 +61,7 @@ public:
 
     void UnregisterCallback(TConnection connectionId)
     {
-        for (ThI32 i = 0; i < m_Slots.Size; ++i)
+        for (ThI64 i = 0; i < m_Slots.Size; ++i)
         {
             if (m_Slots[i].m_ConnectionId == connectionId)
             {

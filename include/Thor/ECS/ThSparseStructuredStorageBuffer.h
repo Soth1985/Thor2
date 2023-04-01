@@ -160,14 +160,19 @@ public:
         return m_Capacity;
     }
 
-    TItem& operator[](ThU16 index)
+    TItem& Data(ThU16 index)
     {
         return m_Items[index];
     }
 
-    const TItem& operator[](ThU16 index)const
+    const TItem& Data(ThU16 index)const
     {
         return m_Items[index];
+    }
+
+    ThEntityId EntityId(ThU16 index)const
+    {
+        return m_EntitiesDense[index];
     }
 
 private:

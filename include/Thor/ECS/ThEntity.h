@@ -8,6 +8,8 @@ using ThEntityGeneration = ThU16;
 using ThEntityId = ThU64;
 using ThEntitySparseIndex = ThU16;
 using ThEventId = ThI32;
+using ThComponentId = ThI32;
+using ThSystemId = ThI32;
 constexpr ThU32 ThEntityNull = 0xFFFFFFFF;
 constexpr ThU16 ThEntitySparseNull = 0xFFFF;
 

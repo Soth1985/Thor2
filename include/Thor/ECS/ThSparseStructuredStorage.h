@@ -7,22 +7,22 @@
 namespace Thor
 {
 
-namespace Private
-{
-    class ThComponentStorageBase
-    {
-    public:
-        virtual ~ThComponentStorageBase()
-        {
-
-        }
-    };
-}
-
-template <class TItem, ThI16 PageSize = Private::PageSize, ThI8 BufferAlignment = Private::PageAlignment>
-class ThSparseStructuredStorage: public Private::ThComponentStorageBase
+class ThComponentStorageBase
 {
 public:
+    virtual ~ThComponentStorageBase()
+    {
+
+    }
+
+    virtual bool HasEntity(ThEntityId entityId)const = 0;
+};
+
+template <class TItem, ThI16 PageSize = Private::PageSize, ThI8 BufferAlignment = Private::PageAlignment>
+class ThSparseStructuredStorage: public ThComponentStorageBase
+{
+public:
+    using TComponent = TItem; 
     using TBuffer = ThSparseStructuredStorageBuffer<TItem, PageSize, BufferAlignment>;
 
     ThSize PageCount()const
@@ -30,21 +30,21 @@ public:
         return m_Pages.Size();
     }
 
-    TBuffer& operator[](ThSize index)
+    TBuffer* Page(ThSize index)
     {
-        return m_Pages[index];
+        return &m_Pages[index];
     }
 
-    const TBuffer& operator[](ThSize index)const
+    const TBuffer* Page(ThSize index)const
     {
-        return m_Pages[index];
+        return &m_Pages[index];
     }
 
-    ThSize Size()const
+    ThSize NumComponents()const
     {
         ThSize result = 0;
 
-        for(auto i = m_Pages.Size() - 1; i >= 0; --i)
+        for(ThI64 i = m_Pages.Size() - 1; i >= 0; --i)
         {
             result += m_Pages[i].Size();
         }
@@ -56,7 +56,7 @@ public:
     {
         if (m_Pages.Size() > 0)
         {
-            return m_Pages.Size() * m_Pages[0].Capacity;
+            return m_Pages.Size() * m_Pages[0].Capacity();
         }
 
         return 0;
@@ -64,7 +64,7 @@ public:
 
     bool RemoveComponent(ThEntityId entityId)
     {
-        for(auto i = m_Pages.Size() - 1; i >= 0; --i)
+        for(ThI64 i = m_Pages.Size() - 1; i >= 0; --i)
         {
             if (m_Pages[i].RemoveComponent(entityId))
             {
@@ -77,7 +77,7 @@ public:
 
     void SetComponent(ThEntityId entityId, const TItem& component)
     {
-        for(auto i = m_Pages.Size() - 1; i >= 0; --i)
+        for(ThI64 i = m_Pages.Size() - 1; i >= 0; --i)
         {
             if (m_Pages[i].SetComponent(entityId, component))
             {
@@ -89,9 +89,22 @@ public:
         m_Pages.Back().SetComponent(entityId, component);
     }
 
-    bool HasEntity(ThEntityId entityId)const
+    bool GetComponent(ThEntityId entityId, TItem& component)
     {
-        for(auto i = m_Pages.Size() - 1; i >= 0; --i)
+        for(ThI64 i = m_Pages.Size() - 1; i >= 0; --i)
+        {
+            if (m_Pages[i].GetComponent(entityId, component))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    virtual bool HasEntity(ThEntityId entityId)const override
+    {
+        for(ThI64 i = m_Pages.Size() - 1; i >= 0; --i)
         {
             if (m_Pages[i].HasEntity(entityId))
             {
