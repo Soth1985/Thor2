@@ -2,8 +2,6 @@
 
 #include <Thor/Core/Common.h>
 
-#define THOR_DEFAULT_ALIGNMENT 16
-
 namespace Thor{
 
 //----------------------------------------------------------------------------------------

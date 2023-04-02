@@ -8,13 +8,12 @@
 namespace Thor
 {
 
-template <class TItem, ThI16 PageSize = Private::PageSize, ThI8 BufferAlignment = Private::PageAlignment>
 class ThSparseStructuredStorageBuffer
 {
 public:
-    ThSparseStructuredStorageBuffer()
+    ThSparseStructuredStorageBuffer(ThSize componentDataSize, ThI16 pageSize = Private::PageSize, ThI8 bufferAlignment = Private::PageAlignment)
     {
-        m_Buffer = ThMemory::AlignedMalloc(PageSize, BufferAlignment);
+        m_Buffer = ThMemory::AlignedMalloc(pageSize, bufferAlignment);
 
         if (!m_Buffer)
         {
@@ -22,12 +21,12 @@ public:
             return;
         }
 
-        ThU16 EntrySize = sizeof(TItem) + sizeof(ThEntitySparseIndex) + sizeof(ThEntityId);
-        m_Capacity = PageSize / EntrySize;
+        ThU16 entrySize = componentDataSize + sizeof(ThEntitySparseIndex) + sizeof(ThEntityId);
+        m_Capacity = pageSize / entrySize;
 
         m_EntitiesSparse = m_Buffer;
         m_EntitiesDense = m_EntitiesSparse + m_Capacity * sizeof(ThEntitySparseIndex);
-        m_Items = m_EntitiesSparse + m_Capacity * sizeof(ThEntityId);
+        m_ComponentData = m_EntitiesSparse + m_Capacity * sizeof(ThEntityId);
 
         memset(m_EntitiesSparse, ThEntitySparseNull, sizeof(ThEntitySparseIndex) * m_Capacity);
     }
@@ -60,7 +59,7 @@ public:
         return m_EntitiesDense[sparseIndex] == entityId;
     }
 
-    bool GetComponent(ThEntityId entityId, TItem& component)
+    bool GetComponent(ThEntityId entityId, ThI8* componentData)
     {
         ThEntitySparseIndex entityIndexHash = HashEntityIndex(entityId);
         ThEntitySparseIndex sparseIndex = m_EntitiesSparse[entityIndexHash];
@@ -74,14 +73,37 @@ public:
 
         if (storedEntity == entityId)
         {
-            component = m_Items[sparseIndex];
+            ThI8* sourceData = m_ComponentData + sparseIndex * m_ComponentDataSize;
+            ThMemory::MemoryCopy(componentData, sourceData, m_ComponentDataSize);
             return true;
         }
 
         return false;
     }
 
-    bool SetComponent(ThEntityId entityId, const TItem& component)
+    bool GetComponentNoCopy(ThEntityId entityId, ThI8** componentData)
+    {
+        ThEntitySparseIndex entityIndexHash = HashEntityIndex(entityId);
+        ThEntitySparseIndex sparseIndex = m_EntitiesSparse[entityIndexHash];
+
+        if (sparseIndex == ThEntitySparseNull)
+        {
+            return false;
+        }
+
+        ThEntityId storedEntity = m_EntitiesDense[sparseIndex];
+
+        if (storedEntity == entityId)
+        {
+            ThI8* sourceData = m_ComponentData + sparseIndex * m_ComponentDataSize;
+            *componentData = sourceData;
+            return true;
+        }
+
+        return false;
+    }
+
+    bool SetComponent(ThEntityId entityId, const ThI8* componentData)
     {
         // Out of space
         if (m_Size >= m_Capacity)
@@ -97,7 +119,8 @@ public:
         {
             m_EntitiesSparse[sparseIndex] = m_Size;
             m_EntitiesDense[m_Size] = entityId;
-            m_Items[m_Size] = component;
+            ThI8* destinationData = m_ComponentData + m_Size * m_ComponentDataSize;
+            ThMemory::MemoryCopy(destinationData, componentData, m_ComponentDataSize);
             ++m_Size;
 
             return true;
@@ -108,7 +131,8 @@ public:
 
         if (storedEntity == entityId)
         {
-            m_Items[sparseIndex] = component;
+            ThI8* destinationData = m_ComponentData + sparseIndex * m_ComponentDataSize;
+            ThMemory::MemoryCopy(destinationData, componentData, m_ComponentDataSize);
             return true;
         }
 
@@ -144,7 +168,9 @@ public:
         m_EntitiesSparse[entityIndexHash] = lastEntitySparseIndex;
         m_EntitiesSparse[lastEntityIndexHash] = ThEntitySparseNull;
         m_EntitiesDense[sparseIndex] = lastEntityId;
-        m_Items[sparseIndex] = m_Items[m_Size - 1];
+        ThI8* sourceData = m_ComponentData + (m_Size - 1) * m_ComponentDataSize;
+        ThI8* destinationData = m_ComponentData + sparseIndex * m_ComponentDataSize;
+        ThMemory::MemoryCopy(destinationData, sourceData, m_ComponentDataSize);
 
         --m_Size;
         return true;
@@ -160,14 +186,14 @@ public:
         return m_Capacity;
     }
 
-    TItem& Data(ThU16 index)
+    ThI8* ComponentData(ThU16 index)
     {
-        return m_Items[index];
+        return m_ComponentData + index * m_ComponentDataSize;
     }
 
-    const TItem& Data(ThU16 index)const
+    const ThI8* ComponentData(ThU16 index)const
     {
-        return m_Items[index];
+        return m_ComponentData + index * m_ComponentDataSize;
     }
 
     ThEntityId EntityId(ThU16 index)const
@@ -176,12 +202,13 @@ public:
     }
 
 private:
-    ThEntitySparseIndex*  m_EntitiesSparse = nullptr;
-    ThEntityId* m_EntitiesDense = nullptr;
-    TItem* m_Items = nullptr;
-    ThI8* m_Buffer = nullptr;
-    ThU16 m_Size = 0;
-    ThU16 m_Capacity = 0;
+    ThEntitySparseIndex*  m_EntitiesSparse {nullptr};
+    ThEntityId* m_EntitiesDense {nullptr};
+    ThI8* m_ComponentData {nullptr};
+    ThI8* m_Buffer {nullptr};
+    ThU16 m_Size {0};
+    ThU16 m_Capacity {0};
+    ThSize m_ComponentDataSize {0};
 };
 
 }

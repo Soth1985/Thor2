@@ -42,7 +42,18 @@ void ThMemory::Free(void* ptr)
 void* ThMemory::AlignedMalloc(ThSize size, ThSize alignment)
 {	
 #ifdef THOR_PLATFORM_APPLE
-    void* result = aligned_alloc(alignment, size);
+    //void* result = aligned_alloc(alignment, size);
+    void* result = 0;
+        
+    if (alignment == THOR_DEFAULT_ALIGNMENT)
+        result = malloc(size);
+    else
+    {
+        if (alignment < sizeof (void*))
+            alignment = sizeof (void*);
+        
+        /*int status =*/posix_memalign(&result, alignment, size);
+    }
     THOR_ASSERT(result != nullptr, "Failed to allocate memory");
     return result;
 #elif defined THOR_PLATFORM_WIN

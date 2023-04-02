@@ -10,7 +10,7 @@ namespace Thor
     public:
         
         static const ThSize SIZE_UNTRACKED = -1;
-        static const ThU32 DEFAULT_ALIGNMENT = 4;
+        static const ThU32 DEFAULT_ALIGNMENT = THOR_DEFAULT_ALIGNMENT;
         
         ThiMemoryAllocator(const char* name = nullptr);
         virtual ~ThiMemoryAllocator();

@@ -7,23 +7,20 @@
 namespace Thor
 {
 
-class ThComponentStorageBase
+class ThSparseStructuredStorage
 {
 public:
-    virtual ~ThComponentStorageBase()
+    using TBuffer = ThSparseStructuredStorageBuffer;
+
+    ThSparseStructuredStorage(ThComponentId componentId, ThSize componentDataSize, ThI16 pageSize = Private::PageSize, ThI8 bufferAlignment = Private::PageAlignment)
+        :
+    m_ComponentId(componentId),
+    m_ComponentDataSize(componentDataSize),
+    m_PageSize(pageSize),
+    m_BufferAlignment(bufferAlignment)
     {
 
     }
-
-    virtual bool HasEntity(ThEntityId entityId)const = 0;
-};
-
-template <class TItem, ThI16 PageSize = Private::PageSize, ThI8 BufferAlignment = Private::PageAlignment>
-class ThSparseStructuredStorage: public ThComponentStorageBase
-{
-public:
-    using TComponent = TItem; 
-    using TBuffer = ThSparseStructuredStorageBuffer<TItem, PageSize, BufferAlignment>;
 
     ThSize PageCount()const
     {
@@ -40,7 +37,7 @@ public:
         return &m_Pages[index];
     }
 
-    ThSize NumComponents()const
+    ThSize ComponentsCount()const
     {
         ThSize result = 0;
 
@@ -75,25 +72,25 @@ public:
         return false;
     }
 
-    void SetComponent(ThEntityId entityId, const TItem& component)
+    void SetComponent(ThEntityId entityId, const ThI8* componentData)
     {
         for(ThI64 i = m_Pages.Size() - 1; i >= 0; --i)
         {
-            if (m_Pages[i].SetComponent(entityId, component))
+            if (m_Pages[i].SetComponent(entityId, componentData))
             {
                 return;
             }
         }
          
-        m_Pages.EmplaceBack(TBuffer);
-        m_Pages.Back().SetComponent(entityId, component);
+        m_Pages.EmplaceBack(m_ComponentDataSize, m_PageSize, m_BufferAlignment);
+        m_Pages.Back().SetComponent(entityId, componentData);
     }
 
-    bool GetComponent(ThEntityId entityId, TItem& component)
+    bool GetComponent(ThEntityId entityId, ThI8* componentData)
     {
         for(ThI64 i = m_Pages.Size() - 1; i >= 0; --i)
         {
-            if (m_Pages[i].GetComponent(entityId, component))
+            if (m_Pages[i].GetComponent(entityId, componentData))
             {
                 return true;
             }
@@ -102,7 +99,7 @@ public:
         return false;
     }
 
-    virtual bool HasEntity(ThEntityId entityId)const override
+    bool HasEntity(ThEntityId entityId)const
     {
         for(ThI64 i = m_Pages.Size() - 1; i >= 0; --i)
         {
@@ -117,6 +114,10 @@ public:
 
 private:
     ThVector<TBuffer> m_Pages;
+    ThComponentId m_ComponentId {0}; 
+    ThSize m_ComponentDataSize {0};
+    ThI16 m_PageSize {0};
+    ThI8 m_BufferAlignment {0};
 };
 
 }

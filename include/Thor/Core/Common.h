@@ -63,6 +63,7 @@
 #endif
 
 #define THOR_CONCAT(x, y) x ## y
+#define THOR_DEFAULT_ALIGNMENT 16
 
 namespace Thor
 {

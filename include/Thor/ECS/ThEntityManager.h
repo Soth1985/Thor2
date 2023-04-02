@@ -94,11 +94,11 @@ public:
     }
 
 private:
-    static constexpr ThSize InvalidEntitySlot = -1;
+    static constexpr ThSize InvalidEntitySlot {-1};
     ThVector<ThEntityId> m_Entities;
-    ThSize m_LastFreeSlot = InvalidEntitySlot;
-    ThSize m_NumAliveEntities = 0;
-    ThSize m_ReserveEntities = 0;
+    ThSize m_LastFreeSlot {InvalidEntitySlot};
+    ThSize m_NumAliveEntities {0};
+    ThSize m_ReserveEntities {0};
 };
 
 }

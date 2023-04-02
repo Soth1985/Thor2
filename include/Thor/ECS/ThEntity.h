@@ -10,17 +10,17 @@ using ThEntitySparseIndex = ThU16;
 using ThEventId = ThI32;
 using ThComponentId = ThI32;
 using ThSystemId = ThI32;
-constexpr ThU32 ThEntityNull = 0xFFFFFFFF;
-constexpr ThU16 ThEntitySparseNull = 0xFFFF;
+constexpr ThU32 ThEntityNull {0xFFFFFFFF};
+constexpr ThU16 ThEntitySparseNull {0xFFFF};
 
 namespace Private
 {
-    constexpr ThI16 PageSize = 8192;
-    constexpr ThI8 PageAlignment = 16;
-    constexpr ThChar* LoggerTag = "ECS";
-    constexpr ThU64 EnityGenerationMask = 0x000000000000FFFF;
-    constexpr ThI32 EntityIndexBits = 32;
-    constexpr ThI32 EntityGenerationBits = 16;
+    constexpr ThI16 PageSize {8192};
+    constexpr ThI8 PageAlignment {16};
+    constexpr ThChar* LoggerTag {"ECS"};
+    constexpr ThU64 EnityGenerationMask {0x000000000000FFFF};
+    constexpr ThI32 EntityIndexBits {32};
+    constexpr ThI32 EntityGenerationBits {16};
 }
 
 constexpr ThEntityIndex GetEntityIndex(ThEntityId entityId)

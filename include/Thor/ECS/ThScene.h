@@ -44,20 +44,14 @@ public:
     }
 
 protected:
-    enum IterationFlags
-    {
-        Finished,
-        Skip,
-        Apply
-    };
-
+    
     bool IsEntityExcluded(ThEntityId entityId)
     {
         for (ThSize excluded = 0; excluded < m_ExcludedComponents.Size(); ++excluded)
         {
-            ThComponentStorageBase* excludedStorage = m_Scene->GetComponentStorage();
+            ThSparseStructuredStorage* excludedStorage = m_Scene->GetComponentStorage(m_ExcludedComponents[excluded]);
 
-            if (excluded->HasEntity(page.EnitityId(e)))
+            if (excluded->HasEntity(entityId))
             {
                 return true;
             }
@@ -66,55 +60,70 @@ protected:
         return false;
     }
 
-    template <class TComponent>
-    ThFlags32 NextComponentData(ThSparseStructuredStorage<TComponent>* storage, bool isPrimaryStorage, ThEntityId& entityId, TComponent& component, ThSize& pageIndex, ThU16& entityIndex)
+protected:
+
+    template <int NumComponents>
+    void FindPrimaryStorage(ThSparseStructuredStorage* storageArray[NumComponents], ThI32& primaryStorageIndex)
     {
-        ThFlags32 result;
+        primaryStorageIndex = 0;
+        ThSize minEntities = -1;
 
-        if (isPrimaryStorage)
+        for (ThSize i = 0; i < NumComponents; ++i)
         {
-            if (storage->PageCount() == 0)
+            ThSize componentsCount = storageArray[i]->ComponentsCount();
+            if (componentsCount < minEntities)
             {
-                result.SetFlag(IterationFlags::Finished);
-                return;
-            }
-
-            auto page = storage->Page(pageIndex);
-
-            if (entityIndex >= page->Size())
-            {
-                ++pageIndex;
-                entityIndex = 0;
-            }
-            
-            if (pageIndex >= storage->PageCount())
-            {
-                result.SetFlag(IterationFlags::Finished);
-                return;
-            }
-
-            page = storage->Page(pageIndex);
-            entityId = page->EntityId(entityIndex);
-            component = page->Data(entityIndex);
-            ++entityIndex;
-            result.SetFlag(IterationFlags::Apply);
-        }
-        else
-        {
-            bool found = storage->GetComponent(entityId, component);
-
-            if (found)
-            {
-                result.SetFlag(IterationFlags::Apply);
-            }
-            else
-            {
-                result.SetFlag(IterationFlags::Skip);
+                primaryStorageIndex = i;
+                minEntities = componentsCount;
             }
         }
-
-        return result;
     }
+
+    template <int NumComponents, class TFunc>
+    void IterateStorage(ThSparseStructuredStorage* storageArray[NumComponents], ThI32 primaryStorageIndex, TFunc&& func)
+    {
+        ThSparseStructuredStorage* primaryStorage = storageArray[primaryStorageIndex];
+        ThI8* dataBuffersArray[NumComponents] = {nullptr};
+
+        for (ThSize p = 0; p < primaryStorage->PageCount(); ++p)
+        {
+            auto page = primaryStorage->Page(p);
+
+            for (ThI64 e = page->Size() - 1; e >= 0; --e)
+            {
+                ThEntityId entityId = page->EnitityId(e);
+                bool excluded = IsEntityExcluded(entityId);
+
+                if (excluded)
+                {
+                    continue;
+                }
+
+                dataBuffersArray[primaryStorageIndex] = page->ComponentData();
+
+                bool hasAllRequiredComponets = true;
+
+                for (ThSize componentIdx = 0; componentIdx < NumComponents; ++componentIdx)
+                {
+                    if (componentIdx == primaryStorageIndex)
+                    {
+                        continue;
+                    }
+
+                    bool dataFound = storageArray[componentIdx]->GetComponentNoCopy(entityId, &dataBuffersArray[componentIdx]);
+
+                    if (!dataFound)
+                    {
+                        hasAllRequiredComponets = false;
+                        break;
+                    }
+                }
+
+                func(entityId, dataBuffersArray);
+            }
+        }
+    }
+
 protected:
     ThVector<ThComponentId> m_ExcludedComponents;
     ThScene* m_Scene = nullptr;
@@ -135,7 +144,7 @@ public:
     template <class TFunc>
     void Execute(TFunc&& func)
     {
-        auto storage = m_Scene->GetComponentStorage<TComponent>();
+        auto storage = m_Scene->GetComponentStorage(TComponent::ComponentId);
 
         if (!storage)
         {
@@ -143,22 +152,15 @@ public:
             return;
         }
 
-        for (ThSize p = 0; p < storage->PageCount(); ++p)
+        ThSparseStructuredStorage* storageArray[1] = {storage};
+
+        ThI32 primaryStorageIndex = 0;
+
+        IterateStorage<1>(storageArray, primaryStorageIndex, [](ThEntityId entityId, ThI8* dataBuffersArray[1])
         {
-            auto page = storage.Page(p);
-
-            for (ThI64 e = page->Size() - 1; e >= 0; --e)
-            {
-                bool excluded = IsEntityExcluded();
-
-                if (excluded)
-                {
-                    continue;
-                }
-
-                func(m_Scene, page->EnitityId(e), page->Data(e));
-            }
-        }
+            TComponent* data = static_cast<TComponent1*>(dataBuffersArray[0]);
+            func(m_Scene, entityId, data);
+        });
     }
 };
 
@@ -177,7 +179,7 @@ public:
     template <class TFunc>
     void Execute(TFunc&& func)
     {
-        auto storage1 = m_Scene->GetComponentStorage<TComponent1>();
+        auto storage1 = m_Scene->GetComponentStorage(TComponent1::ComponentId);
 
         if (!storage1)
         {
@@ -185,7 +187,7 @@ public:
             return;
         }
 
-        auto storage2 = m_Scene->GetComponentStorage<TComponent2>();
+        auto storage2 = m_Scene->GetComponentStorage(TComponent2::ComponentId);
 
         if (!storage2)
         {
@@ -193,28 +195,17 @@ public:
             return;
         }
 
-        for (ThSize p = 0; p < storage->PageCount(); ++p)
+        ThSparseStructuredStorage* storageArray[2] = {storage1, storage2};
+
+        ThI32 primaryStorageIndex = 0;
+        FindPrimaryStorage<2>(storageArray, primaryStorageIndex);
+
+        IterateStorage<2>(storageArray, primaryStorageIndex, [](ThEntityId entityId, ThI8* dataBuffersArray[2])
         {
-            auto page = storage.Page(p);
-
-            for (ThI64 e = page->Size() - 1; e >= 0; --e)
-            {
-                bool excluded = IsEntityExcluded();
-
-                if (excluded)
-                {
-                    continue;
-                }
-
-                func(m_Scene, page->EnitityId(e), page->Data(e));
-            }
-        }
-    }
-private:
-    template <class TFunc>
-    void ExecuteImpl(TFunc&& func)
-    {
-
+            TComponent1* data1 = static_cast<TComponent1*>(dataBuffersArray[0]);
+            TComponent2* data2 = static_cast<TComponent2*>(dataBuffersArray[1]);
+            func(m_Scene, entityId, data1, data2);
+        });
     }
 };
 
@@ -241,7 +232,7 @@ public:
     {
         if (m_Components.Find(TComponent::ComponentId) == m_Components.End())
         {
-            auto newComponentStorage = new ThSparseStructuredStorage<TComponent>();
+            auto newComponentStorage = new ThSparseStructuredStorage(TComponent::ComponentId, sizeof(TComponent));
             m_Components[TComponent::ComponentId] = newComponentStorage;
         }
         else
@@ -256,20 +247,7 @@ public:
         (RegisterComponent<TComponents>(), ...);
     }
 
-    template <class TComponent>
-    ThSparseStructuredStorage<TComponent>* GetComponentStorage()
-    {
-        auto found = m_Components.Find(TComponent::ComponentId);
-
-        if (found != m_Components.End())
-        {
-            return static_cast<ThSparseStructuredStorage<TComponent>*>(found->Value());
-        }
-
-        return nullptr;
-    }
-
-    ThComponentStorageBase* GetComponentStorage(ThComponentId componentId)
+    ThSparseStructuredStorage* GetComponentStorage(ThComponentId componentId)
     {
         auto found = m_Components.Find(componentId);
 
@@ -284,7 +262,7 @@ public:
     template <class TComponent>
     bool RemoveComponent(ThEntityId entityId)
     {
-        auto storage = GetComponentStorage<TComponent>();
+        auto storage = GetComponentStorage(TComponent::ComponentId);
 
         if (storage)
         {
@@ -297,12 +275,28 @@ public:
     template <class TComponent>
     bool SetComponent(ThEntityId entityId, const TComponent& component)
     {
-        auto storage = GetComponentStorage<TComponent>();
+        auto storage = GetComponentStorage(TComponent::ComponentId);
 
         if (storage)
         {
-            storage->SetComponent(entityId, component);
+            const ThI8* componentData = static_cast<const ThI8*>(component);
+            storage->SetComponent(entityId, componentData);
             return true;
+        }
+
+        THOR_ERR("Component %d is not registered", Private::LoggerTag, TComponent::ComponentId);
+        return false;
+    }
+
+    template <class TComponent>
+    bool GetComponent(ThEntityId entityId, TComponent& component)
+    {
+        auto storage = GetComponentStorage(TComponent::ComponentId);
+
+        if (storage)
+        {
+            ThI8* componentData = static_cast<ThI8*>(component);
+            return storage->GetComponent(entityId, componentData);
         }
 
         THOR_ERR("Component %d is not registered", Private::LoggerTag, TComponent::ComponentId);
@@ -325,11 +319,18 @@ public:
         return ThSceneQuery<TComponent>(this);
     }
 
+    template <class TComponent1, class TComponent2>
+    ThSceneQuery<TComponent1, TComponent2> CreateQuery()
+    {
+        return ThSceneQuery<TComponent1, TComponent2>(this);
+    }
+
 private:
 
-    ThHashMap<ThComponentId, ThComponentStorageBase*> m_Components;
-    ThWorld* m_World = nullptr;
-    ThEntityManager* m_EntityManager = nullptr;
+    ThHashMap<ThComponentId, ThSparseStructuredStorage*> m_Components;
+    ThWorld* m_World {nullptr};
+    ThEntityManager* m_EntityManager {nullptr};
+
 };
 
 }

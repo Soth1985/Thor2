@@ -82,14 +82,14 @@ private:
 
     struct Slot
     {
-        TConnection m_ConnectionId = 0;
-        TCallback m_Callback = nullptr;
+        TConnection m_ConnectionId {0};
+        TCallback m_Callback {nullptr};
     };
 
     ThVector<Slot> m_Slots;
     ThVector<TEvent> m_EventStream[2];
-    ThI32 m_WriteBufferIndex = 0;
-    TConnection m_ConnectionId = 0;
+    ThI32 m_WriteBufferIndex {0};
+    TConnection m_ConnectionId {0};
 };
 
 }

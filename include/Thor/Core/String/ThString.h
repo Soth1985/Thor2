@@ -20,7 +20,7 @@ public:
 
     ThU64 GetLength()const
     {
-        return m_Size / sizeof(ThChar);
+        return m_Length / sizeof(ThChar);
     }
 
     ThU64 GetUid()const
@@ -35,11 +35,11 @@ public:
 
     bool operator==(const ThString& rhs)const
     {
-        return m_Hash == rhs.m_Hash && m_Size == rhs.m_Size;
+        return m_Hash == rhs.m_Hash && m_Length == rhs.m_Length;
     }
 private:
     ThI32 m_Hash = 0;
-    ThU64 m_Size = 0;
+    ThU64 m_Length = 0;
     ThU64 m_Uid = 0;
     const ThChar* m_Data = nullptr;
 };
