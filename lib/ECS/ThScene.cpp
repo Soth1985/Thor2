@@ -1,1 +1,1 @@
-#include <Thor/Core/ECS/ThScene.h>
+#include <Thor/ECS/ThScene.h>

@@ -13,7 +13,7 @@ class ThSparseStructuredStorageBuffer
 public:
     ThSparseStructuredStorageBuffer(ThSize componentDataSize, ThI16 pageSize = Private::PageSize, ThI8 bufferAlignment = Private::PageAlignment)
     {
-        m_Buffer = ThMemory::AlignedMalloc(pageSize, bufferAlignment);
+        m_Buffer = reinterpret_cast<ThI8*>(ThMemory::AlignedMalloc(pageSize, bufferAlignment));
 
         if (!m_Buffer)
         {
@@ -24,9 +24,10 @@ public:
         ThU16 entrySize = componentDataSize + sizeof(ThEntitySparseIndex) + sizeof(ThEntityId);
         m_Capacity = pageSize / entrySize;
 
-        m_EntitiesSparse = m_Buffer;
-        m_EntitiesDense = m_EntitiesSparse + m_Capacity * sizeof(ThEntitySparseIndex);
-        m_ComponentData = m_EntitiesSparse + m_Capacity * sizeof(ThEntityId);
+        m_EntitiesSparse = reinterpret_cast<ThEntitySparseIndex*>(m_Buffer);
+        ThI8* entitiesDensePtr = m_Buffer + m_Capacity * sizeof(ThEntitySparseIndex);
+        m_EntitiesDense = reinterpret_cast<ThEntityId*>(entitiesDensePtr);
+        m_ComponentData = entitiesDensePtr + m_Capacity * sizeof(ThEntityId);
 
         memset(m_EntitiesSparse, ThEntitySparseNull, sizeof(ThEntitySparseIndex) * m_Capacity);
     }
@@ -40,7 +41,7 @@ public:
         }
     }
 
-    ThEntitySparseIndex HashEntityIndex(ThEntityId entityId)
+    ThEntitySparseIndex HashEntityIndex(ThEntityId entityId)const
     {
         //return GetEntityIndex(entityId) % m_Capacity;
         return Thor::Hash::HashInt32(GetEntityIndex(entityId)) % m_Capacity;
@@ -59,7 +60,7 @@ public:
         return m_EntitiesDense[sparseIndex] == entityId;
     }
 
-    bool GetComponent(ThEntityId entityId, ThI8* componentData)
+    bool GetComponent(ThEntityId entityId, ThI8* componentData)const
     {
         ThEntitySparseIndex entityIndexHash = HashEntityIndex(entityId);
         ThEntitySparseIndex sparseIndex = m_EntitiesSparse[entityIndexHash];
@@ -81,7 +82,7 @@ public:
         return false;
     }
 
-    bool GetComponentNoCopy(ThEntityId entityId, ThI8** componentData)
+    bool GetComponentNoCopy(ThEntityId entityId, ThI8** componentData)const
     {
         ThEntitySparseIndex entityIndexHash = HashEntityIndex(entityId);
         ThEntitySparseIndex sparseIndex = m_EntitiesSparse[entityIndexHash];

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Thor/ECS/ThEntity.h>
-#include <Thor/ECS/ThSparseStructuredStorage.h>
+#include <Thor/ECS/ThSparseStructuredStorageBuffer.h>
 #include <Thor/Core/Containers/ThVector.h>
 
 namespace Thor
@@ -10,7 +10,6 @@ namespace Thor
 class ThSparseStructuredStorage
 {
 public:
-    using TBuffer = ThSparseStructuredStorageBuffer;
 
     ThSparseStructuredStorage(ThComponentId componentId, ThSize componentDataSize, ThI16 pageSize = Private::PageSize, ThI8 bufferAlignment = Private::PageAlignment)
         :
@@ -27,12 +26,12 @@ public:
         return m_Pages.Size();
     }
 
-    TBuffer* Page(ThSize index)
+    ThSparseStructuredStorageBuffer* Page(ThSize index)
     {
         return &m_Pages[index];
     }
 
-    const TBuffer* Page(ThSize index)const
+    const ThSparseStructuredStorageBuffer* Page(ThSize index)const
     {
         return &m_Pages[index];
     }
@@ -113,7 +112,7 @@ public:
     }
 
 private:
-    ThVector<TBuffer> m_Pages;
+    ThVector<ThSparseStructuredStorageBuffer> m_Pages;
     ThComponentId m_ComponentId {0}; 
     ThSize m_ComponentDataSize {0};
     ThI16 m_PageSize {0};

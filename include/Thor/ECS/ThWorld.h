@@ -15,37 +15,17 @@ class ThWorld
 {
 public:
     
-    ThWorld()
-    {
-        m_EventManager = new ThEventManager();
-        m_ResourceManager = new ThResourceManager();
-    }
+    ThWorld();
 
-    ~ThWorld()
-    {
-        delete m_ResourceManager;
-        delete m_EventManager;
-    }
+    ~ThWorld();
 
-    ThEventManager* GetEventManager()
-    {
-        return m_EventManager;
-    }
+    ThEventManager* GetEventManager();
 
-    ThResourceManager* GetResourceManager()
-    {
-        return m_ResourceManager;
-    }
+    ThResourceManager* GetResourceManager();
 
-    ThScene* CreateScene()
-    {
+    ThScene* CreateScene();
 
-    }
-
-    ThScene* FindScene(ThU64 sceneUid)
-    {
-
-    }
+    ThScene* FindScene(ThU64 sceneUid);
 
 private:
     ThEventManager* m_EventManager {nullptr};
