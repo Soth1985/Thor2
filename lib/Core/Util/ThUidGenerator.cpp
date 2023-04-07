@@ -17,7 +17,7 @@ const ThU64 ThUidGenerator::m_TimestampShift = m_ConstantBits + m_SequenceBits;
 ThUidGenerator::ThUidGenerator()
     :
 m_Constant(0),
-m_LastTimestamp(-1),
+m_LastTimestamp(0),
 m_Sequence(0)
 {
     

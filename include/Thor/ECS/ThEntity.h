@@ -37,8 +37,8 @@ constexpr ThEntityGeneration GetEntityGeneration(ThEntityId entityId)
 
 constexpr ThEntityId SetEntityIndex(ThEntityId entityId, ThEntityIndex index)
 {
-    ThEntityId result = index << Private::EntityIndexBits;
-    result |= (entityId & Private::EnityGenerationMask);
+    ThEntityId result = index;
+    result = (result << Private::EntityIndexBits) | (entityId & Private::EnityGenerationMask);
     return result;
 }
 

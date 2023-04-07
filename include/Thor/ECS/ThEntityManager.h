@@ -17,7 +17,7 @@ public:
 
     ThEntityId CreateEntity()
     {
-        if (m_LastFreeSlot != InvalidEntitySlot)
+        if (m_LastFreeSlot != ThEntityNull)
         {
             ThEntityId newEntity = m_Entities[m_LastFreeSlot];
             ThEntityIndex nextFreeSlot = GetEntityIndex(newEntity);
@@ -94,9 +94,8 @@ public:
     }
 
 private:
-    static constexpr ThSize InvalidEntitySlot {0xFFFFFFFFFFFFFFFF};
     ThVector<ThEntityId> m_Entities;
-    ThSize m_LastFreeSlot {InvalidEntitySlot};
+    ThU32 m_LastFreeSlot {ThEntityNull};
     ThSize m_NumAliveEntities {0};
     ThSize m_ReserveEntities {0};
 };

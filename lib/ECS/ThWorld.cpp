@@ -36,6 +36,7 @@ ThScene* ThWorld::CreateScene()
 {
     ThScene* newScene = new ThScene(this, m_ResourceManager->GenerateUid());
     m_Scenes.PushBack(newScene);
+    return newScene;
 }
 
 ThScene* ThWorld::FindScene(ThU64 sceneUid)

@@ -141,7 +141,7 @@ public:
 
 	MappedType& operator[](const KeyT& key)
 	{
-		Iterator it = Find(key);
+		Iterator it = BaseType::Find(key);
 
 		if (it != BaseType::End())
 			return it->Value();
@@ -152,7 +152,7 @@ public:
 
 	const MappedType& operator[](const KeyT& key)const
 	{
-		ConstIterator it = Find(key);
+		ConstIterator it = BaseType::Find(key);
 
 		if (it != BaseType::End())
 			return it->Value();
