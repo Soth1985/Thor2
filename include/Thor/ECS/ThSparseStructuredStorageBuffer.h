@@ -14,6 +14,7 @@ public:
     ThSparseStructuredStorageBuffer(ThSize componentDataSize, ThI16 pageSize = Private::PageSize, ThI8 bufferAlignment = Private::PageAlignment)
     {
         m_Buffer = reinterpret_cast<ThI8*>(ThMemory::AlignedMalloc(pageSize, bufferAlignment));
+        m_ComponentDataSize = componentDataSize;
 
         if (!m_Buffer)
         {
@@ -118,7 +119,7 @@ public:
         // Slot is empty, add new component data
         if (sparseIndex == ThEntitySparseNull)
         {
-            m_EntitiesSparse[sparseIndex] = m_Size;
+            m_EntitiesSparse[entityIndexHash] = m_Size;
             m_EntitiesDense[m_Size] = entityId;
             ThI8* destinationData = m_ComponentData + m_Size * m_ComponentDataSize;
             ThMemory::MemoryCopy(destinationData, componentData, m_ComponentDataSize);

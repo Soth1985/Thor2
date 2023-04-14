@@ -33,23 +33,27 @@ public:
     }
 
     template <class TComponent>
-    void RegisterComponent()
+    bool RegisterComponent()
     {
         if (m_Components.Find(TComponent::ComponentId) == m_Components.End())
         {
             auto newComponentStorage = new ThSparseStructuredStorage(TComponent::ComponentId, sizeof(TComponent));
             m_Components[TComponent::ComponentId] = newComponentStorage;
+            return true;
         }
         else
         {
             THOR_ERR("Component %d is already registered", Private::LoggerTag, TComponent::ComponentId);
+            return false;
         }
     }
 
     template <class... TComponents>
-    void RegisterComponents()
+    bool RegisterComponents()
     {
-        (RegisterComponent<TComponents>(), ...);
+        bool result = true;
+        ((result = result && RegisterComponent<TComponents>()), ...);
+        return result;
     }
 
     ThSparseStructuredStorage* GetComponentStorage(ThComponentId componentId)
@@ -84,7 +88,7 @@ public:
 
         if (storage)
         {
-            const ThI8* componentData = static_cast<const ThI8*>(component);
+            const ThI8* componentData = reinterpret_cast<const ThI8*>(&component);
             storage->SetComponent(entityId, componentData);
             return true;
         }
@@ -100,7 +104,7 @@ public:
 
         if (storage)
         {
-            ThI8* componentData = static_cast<ThI8*>(component);
+            ThI8* componentData = reinterpret_cast<ThI8*>(&component);
             return storage->GetComponent(entityId, componentData);
         }
 
