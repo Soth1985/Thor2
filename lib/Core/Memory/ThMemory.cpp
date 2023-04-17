@@ -158,3 +158,13 @@ void* ThMemory::MemoryMove(void* destination, const void* source, ThSize numByte
 {
     return memmove(destination, source, numBytes);
 }
+
+void ThMemory::StringCopy(ThChar* destination, ThSize destinationSize, const ThChar* source)
+{
+    strlcpy(destination, source, destinationSize);
+}
+
+void ThMemory::MemorySet(void* destination, ThU8 value, ThSize numBytes)
+{
+    memset(destination, value, numBytes);
+}

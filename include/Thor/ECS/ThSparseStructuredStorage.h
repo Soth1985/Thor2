@@ -11,7 +11,7 @@ class ThSparseStructuredStorage
 {
 public:
 
-    ThSparseStructuredStorage(ThComponentId componentId, ThSize componentDataSize, ThI16 pageSize = Private::PageSize, ThI8 bufferAlignment = Private::PageAlignment)
+    ThSparseStructuredStorage(ThComponentId componentId, ThSize componentDataSize, ThU16 pageSize = Private::PageSize, ThI8 bufferAlignment = Private::PageAlignment)
         :
     m_ComponentId(componentId),
     m_ComponentDataSize(componentDataSize),
@@ -115,7 +115,7 @@ private:
     ThVector<ThSparseStructuredStorageBuffer> m_Pages;
     ThComponentId m_ComponentId {0}; 
     ThSize m_ComponentDataSize {0};
-    ThI16 m_PageSize {0};
+    ThU16 m_PageSize {0};
     ThI8 m_BufferAlignment {0};
 };
 

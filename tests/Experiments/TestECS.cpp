@@ -1,5 +1,6 @@
 #include <Thor/SimdMath/Simd.h>
 #include <Thor/ECS/ThECS.h>
+#include <Thor/Core/Hash/ThPolynomialHash.h>
 
 using namespace Thor;
 
@@ -14,10 +15,9 @@ struct ComponentIds
     };
 };
 
-
 struct TransformComponent
 {
-    static constexpr ThComponentId ComponentId = ComponentIds::Transform;
+    static constexpr ThComponentId ComponentId = PolynomialHash("TransformComponent");
     
     ThI32 pre;
     simd::float3 position;

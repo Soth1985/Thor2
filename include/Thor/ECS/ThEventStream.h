@@ -7,10 +7,10 @@
 namespace Thor
 {
 
-class ThEventStreamBase
+class ThiEventStream
 {
 public:
-    virtual ~ThEventStreamBase()
+    virtual ~ThiEventStream()
     {
 
     }
@@ -19,7 +19,7 @@ public:
 };
 
 template <class TEvent, ThI32 ReservedEvents = 64>
-class ThEventStream: public ThEventStreamBase
+class ThEventStream: public ThiEventStream
 {
 public:
     using TCallback = std::function<void(const TEvent*, ThSize)>;

@@ -15,7 +15,7 @@ ThString::ThString(const ThChar* data)
 m_Data(data)
 {
     m_Length = strlen(data);
-    m_Uid = ThCore::GetUidGenerator()->GenerateSnowflake();
+    m_Uid = ThCore::GetUidGenerator()->GenerateSnowflake(128);
     m_Hash = Hash::Murmur3((ThU8*)data, m_Length, m_Uid);
 }
 

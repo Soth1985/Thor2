@@ -34,7 +34,7 @@ ThResourceManager* ThWorld::GetResourceManager()
 
 ThScene* ThWorld::CreateScene()
 {
-    ThScene* newScene = new ThScene(this, m_ResourceManager->GenerateUid());
+    ThScene* newScene = new ThScene(this, 100);
     m_Scenes.PushBack(newScene);
     return newScene;
 }

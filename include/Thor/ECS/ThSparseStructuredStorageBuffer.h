@@ -11,10 +11,11 @@ namespace Thor
 class ThSparseStructuredStorageBuffer
 {
 public:
-    ThSparseStructuredStorageBuffer(ThSize componentDataSize, ThI16 pageSize = Private::PageSize, ThI8 bufferAlignment = Private::PageAlignment)
+    ThSparseStructuredStorageBuffer(ThSize componentDataSize, ThU16 pageSize = Private::PageSize, ThI8 bufferAlignment = Private::PageAlignment)
     {
         m_Buffer = reinterpret_cast<ThI8*>(ThMemory::AlignedMalloc(pageSize, bufferAlignment));
         m_ComponentDataSize = componentDataSize;
+        m_PageSize = pageSize;
 
         if (!m_Buffer)
         {
@@ -22,15 +23,20 @@ public:
             return;
         }
 
+        ThMemory::MemorySet(m_Buffer, 0, m_PageSize);
+
         ThU16 entrySize = componentDataSize + sizeof(ThEntitySparseIndex) + sizeof(ThEntityId);
-        m_Capacity = pageSize / entrySize;
+        m_Capacity = m_PageSize / entrySize;
 
         m_EntitiesSparse = reinterpret_cast<ThEntitySparseIndex*>(m_Buffer);
         ThI8* entitiesDensePtr = m_Buffer + m_Capacity * sizeof(ThEntitySparseIndex);
         m_EntitiesDense = reinterpret_cast<ThEntityId*>(entitiesDensePtr);
         m_ComponentData = entitiesDensePtr + m_Capacity * sizeof(ThEntityId);
 
-        memset(m_EntitiesSparse, ThEntitySparseNull, sizeof(ThEntitySparseIndex) * m_Capacity);
+        for (int i = 0; i < m_Capacity; ++i)
+        {
+            m_EntitiesSparse[i] = ThEntitySparseNull;
+        }
     }
 
     ~ThSparseStructuredStorageBuffer()
@@ -210,6 +216,7 @@ private:
     ThI8* m_Buffer {nullptr};
     ThU16 m_Size {0};
     ThU16 m_Capacity {0};
+    ThI16 m_PageSize {0};
     ThSize m_ComponentDataSize {0};
 };
 

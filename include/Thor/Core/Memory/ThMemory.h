@@ -106,6 +106,10 @@ public:
 	static void* MemoryCopy(void* destination, const void* source, ThSize numBytes);
     
     static void* MemoryMove(void* destination, const void* source, ThSize numBytes);
+
+	static void MemorySet(void* destination, ThU8 value, ThSize numBytes);
+
+	static void StringCopy(ThChar* destination, ThSize destinationSize, const ThChar* source);
 };
 	
 }//Thor

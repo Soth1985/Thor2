@@ -14,7 +14,6 @@ void ThCore::Initialize()
     m_SystemAllocator = new ThSystemAllocator("Global");
     m_Logger = new ThLogger();
     m_UidGenerator = new ThUidGenerator();
-    m_UidGenerator->SetSnowflakeConstant(128);
 }
 
 void ThCore::Shutdown()

@@ -46,6 +46,7 @@ set(Core_H
     ${THOR_INCLUDE_DIR}/Thor/Core/Hash/ThSipHash.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Hash/ThMurmurHash.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Hash/ThSha3.h
+    ${THOR_INCLUDE_DIR}/Thor/Core/Hash/ThPolynomialHash.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThMemory.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThMemoryUtil.h
     ${THOR_INCLUDE_DIR}/Thor/Core/Memory/ThStackAllocator.h

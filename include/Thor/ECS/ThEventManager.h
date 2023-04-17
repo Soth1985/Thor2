@@ -73,7 +73,7 @@ public:
 
 private:
 
-    ThHashMap<ThEventId, ThEventStreamBase*> m_EventStreams;
+    ThHashMap<ThEventId, ThiEventStream*> m_EventStreams;
 };
 
 }
