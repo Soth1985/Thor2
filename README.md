@@ -7,6 +7,10 @@
 
 ## Windows Specific
 
+1. Generate Xcode project with cmake
+*  cd build
+*  cmake .. -G "Visual Studio 17 2022"
+
 ## MacOS Specific
 
 1. build folder is build_macos
