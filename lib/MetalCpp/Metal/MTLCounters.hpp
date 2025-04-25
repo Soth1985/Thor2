@@ -2,7 +2,7 @@
 //
 // Metal/MTLCounters.hpp
 //
-// Copyright 2020-2022 Apple Inc.
+// Copyright 2020-2024 Apple Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -132,7 +132,11 @@ public:
 _MTL_ENUM(NS::Integer, CounterSampleBufferError) {
     CounterSampleBufferErrorOutOfMemory = 0,
     CounterSampleBufferErrorInvalid = 1,
+    CounterSampleBufferErrorInternal = 2,
 };
+
+static const NS::UInteger CounterErrorValue = static_cast<NS::UInteger>(~0ULL);
+static const NS::UInteger CounterDontSample = static_cast<NS::UInteger>(-1);
 
 }
 

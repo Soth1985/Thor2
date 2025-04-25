@@ -3,7 +3,7 @@
 
 #include <Thor/SimdMath/ThGraphics.h>
 #include <Thor/Core/Debug/ThLogger.h>
-#include <Thor/MetalRenderer/ThMetalContext.h>
+#include <Thor/MetalRenderer/ThMetalUtils.h>
 #include <Thor/SimdMath/Simd.h>
 #include <ktx/ktx.h>
 //#include <AppKit/AppKit.hpp>
@@ -74,8 +74,8 @@ void MetalRendererSample8::SetupRendering()
     const size_t vertexDataSize = sizeof( verts );
     const size_t indexDataSize = sizeof( indices );
 
-    auto pVertexPositionsBuffer = m_Device->newBuffer(vertexDataSize, ThMetalContext::GetDefaultBufferOptions());
-    auto pIndexBuffer = m_Device->newBuffer(indexDataSize, ThMetalContext::GetDefaultBufferOptions());
+    auto pVertexPositionsBuffer = m_Device->newBuffer(vertexDataSize, ThMetalUtils::GetDefaultBufferOptions());
+    auto pIndexBuffer = m_Device->newBuffer(indexDataSize, ThMetalUtils::GetDefaultBufferOptions());
 
     m_PositionBuffer = NS::TransferPtr(pVertexPositionsBuffer);
     m_IndexBuffer = NS::TransferPtr(pIndexBuffer);
@@ -90,14 +90,14 @@ void MetalRendererSample8::SetupRendering()
     
     for ( size_t i = 0; i < kMaxFramesInFlight; ++i )
     {
-        m_InstanceBuffers[i] = NS::TransferPtr(m_Device->newBuffer(instanceDataSize, ThMetalContext::GetDefaultBufferOptions()));
+        m_InstanceBuffers[i] = NS::TransferPtr(m_Device->newBuffer(instanceDataSize, ThMetalUtils::GetDefaultBufferOptions()));
     }
     
     const size_t cameraDataSize = kMaxFramesInFlight * sizeof(CameraData);
     
     for ( size_t i = 0; i < kMaxFramesInFlight; ++i )
     {
-        m_CameraDataBuffer[i] = NS::TransferPtr(m_Device->newBuffer(cameraDataSize, ThMetalContext::GetDefaultBufferOptions()));
+        m_CameraDataBuffer[i] = NS::TransferPtr(m_Device->newBuffer(cameraDataSize, ThMetalUtils::GetDefaultBufferOptions()));
     }
 
     auto vertexFn = NS::TransferPtr(m_DefaultLibrary->newFunction( NS::String::string("vertexMain8", NS::UTF8StringEncoding)));
@@ -113,7 +113,7 @@ void MetalRendererSample8::SetupRendering()
     pTextureDesc->setHeight(kTextureHeight);
     pTextureDesc->setPixelFormat(MTL::PixelFormatRGBA8Unorm);
     pTextureDesc->setTextureType(MTL::TextureType2D);
-    pTextureDesc->setStorageMode(ThMetalContext::GetDefaultTextureStorageMode());
+    pTextureDesc->setStorageMode(ThMetalUtils::GetDefaultTextureStorageMode());
     pTextureDesc->setUsage(MTL::ResourceUsageSample | MTL::ResourceUsageRead | MTL::ResourceUsageWrite);
 
     m_Texture = NS::TransferPtr(m_Device->newTexture(pTextureDesc.get()));
@@ -122,7 +122,7 @@ void MetalRendererSample8::SetupRendering()
     pDesc->setVertexFunction(vertexFn.get());
     pDesc->setFragmentFunction(fragFn.get());
     
-    auto frameBufferDesc = ThMetalContext::GetFramebufferDescriptor();
+    auto frameBufferDesc = ThFramebufferDescriptor{};
     pDesc->colorAttachments()->object(0)->setPixelFormat(frameBufferDesc.m_ColorPixelFormat);
     pDesc->setDepthAttachmentPixelFormat(frameBufferDesc.m_DepthStencilPixelFormat);
     pDesc->setStencilAttachmentPixelFormat(frameBufferDesc.m_DepthStencilPixelFormat);
@@ -291,7 +291,7 @@ void MetalRendererSample8::SetupCompute()
         assert(false);
     }
     
-    m_TextureAnimationBuffer = NS::TransferPtr(m_Device->newBuffer(sizeof(uint), ThMetalContext::GetDefaultBufferOptions()));
+    m_TextureAnimationBuffer = NS::TransferPtr(m_Device->newBuffer(sizeof(uint), ThMetalUtils::GetDefaultBufferOptions()));
 }
 
 void MetalRendererSample8::GenerateTexture()

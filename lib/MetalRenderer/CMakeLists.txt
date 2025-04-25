@@ -1,11 +1,11 @@
 project(MetalRenderer VERSION ${THOR_VERSION} LANGUAGES CXX)
 
 set(MetalRenderer_SRC
-    ThMetalContext.cpp
+    ThMetalUtils.cpp
     ThMetalRenderer.cpp)
 
 set(MetalRenderer_H
-    ${THOR_INCLUDE_DIR}/Thor/MetalRenderer/ThMetalContext.h
+    ${THOR_INCLUDE_DIR}/Thor/MetalRenderer/ThMetalUtils.h
     ${THOR_INCLUDE_DIR}/Thor/MetalRenderer/ThMetalRenderer.h)
 
 list(SORT MetalRenderer_SRC)

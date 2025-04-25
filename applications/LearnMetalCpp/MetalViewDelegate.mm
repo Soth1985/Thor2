@@ -11,7 +11,7 @@
 #include <Thor/SimdMath/Simd.h>
 #include <Thor/Core/Common.h>
 #include <Thor/Core/Debug/ThLogger.h>
-#include <Thor/MetalRenderer/ThMetalContext.h>
+#include <Thor/MetalRenderer/ThMetalUtils.h>
 #include <Metal/Metal.hpp>
 
 #include "MetalRendererSample0.h"
@@ -54,12 +54,12 @@ using namespace Thor;
 
 - (void)setupView
 {
-    m_Device = ThMetalContext::DefaultDevice();
+    m_Device = ThMetalUtils::CreateDefaultDevice();
     m_View.delegate = self;
     m_View.device = (__bridge id<MTLDevice>)m_Device.get();
     
     // Setup the render target, choose values based on your app.
-    auto frameBufferDesc = ThMetalContext::GetFramebufferDescriptor();
+    auto frameBufferDesc = ThFramebufferDescriptor{};
     m_View.sampleCount = frameBufferDesc.m_SampleCount;
     m_View.depthStencilPixelFormat = (MTLPixelFormat)frameBufferDesc.m_DepthStencilPixelFormat;
     m_View.colorPixelFormat = (MTLPixelFormat)frameBufferDesc.m_ColorPixelFormat;
@@ -82,14 +82,14 @@ using namespace Thor;
 - (void)setupRendering
 {
     //m_Renderer = new MetalRendererSample0(m_Device);
-    //m_Renderer = new MetalRendererSample1(m_Device);
+    m_Renderer = new MetalRendererSample1(m_Device);
     //m_Renderer = new MetalRendererSample2(m_Device);
     //m_Renderer = new MetalRendererSample3(m_Device);
     //m_Renderer = new MetalRendererSample4(m_Device);
     //m_Renderer = new MetalRendererSample5(m_Device);
     //m_Renderer = new MetalRendererSample6(m_Device);
     //m_Renderer = new MetalRendererSample7(m_Device);
-    m_Renderer = new MetalRendererSample8(m_Device);
+    //m_Renderer = new MetalRendererSample8(m_Device);
     m_Renderer->SetupRendering();
 }
 

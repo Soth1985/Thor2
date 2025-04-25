@@ -9,10 +9,6 @@
 #import "ViewController.h"
 #import "../MetalViewDelegate.h"
 
-#include <Thor/MetalRenderer/ThMetalContext.h>
-
-using namespace Thor;
-
 @implementation ViewController
 {
     MetalViewDelegate* m_Delegate;
@@ -23,7 +19,6 @@ using namespace Thor;
     [super viewDidLoad];
     
     MTKView *view = (MTKView *)self.view;
-    ThMetalContext::Initialize(ThFramebufferDescriptor());
     m_Delegate = [[MetalViewDelegate alloc] initWithView:view];
 }
 

@@ -1,7 +1,7 @@
 #include "MetalRendererSample1.h"
 
 #include <Thor/Core/Debug/ThLogger.h>
-#include <Thor/MetalRenderer/ThMetalContext.h>
+#include <Thor/MetalRenderer/ThMetalUtils.h>
 #include <Thor/SimdMath/Simd.h>
 
 using namespace Thor;
@@ -56,7 +56,7 @@ void MetalRendererSample1::SetupRendering()
     pDesc->setVertexFunction(vertexFn.get());
     pDesc->setFragmentFunction(fragFn.get());
     
-    auto frameBufferDesc = ThMetalContext::GetFramebufferDescriptor();
+    auto frameBufferDesc = ThFramebufferDescriptor{};
     pDesc->colorAttachments()->object(0)->setPixelFormat(frameBufferDesc.m_ColorPixelFormat);
     pDesc->setDepthAttachmentPixelFormat(frameBufferDesc.m_DepthStencilPixelFormat);
     pDesc->setStencilAttachmentPixelFormat(frameBufferDesc.m_DepthStencilPixelFormat);

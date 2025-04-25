@@ -16,17 +16,12 @@ struct ThFramebufferDescriptor
     ThF64 m_ClearDepth = 1.0;
 };
 
-class ThMetalContext
+class ThMetalUtils
 {
 public:
-    static void Initialize(const ThFramebufferDescriptor& frameBufferDesc);
-    static NS::SharedPtr<MTL::Device> DefaultDevice();
-    static const ThFramebufferDescriptor& GetFramebufferDescriptor();
+    static NS::SharedPtr<MTL::Device> CreateDefaultDevice();
     static MTL::ResourceOptions GetDefaultBufferOptions();
     static MTL::StorageMode GetDefaultTextureStorageMode();
-private:
-    static NS::SharedPtr<MTL::Device> m_DefaultDevice;
-    static ThFramebufferDescriptor m_FramebufferDescriptor;
 };
 
 }
